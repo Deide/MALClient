@@ -112,7 +112,7 @@ namespace MALClient
             if (string.IsNullOrWhiteSpace(tiles))
                 return;
 
-
+            bool removed = false;
             var newTiles = "";
             //var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("PinnedTilesImages",
             //    CreationCollisionOption.OpenIfExists);
@@ -136,6 +136,7 @@ namespace MALClient
                                 await (await StorageFile.GetFileFromApplicationUriAsync(cache.WideImgUri)).DeleteAsync(
                                     StorageDeleteOption.PermanentDelete);
                             }
+                            removed = true;
                             _pinnedCache.Remove(id);
                         }
                     }
@@ -149,7 +150,8 @@ namespace MALClient
                     newTiles += tileId + ";";
                 }
             }
-            SavePinnedData();
+            if(removed)
+                SavePinnedData();
             ApplicationData.Current.LocalSettings.Values["tiles"] = newTiles;
         }
 
