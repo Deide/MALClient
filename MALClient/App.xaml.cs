@@ -5,6 +5,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Storage.Search;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -48,10 +49,17 @@ namespace MALClient
         {
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(500, 500));
             var rootFrame = Window.Current.Content as Frame;
-
+            Tuple<int, string> navArgs = null;
             if (!string.IsNullOrWhiteSpace(e.Arguments))
             {
-                LaunchUri(e.Arguments);
+                var options = e.Arguments.Split(';');
+                if (options[0] == TileActions.OpenUrl.ToString())
+                    LaunchUri(options[1]);
+                else
+                {
+                    var detailArgs = options[1].Split('|');
+                    navArgs = new Tuple<int, string>(int.Parse(detailArgs[0]), detailArgs[1]);
+                }
             }
             Credentials.Init();
             // Do not repeat app initialization when the Window already has content,
@@ -90,19 +98,17 @@ namespace MALClient
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(MainPage), navArgs);
+            }
+            else if (!string.IsNullOrEmpty(e.Arguments))
+            {
+                ViewModelLocator.Main.Navigate(PageIndex.PageAnimeDetails,
+                    new AnimeDetailsPageNavigationArgs(navArgs.Item1, navArgs.Item2, null, null));
             }
             // Ensure the current window is active
 
-            try
-            {
-                HtmlClassMgr.Init();
-            }
-            catch (Exception)
-            {
-                // no internet?
-            }
-
+            HtmlClassMgr.Init();
+            LiveTilesManager.LoadTileCache();
             Window.Current.Activate();
             RateReminderPopUp.ProcessRatePopUp();
             var tb = ApplicationView.GetForCurrentView().TitleBar;
@@ -116,34 +122,30 @@ namespace MALClient
             ProcessUpdate();
         }
 
-        private async void ProcessUpdate()
+        private void ProcessUpdate()
         {
-            if (ApplicationData.Current.LocalSettings.Values["AppVersion"] == null
-                || (string) ApplicationData.Current.LocalSettings.Values["AppVersion"] != Utils.GetAppVersion())
-                await Task.Run(async () =>
-                {
-                    try
-                    {
-                        var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync("AnimeDetails");
-                        foreach (var file in await folder.GetFilesAsync())
-                        {
-                            if (file.Name.Contains("related") || file.Name.Contains("direct_recommendations"))
-                                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        //
-                    }
-                });
+            //if (ApplicationData.Current.LocalSettings.Values["AppVersion"] == null
+            //    || (string) ApplicationData.Current.LocalSettings.Values["AppVersion"] != Utils.GetAppVersion())
+            //    await Task.Run(async () =>
+            //    {
+                    
+            //    });
             ApplicationData.Current.LocalSettings.Values["AppVersion"] = Utils.GetAppVersion();
         }
 
         private async void LaunchUri(string url)
         {
-            await Launcher.LaunchUriAsync(new Uri(url));
-        }
+            try
+            {
+                await Launcher.LaunchUriAsync(new Uri(url));
+            }
+            catch (Exception)
+            {
+                //wrong url provided
+                Utils.GiveStatusBarFeedback("Invalid target url...");
+            }
 
+        }
 
         /// <summary>
         ///     Invoked when Navigation to a certain page fails
@@ -180,7 +182,17 @@ namespace MALClient
             }
             await DataCache.SaveVolatileData();
             await DataCache.SaveHumMalIdDictionary();
-
+            await DataCache.SaveHumMalIdDictionary();
+            try
+            {
+                foreach (var file in await ApplicationData.Current.TemporaryFolder.GetFilesAsync(CommonFileQuery.DefaultQuery))
+                    if (file.Name.Contains("_cropTemp"))
+                        await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
+            catch (Exception)
+            {
+                //well...
+            }
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }

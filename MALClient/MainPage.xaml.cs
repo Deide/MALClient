@@ -5,13 +5,15 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
-
+using Windows.UI.Xaml.Navigation;
 using MALClient.Comm;
 using MALClient.Comm.Anime;
 
 using MALClient.UserControls;
 using MALClient.ViewModels;
+using XamlCropControl;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -23,11 +25,11 @@ namespace MALClient
     public sealed partial class MainPage : Page, IMainViewInteractions
     {
         private double _prevOffContntWidth;
-
+        public Tuple<int,string> InitDetails { get; private set; }
         public MainPage()
         {
             InitializeComponent();
-            Utils.CheckTiles();
+            //Utils.CheckTiles();
             Loaded += (sender, args) =>
             {
 
@@ -39,6 +41,11 @@ namespace MALClient
 
                 ViewModelLocator.Main.View = this;
             };
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            InitDetails = e.Parameter as Tuple<int,string>;
         }
 
         public void Navigate(Type page, object args = null)
@@ -65,9 +72,15 @@ namespace MALClient
             OffContent.UpdateLayout();
         }
 
+
+
         public HamburgerControl Hamburger => HamburgerControl;
         public Grid GridRootContent => RootContentGrid;
         public Image Logo => LogoImage;
+        public Storyboard PinDialogStoryboard => FadeInPinDialogStoryboard;
+        public Storyboard CurrentStatusStoryboard => FadeInCurrentStatus;
+        public Storyboard CurrentOffStatusStoryboard => FadeInCurrentOffStatus;
+        public Storyboard HidePinDialogStoryboard => FadeOutPinDialogStoryboard;
 
         private double GetStartingSplitterWidth()
         {
@@ -116,6 +129,21 @@ namespace MALClient
                 if (properties.IsXButton1Pressed)
                     NavMgr.CurrentViewOnBackRequested();
             }
+        }
+        /// <summary>
+        /// Hack for pivot not to consume mouse wheel.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PinPivotItem_OnPointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            ScrollView.ScrollToVerticalOffset(ScrollView.VerticalOffset -e.GetCurrentPoint(ScrollView).Properties.MouseWheelDelta);
+        }
+
+        private void PinDialog_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            if((e.OriginalSource as FrameworkElement).Name == "PinDialog")
+                ViewModelLocator.Main.PinDialogViewModel.CloseDialogCommand.Execute(null);
         }
     }
 }

@@ -9,11 +9,13 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MALClient.Comm;
 using MALClient.Pages;
 using MALClient.UserControls;
+using XamlCropControl;
 
 namespace MALClient.ViewModels
 {
@@ -26,12 +28,19 @@ namespace MALClient.ViewModels
         void NavigateOff(Type page, object args = null);
         void SearchInputFocus(FocusState state);
         void InitSplitter();
+        Tuple<int,string> InitDetails { get; }
+        Storyboard PinDialogStoryboard { get; }
+        Storyboard CurrentStatusStoryboard { get; }
+        Storyboard CurrentOffStatusStoryboard { get; }
+        Storyboard HidePinDialogStoryboard { get; }
     }
 
     public class MainViewModel : ViewModelBase
     {
         private bool? _searchStateBeforeNavigatingToSearch;
         private bool _wasOnDetailsFromSearch;
+
+        public PinTileDialogViewModel PinDialogViewModel { get; } = new PinTileDialogViewModel();
 
         public PageIndex CurrentMainPage { get; set; }
         public PageIndex CurrentOffPage { get; set; }
@@ -40,7 +49,7 @@ namespace MALClient.ViewModels
         {
             //if(Settings.SelectedApiType == ApiType.Hummingbird && index == PageIndex.PageProfile)
             //   return;
-
+            PageIndex originalIndex = index;
             var wasOnSearchPage = SearchToggleLock;
 
             await Task.Delay(1);
@@ -50,6 +59,8 @@ namespace MALClient.ViewModels
                 await msg.ShowAsync();
                 return;
             }
+
+
             ScrollToTopButtonVisibility = Visibility.Collapsed;
             RefreshButtonVisibility = Visibility.Collapsed;
             OffRefreshButtonVisibility = Visibility.Collapsed;
@@ -115,6 +126,17 @@ namespace MALClient.ViewModels
             switch (index)
             {
                 case PageIndex.PageAnimeList:
+                    if (ViewModelLocator.AnimeList.Initializing)
+                    {
+                        if (!_subscribed)
+                        {
+                            ViewModelLocator.AnimeList.Initialized += AnimeListOnInitialized;
+                            _subscribed = true;
+                        }
+                        _postponedNavigationArgs = new Tuple<PageIndex, object>(originalIndex,args);
+                        return;
+                    }
+                    _postponedNavigationArgs = null;
                     ShowSearchStuff();
                     if ((_searchStateBeforeNavigatingToSearch == null || !_searchStateBeforeNavigatingToSearch.Value) &&
                         (wasOnSearchPage || _wasOnDetailsFromSearch))
@@ -126,6 +148,10 @@ namespace MALClient.ViewModels
                     View.Navigate(typeof(AnimeListPage), args);
                     break;
                 case PageIndex.PageAnimeDetails:
+                    var detail = ViewModelLocator.AnimeDetails;
+                    detail.DetailImage = null;
+                    detail.LeftDetailsRow.Clear();
+                    detail.RightDetailsRow.Clear();
                     OffRefreshButtonVisibility = Visibility.Visible;
                     RefreshOffDataCommand = new RelayCommand(() => ViewModelLocator.AnimeDetails.RefreshData());
                     _wasOnDetailsFromSearch = (args as AnimeDetailsPageNavigationArgs).Source == PageIndex.PageSearch;
@@ -180,6 +206,15 @@ namespace MALClient.ViewModels
             RaisePropertyChanged(() => SearchToggleLock);
         }
 
+        private bool _subscribed;
+        private Tuple<PageIndex, object> _postponedNavigationArgs;
+        private void AnimeListOnInitialized()
+        {
+            ViewModelLocator.AnimeList.Initialized += AnimeListOnInitialized;
+            _subscribed = false;
+            Navigate(_postponedNavigationArgs.Item1,_postponedNavigationArgs.Item2);
+        }
+
         #region Helpers
 
         internal AnimeListPageNavigationArgs GetCurrentListOrderParams()
@@ -222,12 +257,25 @@ namespace MALClient.ViewModels
                     View.Logo.Visibility = Visibility.Collapsed;
                 }
 
+                   
                 Navigate(Credentials.Authenticated
                     ? (Settings.DefaultMenuTab == "anime" ? PageIndex.PageAnimeList : PageIndex.PageMangaList)
-                    : PageIndex.PageLogIn);
-                //entry point whatnot
+                    : PageIndex.PageLogIn);//entry point whatnot
+                if (value.InitDetails != null)
+                    ViewModelLocator.AnimeList.Initialized += AnimeListOnInitializedLoadArgs;
+
+                
             }
-        } //entry point
+        }
+
+        private async void AnimeListOnInitializedLoadArgs()
+        {
+            await Navigate(PageIndex.PageAnimeDetails,
+                new AnimeDetailsPageNavigationArgs(View.InitDetails.Item1, View.InitDetails.Item2, null, null));
+            ViewModelLocator.AnimeList.Initialized -= AnimeListOnInitializedLoadArgs;
+        }
+
+//entry point
 
         private bool _menuPaneState;
 
@@ -287,6 +335,7 @@ namespace MALClient.ViewModels
             set
             {
                 _currentStatus = value;
+                View.CurrentStatusStoryboard.Begin();
                 RaisePropertyChanged(() => CurrentStatus);
             }
         }
@@ -299,6 +348,7 @@ namespace MALClient.ViewModels
             set
             {
                 _currentOffStatus = value;
+                View.CurrentOffStatusStoryboard.Begin();
                 RaisePropertyChanged(() => CurrentOffStatus);
             }
         }

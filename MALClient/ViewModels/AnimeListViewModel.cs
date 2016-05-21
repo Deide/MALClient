@@ -28,6 +28,8 @@ namespace MALClient.ViewModels
         IndefiniteCompactList
     }
 
+    public delegate void AnimeItemListInitialized();
+
     public class AnimeListViewModel : ViewModelBase
     {
         private const int ItemPrefferedWidth = 385;
@@ -42,7 +44,18 @@ namespace MALClient.ViewModels
         private List<AnimeItemAbstraction> _animeItemsSet =
             new List<AnimeItemAbstraction>(); //All for current list        
 
-        private bool _initiazlized;
+        private bool _initializing;
+
+        public bool Initializing
+        {
+            get { return _initializing; }
+            private set
+            {
+                _initializing = value;
+                if(!value)
+                    Initialized?.Invoke();
+            }
+        }
 
         private AnimeListDisplayModes? _manuallySelectedViewMode;
         private string _prevListSource;
@@ -63,8 +76,25 @@ namespace MALClient.ViewModels
         public List<AnimeItemAbstraction> AllLoadedMangaItemAbstractions { get; private set; } =
             new List<AnimeItemAbstraction>();
 
-        public SmartObservableCollection<AnimeItemViewModel> AnimeItems { get; private set; } =
-            new SmartObservableCollection<AnimeItemViewModel>();
+        private SmartObservableCollection<AnimeItemViewModel> _animeItems = new SmartObservableCollection<AnimeItemViewModel>();
+
+        private SmartObservableCollection<AnimeItemViewModel> AnimeItems
+        {
+            get { return _animeItems; }
+            set
+            {
+                _animeItems = value;
+                RaisePropertyChanged(() => AnimeListItems);
+                RaisePropertyChanged(() => AnimeCompactItems);
+                RaisePropertyChanged(() => AnimeGridItems);
+            }
+        }
+
+        public SmartObservableCollection<AnimeItemViewModel> AnimeListItems=> DisplayMode == AnimeListDisplayModes.IndefiniteList ? AnimeItems : null;
+
+        public SmartObservableCollection<AnimeItemViewModel> AnimeGridItems => DisplayMode == AnimeListDisplayModes.IndefiniteGrid ? AnimeItems : null;
+
+        public SmartObservableCollection<AnimeItemViewModel> AnimeCompactItems => DisplayMode == AnimeListDisplayModes.IndefiniteCompactList ? AnimeItems : null;
 
         public ObservableCollection<AnimeSeason> SeasonSelection { get; } = new ObservableCollection<AnimeSeason>();
 
@@ -83,11 +113,14 @@ namespace MALClient.ViewModels
             }
         }
 
+        public event AnimeItemListInitialized Initialized;
+
+
         public async Task Init(AnimeListPageNavigationArgs args)
         {
             //base
             _scrollHandlerAdded = false;
-            _initiazlized = false;
+            Initializing = true;
             _manuallySelectedViewMode = null;
             //take out trash
             _animeItemsSet = new List<AnimeItemAbstraction>();
@@ -203,8 +236,8 @@ namespace MALClient.ViewModels
             }
 
             View.InitSortOptions(SortOption, SortDescending);
+            Initializing = false;
             UpdateUpperStatus();
-            _initiazlized = true;
         }
 
         /// <summary>
@@ -1012,7 +1045,7 @@ namespace MALClient.ViewModels
                 Loading = true;
                 CurrentPosition = 1;
                 _lastOffset = 0;
-                if (_initiazlized)
+                if (!Initializing)
                 {
                     if (Settings.HideFilterSelectionFlyout)
                         View.FlyoutFilters.Hide();
@@ -1067,7 +1100,7 @@ namespace MALClient.ViewModels
             get { return _sortDescending; }
             set
             {
-                if (_initiazlized && Settings.HideSortingSelectionFlyout)
+                if (Initializing && Settings.HideSortingSelectionFlyout)
                     View.FlyoutSorting.Hide();
                 _sortDescending = value;
                 RaisePropertyChanged(() => SortDescending);
@@ -1281,7 +1314,7 @@ namespace MALClient.ViewModels
             get { return _sortOption; }
             set
             {
-                if (_initiazlized && Settings.HideSortingSelectionFlyout)
+                if (!Initializing && Settings.HideSortingSelectionFlyout)
                     View.FlyoutSorting.Hide();
                 _sortOption = value;
                 CurrentPosition = 1;

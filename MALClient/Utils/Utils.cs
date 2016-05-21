@@ -6,10 +6,12 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.StartScreen;
+using Windows.UI.Xaml.Media.Imaging;
 using MALClient.Comm;
 using MALClient.Pages;
 using MALClient.UserControls;
@@ -127,44 +129,7 @@ namespace MALClient
             }
         }
 
-        public static void RegisterTile(string id)
-        {
-            var tiles = (string) ApplicationData.Current.LocalSettings.Values["tiles"];
-            if (string.IsNullOrWhiteSpace(tiles))
-                tiles = "";
-            tiles += id + ";";
-            ApplicationData.Current.LocalSettings.Values["tiles"] = tiles;
-        }
-
-        public static async void CheckTiles()
-        {
-            var tiles = (string) ApplicationData.Current.LocalSettings.Values["tiles"];
-            if (string.IsNullOrWhiteSpace(tiles))
-                return;
-
-
-            var newTiles = "";
-            foreach (var tileId in tiles.Split(';'))
-            {
-                if (!SecondaryTile.Exists(tileId))
-                {
-                    try
-                    {
-                        var file = await ApplicationData.Current.LocalFolder.GetFileAsync($"{tileId}.png");
-                        await file.DeleteAsync();
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
-                }
-                else
-                {
-                    newTiles += tileId + ";";
-                }
-            }
-            ApplicationData.Current.LocalSettings.Values["tiles"] = newTiles;
-        }
+        
 
         public static MainViewModel GetMainPageInstance()
         {
@@ -330,38 +295,6 @@ namespace MALClient
             return input.First().ToString().ToUpper() + input.Substring(1);
         }
 
-        public static async void PinTile(string targetUrl, int id, string imgUrl, string title)
-        {
-            try
-            {
-                var folder = ApplicationData.Current.LocalFolder;
-                var thumb = await folder.CreateFileAsync($"{id}.png", CreationCollisionOption.ReplaceExisting);
-
-                var http = new HttpClient();
-                var response = await http.GetByteArrayAsync(imgUrl); //get bytes
-
-                var fs = await thumb.OpenStreamForWriteAsync(); //get stream
-
-                using (var writer = new DataWriter(fs.AsOutputStream()))
-                {
-                    writer.WriteBytes(response); //write
-                    await writer.StoreAsync();
-                    await writer.FlushAsync();
-                }
-
-                if (!targetUrl.Contains("http"))
-                    targetUrl = "http://" + targetUrl;
-                var til = new SecondaryTile($"{id}", $"{title}", targetUrl, new Uri($"ms-appdata:///local/{id}.png"),
-                    TileSize.Default);
-                RegisterTile(id.ToString());
-                await til.RequestCreateAsync();
-            }
-            catch (Exception)
-            {
-                //TODO : feedback
-            }
-        }
-
         public static int LevenshteinDistance(string s, string t)
         {
             if (string.IsNullOrEmpty(s))
@@ -465,5 +398,29 @@ namespace MALClient
         public static async void GiveStatusBarFeedback(string text)
         {
         }
-    }
+
+        public static string ShortDayToFullDay(string sub)
+          {
+              switch (sub)
+              {
+                  case "Fri":
+                      return "Friday";
+                  case "Mon":
+                      return "Monday";
+                  case "Sat":
+                      return "Saturday";
+                  case "Sun":
+                      return "Sunday";
+                  case "Thu":
+                      return "Thursday";
+                  case "Tue":
+                      return "Tuesday";
+                  case "Wed":
+                      return "Wednesday";
+                  default:
+                      return "";
+              }
+          }
+
+}
 }
