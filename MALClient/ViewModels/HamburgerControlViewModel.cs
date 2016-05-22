@@ -17,7 +17,6 @@ using GalaSoft.MvvmLight.Command;
 using MALClient.Comm;
 using MALClient.Pages;
 using MALClient.UserControls;
-using VungleSDK;
 
 namespace MALClient.ViewModels
 {
