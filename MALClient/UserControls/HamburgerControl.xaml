@@ -393,7 +393,7 @@
                                 BorderThickness="0"
                                 PointerEntered="Button_PointerEntered"
                                 PointerExited="Button_PointerExited" Visibility="Visible"
-                                Command="{Binding ButtonAdCommand}">
+                                Click="ButtonBase_OnClick">
                             <Grid Height="35">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="60" />

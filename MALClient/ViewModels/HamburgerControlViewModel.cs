@@ -139,55 +139,55 @@ namespace MALClient.ViewModels
             }
         }
 
-        private VungleAd VungleAdInstance;
-        public ICommand ButtonAdCommand
-        {
-            get
-            {
-                return _buttonAdCommand ?? (_buttonAdCommand = new RelayCommand(() =>
-                {
-                    AdLoadingSpinnerVisibility = Visibility.Visible;
-                    if (VungleAdInstance == null)
-                    {
-                        VungleAdInstance = AdFactory.GetInstance("5735f9ae0b3973633c00004b");
+       
+        //public ICommand ButtonAdCommand
+        //{
+        //    get
+        //    {
+        //        return _buttonAdCommand ?? (_buttonAdCommand = new RelayCommand(() =>
+        //        {
+        //            AdLoadingSpinnerVisibility = Visibility.Visible;
+        //            if (VungleAdInstance == null)
+        //            {
+        //                VungleAdInstance = AdFactory.GetInstance("5735f9ae0b3973633c00004b");
 
-                        VungleAdInstance.OnAdPlayableChanged += VungleAdInstanceOnOnAdPlayableChanged;
-                    }
+        //                VungleAdInstance.OnAdPlayableChanged += VungleAdInstanceOnOnAdPlayableChanged;
+        //            }
 
-                    //var ad = new InterstitialAd();
-                    //AdLoadingSpinnerVisibility = Visibility.Visible;
-                    //ad.AdReady += (sender, o1) =>
-                    //{
-                    //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
-                    //    ad.Show();
-                    //};
-                    //ad.ErrorOccurred += async (sender, args) =>
-                    //{
-                    //    var msg =
-                    //        new MessageDialog(
-                    //            "Microsoft has no ads for you :(\nYou can still donate if you want to...",
-                    //            "Thanks for trying!");
-                    //    await msg.ShowAsync();
-                    //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
-                    //};
-                    //ad.Completed += (sender, o) => Utils.GiveStatusBarFeedback("Thank you so much :D");
+        //            //var ad = new InterstitialAd();
+        //            //AdLoadingSpinnerVisibility = Visibility.Visible;
+        //            //ad.AdReady += (sender, o1) =>
+        //            //{
+        //            //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
+        //            //    ad.Show();
+        //            //};
+        //            //ad.ErrorOccurred += async (sender, args) =>
+        //            //{
+        //            //    var msg =
+        //            //        new MessageDialog(
+        //            //            "Microsoft has no ads for you :(\nYou can still donate if you want to...",
+        //            //            "Thanks for trying!");
+        //            //    await msg.ShowAsync();
+        //            //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
+        //            //};
+        //            //ad.Completed += (sender, o) => Utils.GiveStatusBarFeedback("Thank you so much :D");
 
-                    //ad.RequestAd(AdType.Video, "0b4d3120-9383-4469-9e80-812a15f124e3", "294830");
-                }
-                    ));
-            }
-        }
+        //            //ad.RequestAd(AdType.Video, "0b4d3120-9383-4469-9e80-812a15f124e3", "294830");
+        //        }
+        //            ));
+        //    }
+        //}
 
-        private async void VungleAdInstanceOnOnAdPlayableChanged(object sender, AdPlayableEventArgs adPlayableEventArgs)
-        {
-            AdLoadingSpinnerVisibility = Visibility.Visible;
-            await
-                VungleAdInstance.PlayAdAsync(new AdConfig
-                {
-                    Incentivized = true,
-                    SoundEnabled = true
-                });
-        }
+        //private async void VungleAdInstanceOnOnAdPlayableChanged(object sender, AdPlayableEventArgs adPlayableEventArgs)
+        //{
+        //    AdLoadingSpinnerVisibility = Visibility.Visible;
+        //    await
+        //        VungleAdInstance.PlayAdAsync(new AdConfig
+        //        {
+        //            Incentivized = true,
+        //            SoundEnabled = true
+        //        });
+        //}
 
 
         public Visibility UsrImgPlaceholderVisibility
