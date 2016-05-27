@@ -104,6 +104,18 @@
                             </Grid>
                             <MenuFlyoutSeparator Margin="0,5" />
                             <Grid HorizontalAlignment="Stretch" Margin="5,5">
+                                <StackPanel>
+                                    <TextBlock Text="View modes for reviews and recommendations in details page:" FontWeight="Medium"
+                                               HorizontalAlignment="Center"
+                                               TextWrapping="WrapWholeWords" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <ToggleSwitch Header="Reviews" OnContent="List" OffContent="Pivot" IsOn="{Binding DetailsListReviewsView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <ToggleSwitch Header="Recommendations" OnContent="List" OffContent="Pivot" IsOn="{Binding DetailsListRecomsView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                            <MenuFlyoutSeparator Margin="0,5" />
+                            <Grid HorizontalAlignment="Stretch" Margin="5,5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width=".5*" />
                                     <ColumnDefinition Width=".5*" />
@@ -771,6 +783,12 @@
                                                     <Setter Property="TextAlignment" Value="Left" />
                                                 </Style>
                                             </StackPanel.Resources>
+                                            <TextBlock Text="28.05.2016 - v4.1.22.0" />
+                                            <TextBlock Text="Stability, crashfixes, performance." />
+                                            <TextBlock Text="Added swipe to incement/decrement." />
+                                            <TextBlock Text="&quot;Support me&quot; button got watch ad option on dekstop too." />
+                                            <TextBlock Text="You can now choose between pivot and list view of recommendations and reviews in details page." />
+                                            <MenuFlyoutSeparator/>
                                             <TextBlock Text="24.05.2016 - v4.1.16.0" />
                                             <TextBlock Text="Live tiles overhaul." />
                                             <TextBlock Text="Added calendar page." />

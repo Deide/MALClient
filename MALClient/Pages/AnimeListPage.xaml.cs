@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using MALClient.ViewModels;
 
@@ -217,28 +218,17 @@ namespace MALClient.Pages
         private AnimeListPageNavigationArgs navArgs = null;
         public AnimeListPage()
         {
-            InitializeComponent();
-            ViewModel.View = this;
+            InitializeComponent();          
             Loaded += (sender, args) =>
             {
+                ViewModel.View = this;
                 ViewModel.CanAddScrollHandler = true;
                 ViewModel.Init(navArgs);
                 _loaded = true;
             };
-
+            
             SizeChanged += (sender, args) =>
             {
-                if (Math.Abs(args.NewSize.Height - _prevHeight) > 100 || Math.Abs(args.NewSize.Width - _prevWidth) > 200)
-                {
-                    //if(ViewModelLocator.Main.OffContentVisibility == Visibility.Visible)
-                    //ViewModelLocator.Main.View.InitSplitter();
-                    _prevHeight = args.NewSize.Height;
-                    _prevWidth = args.NewSize.Width;
-                    if ((DataContext as AnimeListViewModel).AreThereItemsWaitingForLoad)
-                    {
-                        ViewModelLocator.AnimeList.RefreshList();
-                    }
-                }
                 ViewModel.UpdateGridItemWidth();
             };
         }

@@ -245,6 +245,18 @@ namespace MALClient.ViewModels
             set { Settings.EnableSwipeToIncDec = value; }
         }
 
+        public static bool DetailsListReviewsView
+        {
+            get { return Settings.DetailsListReviewsView; }
+            set { Settings.DetailsListReviewsView = value; }
+        }
+
+        public static bool DetailsListRecomsView
+        {
+            get { return Settings.DetailsListRecomsView; }
+            set { Settings.DetailsListRecomsView = value; }
+        }
+
         public List<NewsData> CurrentNews { get; set; } = new List<NewsData>();
 
         public Visibility MalApiDependatedntSectionsVisibility
@@ -252,6 +264,8 @@ namespace MALClient.ViewModels
 
         public bool HumApiDependatedntSectionsEnabled
              => Settings.SelectedApiType != ApiType.Mal;
+
+
 
         public async void LoadNews()
         {

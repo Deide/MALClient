@@ -13,7 +13,7 @@ namespace MALClient.Comm
     {
         private readonly bool _overriden;
         private readonly AnimeSeason _season;
-        private static List<SeasonalAnimeData> _prevQuery;
+        private static Dictionary<string,List<SeasonalAnimeData>> _prevQueries = new Dictionary<string, List<SeasonalAnimeData>>();
 
         public AnimeSeasonalQuery(AnimeSeason season)
         {
@@ -26,8 +26,8 @@ namespace MALClient.Comm
 
         public async Task<List<SeasonalAnimeData>> GetSeasonalAnime(bool force = false)
         {
-            if (!force && _prevQuery != null)
-                return _prevQuery;
+            if (!force && _prevQueries.ContainsKey(_season.Url))
+                return _prevQueries[_season.Url];
             //In memory of 1 hour of my life spent over debugging single '?' character... minute of silence
             var output = force || DataCache.SeasonalUrls?.Count == 0 //either force or urls are empty after update
                 ? new List<SeasonalAnimeData>()
@@ -168,7 +168,10 @@ namespace MALClient.Comm
 
 
             DataCache.SaveSeasonalData(output, _overriden ? _season.Name : "");
-            _prevQuery = output;
+            if (_prevQueries.ContainsKey(_season.Url))
+                _prevQueries[_season.Url] = output;
+            else
+                _prevQueries.Add(_season.Url, output);
             //We are done.
             return output;
         }

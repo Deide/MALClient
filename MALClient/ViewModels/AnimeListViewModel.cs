@@ -106,7 +106,7 @@ namespace MALClient.ViewModels
         {
             get
             {
-                var width = View.ActualWidth;
+                var width = View?.ActualWidth ?? 1000;
                 var items = (int) width/ItemPrefferedWidth;
                 var widthRest = width - items*ItemPrefferedWidth;
                 return ItemPrefferedWidth + widthRest/items;
@@ -382,7 +382,8 @@ namespace MALClient.ViewModels
 
         public void UpdateGridItemWidth()
         {
-            RaisePropertyChanged(() => ListItemGridWidth);
+            if(DisplayMode == AnimeListDisplayModes.IndefiniteList)
+                RaisePropertyChanged(() => ListItemGridWidth);
         }
 
         #region CacheManip
@@ -483,7 +484,7 @@ namespace MALClient.ViewModels
                 return;
             _lastOffset = 0; //we are resseting this because we ARE on the very to of the list view when adding handler
             _scrollHandlerAdded = true;
-            //View.GetIndefiniteScrollViewer().Result.ViewChanging += IndefiniteScrollViewerOnViewChanging;
+            View.GetIndefiniteScrollViewer().Result.ViewChanging += IndefiniteScrollViewerOnViewChanging;
         }
 
         /// <summary>
@@ -515,12 +516,11 @@ namespace MALClient.ViewModels
         ///     This method is fully responsible for preparing the view.
         ///     Depending on display mode it distributes items to right containers.
         /// </summary>
-        private async void UpdatePageSetup()
+        private void UpdatePageSetup()
         {
             AnimeItems = new SmartObservableCollection<AnimeItemViewModel>();
             _lastOffset = 0;
             RaisePropertyChanged(() => DisplayMode);
-            await Task.Delay(30);
             switch (DisplayMode)
             {
                 case AnimeListDisplayModes.IndefiniteCompactList:
@@ -529,17 +529,15 @@ namespace MALClient.ViewModels
                     View.GetIndefiniteScrollViewer().Result.UpdateLayout();
                     break;
                 case AnimeListDisplayModes.IndefiniteList:
-                    var itemsToLoad = GetItemsToLoad();
-                    AnimeItems.AddRange(_animeItemsSet.Take(itemsToLoad).Select(abstraction => abstraction.ViewModel));
-                    _animeItemsSet = _animeItemsSet.Skip(itemsToLoad).ToList();
+                    AnimeItems.AddRange(_animeItemsSet.Take(30).Select(abstraction => abstraction.ViewModel));
+                    _animeItemsSet = _animeItemsSet.Skip(30).ToList();
                     View.GetIndefiniteScrollViewer().Result.UpdateLayout();
                     View.GetIndefiniteScrollViewer().Result.ScrollToVerticalOffset(CurrentPosition);
                     break;
                 case AnimeListDisplayModes.IndefiniteGrid:
-                    var gridItemsToLoad = GetGridItemsToLoad();
-                    AnimeItems.AddRange(_animeItemsSet.Take(gridItemsToLoad)
+                    AnimeItems.AddRange(_animeItemsSet.Take(40)
                         .Select(abstraction => abstraction.ViewModel));
-                    _animeItemsSet = _animeItemsSet.Skip(gridItemsToLoad).ToList();
+                    _animeItemsSet = _animeItemsSet.Skip(40).ToList();
                     View.GetIndefiniteScrollViewer().Result.UpdateLayout();
                     ScrollToWithDelay(500);
                     break;
@@ -553,35 +551,6 @@ namespace MALClient.ViewModels
                 : Visibility.Collapsed;
             Loading = false;
         }
-
-        private int GetItemsToLoad()
-        {
-            var width = View.ActualWidth;
-            if (width < 300)
-                width = 500;
-            var height = View.ActualHeight;
-            var result = (int) width/350;
-            result *= (int) height/150;
-            result = (int) (result*1.5);
-            if (result < 10)
-                return 10;
-            return result;
-        }
-
-        private int GetGridItemsToLoad()
-        {
-            var width = View.ActualWidth;
-            if (width < 300)
-                width = 500;
-            var height = View.ActualHeight - 200;
-            var result = (int) width/200;
-            result *= (int) height/230;
-            result = (int) (result*1.5);
-            if (result < 10)
-                return 10;
-            return result;
-        }
-
         #endregion
 
         #region FetchAndPopulate

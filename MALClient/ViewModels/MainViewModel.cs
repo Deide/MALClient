@@ -51,6 +51,7 @@ namespace MALClient.ViewModels
             //   return;
             PageIndex? currPage = null;
             PageIndex? currOffPage = null;
+            bool mainPage = true;
             PageIndex originalIndex = index;
             var wasOnSearchPage = SearchToggleLock;
 
@@ -79,6 +80,7 @@ namespace MALClient.ViewModels
                 index == PageIndex.PageAbout ||
                 index == PageIndex.PageAnimeDetails)
             {
+                mainPage = false;
                 currOffPage = index;
                 if (index != PageIndex.PageAnimeDetails)
                     NavMgr.ResetBackNav();
@@ -214,7 +216,8 @@ namespace MALClient.ViewModels
             }
             if (currPage != null)
                 CurrentMainPage = currPage;
-            CurrentMainPageKind = index;
+            if(mainPage)
+                CurrentMainPageKind = index;
             if (currOffPage != null)
                 CurrentOffPage = currOffPage;
             RaisePropertyChanged(() => SearchToggleLock);
