@@ -98,7 +98,7 @@
                                     <Grid HorizontalAlignment="Stretch">
                                         <ToggleSwitch
                                             IsOn="{Binding EnableSwipeToIncDec,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                            OnContent="Visible" OffContent="Collapsed" HorizontalAlignment="Center" />
+                                            OnContent="Enabled" OffContent="Disabled" HorizontalAlignment="Center" />
                                     </Grid>
                                 </StackPanel>
                             </Grid>
