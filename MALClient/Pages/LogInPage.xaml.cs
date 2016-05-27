@@ -56,8 +56,8 @@ namespace MALClient.Pages
             Credentials.SetAuthToken("");
             await Utils.RemoveProfileImg();
             ViewModelLocator.AnimeList.LogOut();
-            await page.Navigate(PageIndex.PageLogIn);
-            ViewModelLocator.Hamburger.UpdateProfileImg();
+            page.Navigate(PageIndex.PageLogIn);
+            await ViewModelLocator.Hamburger.UpdateProfileImg();
         }
 
         private async void ButtonRegister_OnClick(object sender, RoutedEventArgs e)
@@ -140,7 +140,7 @@ namespace MALClient.Pages
             ViewModelLocator.Main.HideOffContentCommand.Execute(null);
             await DataCache.ClearApiRelatedCache();
             ViewModelLocator.AnimeList.LogIn();
-            await ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList);
+            ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList);
             ViewModelLocator.Hamburger.SetActiveButton(HamburgerButtons.AnimeList);
 
             _authenticating = false;
@@ -213,7 +213,7 @@ namespace MALClient.Pages
             ViewModelLocator.Main.HideOffContentCommand.Execute(null);
             await DataCache.ClearApiRelatedCache();
             ViewModelLocator.AnimeList.LogIn();
-            await ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList);
+            ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList);
             ViewModelLocator.Hamburger.SetActiveButton(HamburgerButtons.AnimeList);
 
             _authenticating = false;

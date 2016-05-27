@@ -231,7 +231,7 @@ namespace MALClient.Comm
                                         output.Last().ImgUrl = details.poster_image.ToString();
                                     }
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                 }
                             }

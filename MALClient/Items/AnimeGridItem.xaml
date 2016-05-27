@@ -7,130 +7,118 @@
     xmlns:converters="using:MALClient.XamlConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:MALClient.ViewModels"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DataContext="viewModels:AnimeItemViewModel"
+    d:DesignWidth="400" ManipulationMode="{Binding ItemManipulationMode}" PointerReleased="AnimeGridItem_OnPointerReleased" ManipulationCompleted="AnimeGridItem_OnManipulationCompleted" PointerMoved="AnimeGridItem_OnPointerMoved" ManipulationStarted="AnimeGridItem_OnManipulationStarted">
 
     <UserControl.Resources>
         <ResourceDictionary>
+            <converters:UrlToBitmapImageConverter x:Key="UrlToBitmapImageConverter" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converters:IsThereAnyTextToVisibilityConverter x:Key="AnyTextToVisibilityConverter" />
-            <converters:UrlToBitmapImageConverter x:Key="UrlToBitmapImageConverter" />
+            <Storyboard x:Name="GoBackStoryboard" TargetName="TranslateTransformSwipe" TargetProperty="X" SpeedRatio="5">
+                <DoubleAnimation To="0" Completed="Timeline_OnCompleted"/>
+            </Storyboard>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../XamlResources/Controlstyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
-        </Grid.RowDefinitions>
-        <Image x:Name="Image" Grid.Row="0"
-               Source="{Binding ImgUrl,Converter={StaticResource UrlToBitmapImageConverter}}"
-               controlsExt:ImageExtensions.FadeInOnLoaded="True" Grid.ColumnSpan="2" Stretch="UniformToFill" />
-        <ProgressRing Grid.Row="0" IsActive="True" Visibility="{Binding LoadingUpdate}" Height="40" Width="40"
-                      HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <Grid Grid.Row="0" Width="Auto" MinWidth="35" HorizontalAlignment="Right" VerticalAlignment="Top"
-              Visibility="{Binding UpdateButtonsVisibility}">
-            <Grid.Background>
-                <SolidColorBrush Color="Black" Opacity=".75" />
-            </Grid.Background>
-            <StackPanel Margin="1">
-                <TextBlock Text="{Binding MyStatusBindShort}" Foreground="White" FontWeight="SemiBold"
-                           HorizontalAlignment="Center" />
-                <Button Background="Transparent" Padding="0" x:Name="WatchedFlyoutButton"
-                        Style="{StaticResource ButtonDisabledStyle}"
-                        Content="{Binding MyEpisodesBindShort}" Foreground="White"
-                        FontWeight="SemiLight" BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
-                        BorderThickness="0,0,0,1"
-                        HorizontalAlignment="Center" Click="WatchedFlyoutButton_OnClick" IsEnabled="{Binding Auth}" />
-                <TextBlock Text="{Binding MyScoreBindShort}" Foreground="White" FontWeight="SemiLight"
-                           HorizontalAlignment="Center" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".5*"/>
+            <ColumnDefinition Width=".5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="DecrementField" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Background="Black">
+            <StackPanel Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <SymbolIcon Symbol="Remove" Foreground="White"  RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center">
+                    <SymbolIcon.RenderTransform>
+                        <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                    </SymbolIcon.RenderTransform>
+                </SymbolIcon>
+                <TextBlock Text="Decrement" FontWeight="SemiLight" HorizontalAlignment="Center" Foreground="White"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="0" Width="45" HorizontalAlignment="Left" VerticalAlignment="Top"
-              Visibility="{Binding AirDayBind,Converter={StaticResource AnyTextToVisibilityConverter}}">
-            <Grid.Background>
-                <SolidColorBrush Color="Black" Opacity=".75" />
-            </Grid.Background>
-            <TextBlock Text="{Binding AirDayBind}" FontWeight="SemiLight" VerticalAlignment="Center"
+        <Grid x:Name="IncrementField" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Background="Black">
+            <StackPanel Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <SymbolIcon Symbol="Add" Foreground="White"  RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center">
+                    <SymbolIcon.RenderTransform>
+                        <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                    </SymbolIcon.RenderTransform>
+                </SymbolIcon>
+                <TextBlock Text="Increment" FontWeight="SemiLight" HorizontalAlignment="Center" Foreground="White"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="TranslateTransformSwipe" Y="0" X="0"/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <Image x:Name="Image" Grid.Row="0"
+               controlsExt:ImageExtensions.FadeInOnLoaded="True" Grid.ColumnSpan="2" Stretch="UniformToFill">
+                    <Image.Source>
+                        <BitmapImage UriSource="{x:Bind ViewModel.ImgUrl,Mode=OneWay}" DecodePixelWidth="250" DecodePixelHeight="355" DecodePixelType="Logical"/>
+                    </Image.Source>
+                </Image>
+                <ProgressRing Grid.Row="0" IsActive="True" Visibility="{x:Bind ViewModel.LoadingUpdate,Mode=OneWay}" Height="40" Width="40"
+                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Grid Grid.Row="0" Width="Auto" MinWidth="35" HorizontalAlignment="Right" VerticalAlignment="Top"
+              Visibility="{x:Bind ViewModel.UpdateButtonsVisibility,Mode=OneWay}">
+                    <Grid.Background>
+                        <SolidColorBrush Color="Black" Opacity=".75" />
+                    </Grid.Background>
+                    <StackPanel Margin="1">
+                        <TextBlock Text="{x:Bind ViewModel.MyStatusBindShort,Mode=OneWay}" Foreground="White" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" />
+                        <Button Background="Transparent" Padding="0" x:Name="WatchedFlyoutButton"
+                        Style="{StaticResource ButtonDisabledStyle}"
+                        Content="{x:Bind ViewModel.MyEpisodesBindShort,Mode=OneWay}" Foreground="White"
+                        FontWeight="SemiLight" BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
+                        BorderThickness="0,0,0,1"
+                        HorizontalAlignment="Center" Click="WatchedFlyoutButton_OnClick" IsEnabled="{x:Bind ViewModel.Auth,Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind ViewModel.MyScoreBindShort,Mode=OneWay}" Foreground="White" FontWeight="SemiLight"
+                           HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="0" Width="45" HorizontalAlignment="Left" VerticalAlignment="Top"
+              Visibility="{x:Bind ViewModel.AirDayBind,Converter={StaticResource AnyTextToVisibilityConverter},Mode=OneWay}">
+                    <Grid.Background>
+                        <SolidColorBrush Color="Black" Opacity=".75" />
+                    </Grid.Background>
+                    <TextBlock Text="{x:Bind ViewModel.AirDayBind,Mode=OneWay}" FontWeight="SemiLight" VerticalAlignment="Center"
                        HorizontalAlignment="Center" Margin="1" TextAlignment="Center"
-                       Foreground="{Binding AirDayBrush}" FontSize="20" />
-        </Grid>
-        <Grid Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-              Visibility="{Binding Type,Converter={StaticResource AnyTextToVisibilityConverter}}">
-            <Grid.Background>
-                <SolidColorBrush Color="Black" Opacity=".75" />
-            </Grid.Background>
-            <TextBlock Text="{Binding Type}" Foreground="White" FontWeight="SemiLight" FontStyle="Italic" FontSize="13"
+                       Foreground="{x:Bind ViewModel.AirDayBrush,Mode=OneWay}" FontSize="20" />
+                </Grid>
+                <Grid Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+              Visibility="{x:Bind ViewModel.Type,Mode=OneWay,Converter={StaticResource AnyTextToVisibilityConverter}}">
+                    <Grid.Background>
+                        <SolidColorBrush Color="Black" Opacity=".75" />
+                    </Grid.Background>
+                    <TextBlock Text="{x:Bind ViewModel.Type,Mode=OneWay}" Foreground="White" FontWeight="SemiLight" FontStyle="Italic" FontSize="13"
                        VerticalAlignment="Bottom" Margin="5,0,5,5" />
-        </Grid>
-        <Grid Grid.Row="1" BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
+                </Grid>
+                <Grid Grid.Row="1" BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
               BorderThickness="0,1.5,0,0"
               VerticalAlignment="Stretch"
               Background="{ThemeResource BrushAnimeItemBackground}">
-            <TextBlock Text="{Binding Title}" Margin="2" Height="Auto" FontWeight="SemiBold"
+                    <TextBlock Text="{x:Bind ViewModel.Title,Mode=OneWay}" Margin="2" Height="Auto" FontWeight="SemiBold"
                        TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" />
-        </Grid>
-        <Button Grid.Row="0"
+                </Grid>
+            <Button Grid.Row="0"
                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="40" Width="40"
                 Visibility="Visible" RenderTransformOrigin="0.5,0.5" Click="BtnMoreClick">
-            <SymbolIcon Symbol="More" RenderTransformOrigin="0.5,0.5"
+                <SymbolIcon Symbol="More" RenderTransformOrigin="0.5,0.5"
                         Foreground="WhiteSmoke" />
-            <Button.Background>
-                <SolidColorBrush Color="Black" Opacity=".75" />
-            </Button.Background>
-            <!--<Button.Flyout>
-                <MenuFlyout x:Name="FlyoutMore">
-                    <MenuFlyoutItem Text="Copy url to clipboard" Command="{Binding CopyLinkToClipboardCommand}" />
-                    <MenuFlyoutItem Text="Open in browser" Command="{Binding OpenInMALCommand}" />
-                    <MenuFlyoutItem Text="Pin with MAL url" Command="{Binding PinTileMALCommand}" />
-                    <MenuFlyoutSeparator Visibility="{Binding Auth,Converter={StaticResource BoolToVisibilityConverter}}"/>
-                    <MenuFlyoutSubItem Text="Status" Visibility="{Binding Auth,Converter={StaticResource BoolToVisibilityConverter}}">
-                        <MenuFlyoutItem Text="{Binding Status1Label}" Command="{Binding ChangeStatusCommand}"
-                                                CommandParameter="Watching" Foreground="{Binding MyStatus,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=1}"/>
-                        <MenuFlyoutItem Text="Completed" Command="{Binding ChangeStatusCommand}"
-                                                CommandParameter="Completed" Foreground="{Binding MyStatus,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=2}"/>
-                        <MenuFlyoutItem Text="On hold" Command="{Binding ChangeStatusCommand}"
-                                                CommandParameter="On hold" Foreground="{Binding MyStatus,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=3}"/>
-                        <MenuFlyoutItem Text="Dropped" Command="{Binding ChangeStatusCommand}"
-                                                CommandParameter="Dropped" Foreground="{Binding MyStatus,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=4}"/>
-                        <MenuFlyoutItem Text="{Binding Status5Label}" Command="{Binding ChangeStatusCommand}"
-                                                CommandParameter="Plan to watch" Foreground="{Binding MyStatus,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=6}"/>
-                    </MenuFlyoutSubItem>
-                    <MenuFlyoutSubItem Text="Score" Visibility="{Binding Auth,Converter={StaticResource BoolToVisibilityConverter}}">
-                        <MenuFlyoutItem Text="10 - Masterpiece" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="10" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=10}"/>
-                        <MenuFlyoutItem Text="9 - Great" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="9" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=9}"/>
-                        <MenuFlyoutItem Text="8 - Very Good" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="8" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=8}"/>
-                        <MenuFlyoutItem Text="7 - Good" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="7" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=7}"/>
-                        <MenuFlyoutItem Text="6 - Fine" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="6" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=6}"/>
-                        <MenuFlyoutItem Text="5 - Average" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="5" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=5}" />
-                        <MenuFlyoutItem Text="4 - Bad" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="4" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=4}"/>
-                        <MenuFlyoutItem Text="3 - Very Bad" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="3" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=3}"/>
-                        <MenuFlyoutItem Text="2 - Horrible" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="2" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=2}"/>
-                        <MenuFlyoutItem Text="1 - Appaling" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="1" Foreground="{Binding MyScore,Converter={StaticResource SelectionToBrushConverter},ConverterParameter=1}"/>
-                    </MenuFlyoutSubItem>
-                    <MenuFlyoutSubItem Text="Watched eps" Visibility="{Binding Auth,Converter={StaticResource BoolToVisibilityConverter}}">
-                        <MenuFlyoutItem Text="Increment" Command="{Binding IncrementWatchedCommand}"
-                            Visibility="{Binding IncrementEpsVisibility}"/>
-                        <MenuFlyoutItem Text="Decrement" Command="{Binding DecrementWatchedCommand}"
-                            Visibility="{Binding DecrementEpsVisibility}"/>
-                        <MenuFlyoutItem Text="Set" Click="ShowWatchedFlyour"/>
-                    </MenuFlyoutSubItem>
-                </MenuFlyout>
-            </Button.Flyout>-->
-        </Button>
+                <Button.Background>
+                    <SolidColorBrush Color="Black" Opacity=".75" />
+                </Button.Background>
+            </Button>
+        </Grid>
     </Grid>
 </UserControl>

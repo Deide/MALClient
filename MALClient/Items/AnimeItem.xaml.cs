@@ -1,4 +1,5 @@
-﻿using Windows.System;
+﻿using System;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -10,15 +11,15 @@ namespace MALClient.Items
 {
     public sealed partial class AnimeItem : UserControl
     {
-        public AnimeItem(AnimeItemViewModel vm)
-        {
-            InitializeComponent();
-            DataContext = vm;
-        }
-
         public AnimeItem() //xaml constructor
         {
             InitializeComponent();
+            DataContextChanged += OnDataContextChanged;
+        }
+
+        private void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            Bindings.Update();
         }
 
         public AnimeItemViewModel ViewModel => DataContext as AnimeItemViewModel;
@@ -42,18 +43,5 @@ namespace MALClient.Items
         {
             ItemFlyoutService.ShowAnimeListItemStatusFlyout(sender as FrameworkElement);
         }
-
-        //public void ClearImage()
-        //{
-        //    Image.Source = null;
-        //}
-
-        //public void BindImage()
-        //{
-        //    if (Image.Source != null)
-        //        return;
-        //    var bnd = new Binding { Source = ViewModel.Image };
-        //    Image.SetBinding(Image.SourceProperty, bnd);
-        //}
     }
 }

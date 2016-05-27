@@ -116,7 +116,7 @@ namespace MALClient.ViewModels
         public event AnimeItemListInitialized Initialized;
 
 
-        public async Task Init(AnimeListPageNavigationArgs args)
+        public async void Init(AnimeListPageNavigationArgs args)
         {
             //base
             _scrollHandlerAdded = false;
@@ -250,17 +250,15 @@ namespace MALClient.ViewModels
         ///     To make app more responsive micro delays are good to trigger spinners and such.
         /// </param>
         /// <returns></returns>
-        public async Task RefreshList(bool searchSource = false, bool fakeDelay = false)
+        public async void RefreshList(bool searchSource = false, bool fakeDelay = false)
         {
-            var finished = false;
-            await Task.Run(() =>
-            {
+            //await Task.Run(() =>
+            //{
                 var query = ViewModelLocator.Main.CurrentSearchQuery;
                 var queryCondition = !string.IsNullOrWhiteSpace(query) && query.Length > 1;
                 if (!_wasPreviousQuery && searchSource && !queryCondition)
                     // refresh was requested from search but there's nothing to update
                 {
-                    finished = true;
                     return;
                 }
 
@@ -349,9 +347,7 @@ namespace MALClient.ViewModels
                 //Add all abstractions to current set (spread across pages)
                 foreach (var item in items)
                     _animeItemsSet.Add(item);
-            });
-            if (finished)
-                return;
+            //});
             //If we have items then we should hide EmptyNotice       
             EmptyNoticeVisibility = _animeItemsSet.Count == 0;
 
@@ -487,7 +483,7 @@ namespace MALClient.ViewModels
                 return;
             _lastOffset = 0; //we are resseting this because we ARE on the very to of the list view when adding handler
             _scrollHandlerAdded = true;
-            View.GetIndefiniteScrollViewer().Result.ViewChanging += IndefiniteScrollViewerOnViewChanging;
+            //View.GetIndefiniteScrollViewer().Result.ViewChanging += IndefiniteScrollViewerOnViewChanging;
         }
 
         /// <summary>
@@ -612,10 +608,10 @@ namespace MALClient.ViewModels
             switch (WorkMode)
             {
                 case AnimeListWorkModes.SeasonalAnime:
-                    var tResponse = new List<SeasonalAnimeData>();
-                    await Task.Run(new Func<Task>(async () =>
-                        tResponse = await new AnimeSeasonalQuery(CurrentSeason).GetSeasonalAnime()));
-                    data.AddRange(tResponse);
+                        var tResponse = new List<SeasonalAnimeData>();
+                        await Task.Run(new Func<Task>(async () =>
+                            tResponse = await new AnimeSeasonalQuery(CurrentSeason).GetSeasonalAnime()));
+                        data.AddRange(tResponse);
                     break;
                 case AnimeListWorkModes.TopAnime:
                 case AnimeListWorkModes.TopManga:
@@ -629,8 +625,7 @@ namespace MALClient.ViewModels
             //if we don't have any we cannot do anything I guess...
             if (data.Count == 0)
             {
-                await RefreshList();
-                Loading = false;
+                RefreshList();
                 return;
             }
             List<AnimeItemAbstraction> source;
@@ -691,7 +686,7 @@ namespace MALClient.ViewModels
                         target.Add(abstraction);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // wat
                 }
@@ -724,7 +719,7 @@ namespace MALClient.ViewModels
                     RaisePropertyChanged(() => SeasonalUrlsSelectedIndex);
                 }
             }
-            await RefreshList();
+            RefreshList();
         }
 
         /// <summary>
@@ -760,12 +755,12 @@ namespace MALClient.ViewModels
 
             if (!force && _prevListSource == ListSource && _prevWorkMode == requestedMode)
             {
-                foreach (var item in AllLoadedAnimeItemAbstractions.Where(abstraction => abstraction.LoadedAnime))
-                {
-                    item.ViewModel.SignalBackToList();
-                }
+                //foreach (var item in AllLoadedAnimeItemAbstractions.Where(abstraction => abstraction.LoadedAnime))
+                //{
+                //    item.ViewModel.SignalBackToList();
+                //}
                 if (_prevWorkMode != modeOverride)
-                    await RefreshList();
+                    RefreshList();
                 return;
             }
             if (WorkMode == requestedMode)
@@ -822,8 +817,7 @@ namespace MALClient.ViewModels
                 if (data?.Count == 0)
                 {
                     //no data?
-                    await RefreshList();
-                    Loading = false;
+                    RefreshList();
                     return;
                 }
 
@@ -863,7 +857,7 @@ namespace MALClient.ViewModels
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            await RefreshList();
+            RefreshList();
         }
 
         /// <summary>
@@ -1038,13 +1032,10 @@ namespace MALClient.ViewModels
             {
                 if (value == _statusSelectorSelectedIndex)
                     return;
-
+                View.SetUpperPivotIndex(value);
                 _statusSelectorSelectedIndex = value;
                 RaisePropertyChanged(() => StatusSelectorSelectedIndex);
                 ViewModelLocator.Hamburger.UpdateAnimeFiltersSelectedIndex();
-                Loading = true;
-                CurrentPosition = 1;
-                _lastOffset = 0;
                 if (!Initializing)
                 {
                     if (Settings.HideFilterSelectionFlyout)

@@ -8,6 +8,7 @@
     xmlns:converters="using:MALClient.XamlConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:MALClient.ViewModels"
     DataContext="{Binding AnimeList , Source={StaticResource Locator}}"
     mc:Ignorable="d">
 
@@ -181,9 +182,9 @@
                     </MenuFlyout>
                 </Button.Flyout>
             </Button>
-            <Pivot Style="{StaticResource PivotHamburgerStyle}"
+            <Pivot x:Name="UpperNavBarPivot" Style="{StaticResource PivotHamburgerStyle}"
                    Visibility="{Binding WorkMode,Converter={StaticResource WorkModeToPivotFilterVisibility},ConverterParameter={StaticResource WorkModeAnyOther}}"
-                   SelectedIndex="{Binding StatusSelectorSelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                   SelectionChanged="UpperNavBarPivotOnSelectionChanged">
                 <Pivot.Resources>
                     <Style TargetType="PivotHeaderItem" BasedOn="{StaticResource PivotHeaderItemHamburgerStyle}" />
                 </Pivot.Resources>
@@ -197,9 +198,14 @@
                 </Pivot.Items>
                 <Pivot.HeaderTemplate>
                     <DataTemplate>
-                        <TextBlock FontSize="15" FontWeight="Medium" Text="{Binding}" Margin="5,0" />
+                        <Grid>
+                            <TextBlock FontSize="15" FontWeight="Medium" Text="{Binding}" Margin="5,0" />
+                        </Grid>
                     </DataTemplate>
                 </Pivot.HeaderTemplate>
+                <Pivot.ItemTemplate>
+                    <DataTemplate />
+                </Pivot.ItemTemplate>
             </Pivot>
             <Pivot Style="{StaticResource PivotHamburgerStyle}"
                    Visibility="{Binding WorkMode,Converter={StaticResource WorkModeToPivotFilterVisibility},ConverterParameter={StaticResource WorkModeSeasonal}}"
@@ -297,8 +303,8 @@
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
             <GridView.ItemTemplate>
-                <DataTemplate>
-                    <item:AnimeGridItem DataContext="{Binding}" />
+                <DataTemplate x:DataType="viewModels:AnimeItemViewModel">
+                    <item:AnimeGridItem DataContext="{x:Bind}" />
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>

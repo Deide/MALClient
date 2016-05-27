@@ -84,12 +84,11 @@ namespace MALClient.Items
             _initialPoint = e.Position;
         }
 
-        private async void ManipDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        private void ManipDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (!e.IsInertial || !(e.Position.X - _initialPoint.X >= 70)) return;
             if (!(e.Position.X - _initialPoint.X >= 70)) return;
-            await
-                Utils.GetMainPageInstance()
+            ViewModelLocator.Main
                     .Navigate(PageIndex.PageAnimeDetails,
                         new AnimeDetailsPageNavigationArgs(Id, Title, _item, this,
                             new SearchPageNavigationArgs
@@ -107,8 +106,7 @@ namespace MALClient.Items
         public async void NavigateDetails()
         {
             await Task.Delay(10);
-            await
-                Utils.GetMainPageInstance()
+            ViewModelLocator.Main
                     .Navigate(PageIndex.PageAnimeDetails,
                         new AnimeDetailsPageNavigationArgs(Id, Title, _item, this,
                             new SearchPageNavigationArgs
@@ -122,7 +120,7 @@ namespace MALClient.Items
                         });
         }
 
-        private async void CopyLinkToClipboardCommand(object sender, RoutedEventArgs e)
+        private void CopyLinkToClipboardCommand(object sender, RoutedEventArgs e)
         {
             FlyoutMore.Hide();
             var dp = new DataPackage();

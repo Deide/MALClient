@@ -46,7 +46,7 @@ namespace MALClient.Items
         }
 
 
-        public async Task PopulateData()
+        public async void PopulateData()
         {
             if (_dataLoaded)
                 return;
@@ -108,18 +108,18 @@ namespace MALClient.Items
             SpinnerLoading.Visibility = Visibility.Collapsed;
         }
 
-        private async void ButtonRecomDetails_OnClick(object sender, RoutedEventArgs e)
+        private void ButtonRecomDetails_OnClick(object sender, RoutedEventArgs e)
         {
-            await Utils.GetMainPageInstance()
+           ViewModelLocator.Main
                 .Navigate(PageIndex.PageAnimeDetails,
                     new AnimeDetailsPageNavigationArgs(_data.RecommendationId, _data.RecommendationTitle,
                         _data.RecommendationData, null,
                         new RecommendationPageNavigationArgs {Index = Index}) {Source = PageIndex.PageRecomendations});
         }
 
-        private async void ButtonDependentDetails_OnClick(object sender, RoutedEventArgs e)
+        private void ButtonDependentDetails_OnClick(object sender, RoutedEventArgs e)
         {
-            await Utils.GetMainPageInstance()
+            ViewModelLocator.Main
                 .Navigate(PageIndex.PageAnimeDetails,
                     new AnimeDetailsPageNavigationArgs(_data.DependentId, _data.DependentTitle,
                         _data.DependentData, null,

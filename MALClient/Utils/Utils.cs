@@ -277,7 +277,7 @@ namespace MALClient
                 writer.Dispose();
                 GiveStatusBarFeedback("File saved successfully.");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 GiveStatusBarFeedback("Error. File didn't save properly.");
             }
@@ -395,7 +395,7 @@ namespace MALClient
                     .Replace("&amp;", "&");
         }
 
-        public static async void GiveStatusBarFeedback(string text)
+        public static void GiveStatusBarFeedback(string text)
         {
         }
 

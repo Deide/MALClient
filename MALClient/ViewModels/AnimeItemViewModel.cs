@@ -8,6 +8,7 @@ using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.StartScreen;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -43,11 +44,10 @@ namespace MALClient.ViewModels
             if (Settings.SelectedApiType == ApiType.Hummingbird && !ParentAbstraction.RepresentsAnime)
                 return;
             var id = Id;
-            if (_seasonalState && Settings.SelectedApiType == ApiType.Hummingbird) //id switch
-            {
+            if (_seasonalState && Settings.SelectedApiType == ApiType.Hummingbird) //id switch            
                 id = await new AnimeDetailsHummingbirdQuery(id).GetHummingbirdId();
-            }
-            await ViewModelLocator.Main
+            
+            ViewModelLocator.Main
                 .Navigate(PageIndex.PageAnimeDetails,
                     new AnimeDetailsPageNavigationArgs(id, Title, null, this,
                         argsOverride ?? Utils.GetMainPageInstance().GetCurrentListOrderParams())
@@ -98,7 +98,7 @@ namespace MALClient.ViewModels
             if (ParentAbstraction.RepresentsAnime)
                 MyVolumes = 0;
 
-
+            ItemManipulationMode = ManipulationModes.All;
             AdjustIncrementButtonsVisibility();
             AddToListVisibility = Visibility.Collapsed;
             ViewModelLocator.AnimeList.AddAnimeEntry(ParentAbstraction);
@@ -158,6 +158,7 @@ namespace MALClient.ViewModels
             //Assign fields
             _allEpisodes = allEps;
             Auth = auth;
+            ItemManipulationMode = auth ? ManipulationModes.All : ManipulationModes.None;
             //Assign properties
             MyScore = myScore;
             MyStatus = myStatus;
@@ -189,7 +190,7 @@ namespace MALClient.ViewModels
             //We are loading an item that is NOT on the list and is seasonal
         {
             _seasonalState = true;
-
+            ItemManipulationMode = ManipulationModes.None;
             Title = data.Title;
             MyScore = 0;
             MyStatus = (int) AnimeStatus.AllOrAiring;
@@ -579,17 +580,28 @@ namespace MALClient.ViewModels
             }
         }
 
-        //private Brush _rootBrush = new SolidColorBrush(Colors.WhiteSmoke);
-
-        //public Brush RootBrush
-        //{
-        //    get { return _rootBrush; }
-        //    set
-        //    {
-        //        _rootBrush = value;
-        //        RaisePropertyChanged(() => RootBrush);
-        //    }
-        //}
+        private ManipulationModes _itemManipulationMode;
+        public ManipulationModes ItemManipulationMode
+        {
+            get { return _itemManipulationMode; }
+            set
+            {
+                if(Settings.EnableSwipeToIncDec)
+                    switch (value)
+                    {
+                        case ManipulationModes.All:
+                            _itemManipulationMode = ManipulationModes.TranslateRailsX | ManipulationModes.TranslateX |
+                                                    ManipulationModes.System | ManipulationModes.TranslateInertia;
+                            break;
+                        case ManipulationModes.None:
+                            _itemManipulationMode = ManipulationModes.System;
+                            break;
+                    }
+                else
+                    _itemManipulationMode = ManipulationModes.System;
+                RaisePropertyChanged(() => ItemManipulationMode);
+            }
+        }
 
         private Visibility _loadingUpdate = Visibility.Collapsed;
 

@@ -39,16 +39,18 @@ namespace MALClient.ViewModels
     {
         private bool? _searchStateBeforeNavigatingToSearch;
         private bool _wasOnDetailsFromSearch;
-
         public PinTileDialogViewModel PinDialogViewModel { get; } = new PinTileDialogViewModel();
 
-        public PageIndex CurrentMainPage { get; set; }
-        public PageIndex CurrentOffPage { get; set; }
+        public PageIndex? CurrentMainPage { get; set; }
+        public PageIndex? CurrentMainPageKind { get; set; }
+        public PageIndex? CurrentOffPage { get; set; }
 
-        internal async Task Navigate(PageIndex index, object args = null)
+        internal async void Navigate(PageIndex index, object args = null)
         {
             //if(Settings.SelectedApiType == ApiType.Hummingbird && index == PageIndex.PageProfile)
             //   return;
+            PageIndex? currPage = null;
+            PageIndex? currOffPage = null;
             PageIndex originalIndex = index;
             var wasOnSearchPage = SearchToggleLock;
 
@@ -77,7 +79,7 @@ namespace MALClient.ViewModels
                 index == PageIndex.PageAbout ||
                 index == PageIndex.PageAnimeDetails)
             {
-                CurrentOffPage = index;
+                currOffPage = index;
                 if (index != PageIndex.PageAnimeDetails)
                     NavMgr.ResetBackNav();
             }
@@ -95,9 +97,9 @@ namespace MALClient.ViewModels
             {
                 if (index == PageIndex.PageSeasonal || index == PageIndex.PageTopAnime ||
                     index == PageIndex.PageTopManga || index == PageIndex.PageMangaList)
-                    CurrentMainPage = index; //used by hamburger's filters
+                    currPage = index; //used by hamburger's filters
                 else
-                    CurrentMainPage = PageIndex.PageAnimeList;
+                    currPage = PageIndex.PageAnimeList;
                 ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(true);
                 index = PageIndex.PageAnimeList;
             }
@@ -109,7 +111,7 @@ namespace MALClient.ViewModels
                      index == PageIndex.PageCalendar)
             {
                 ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(false);
-                CurrentMainPage = index;
+                currPage = index;
             }
 
 
@@ -133,7 +135,7 @@ namespace MALClient.ViewModels
                             ViewModelLocator.AnimeList.Initialized += AnimeListOnInitialized;
                             _subscribed = true;
                         }
-                        _postponedNavigationArgs = new Tuple<PageIndex, object>(originalIndex,args);
+                        _postponedNavigationArgs = new Tuple<PageIndex, object>(originalIndex, args);
                         return;
                     }
                     _postponedNavigationArgs = null;
@@ -145,7 +147,10 @@ namespace MALClient.ViewModels
                         _wasOnDetailsFromSearch = false;
                         UnToggleSearchStuff();
                     }
-                    View.Navigate(typeof(AnimeListPage), args);
+                    if (CurrentMainPageKind == PageIndex.PageAnimeList)
+                        ViewModelLocator.AnimeList.Init(args as AnimeListPageNavigationArgs);
+                    else
+                        View.Navigate(typeof(AnimeListPage), args);
                     break;
                 case PageIndex.PageAnimeDetails:
                     var detail = ViewModelLocator.AnimeDetails;
@@ -157,7 +162,11 @@ namespace MALClient.ViewModels
                     _wasOnDetailsFromSearch = (args as AnimeDetailsPageNavigationArgs).Source == PageIndex.PageSearch;
                     //from search , details are passed instead of being downloaded once more
                     OffContentVisibility = Visibility.Visible;
-                    View.NavigateOff(typeof(AnimeDetailsPage), args);
+
+                    if (CurrentOffPage == PageIndex.PageAnimeDetails)
+                        ViewModelLocator.AnimeDetails.Init(args as AnimeDetailsPageNavigationArgs);
+                    else
+                        View.NavigateOff(typeof(AnimeDetailsPage), args);
                     break;
                 case PageIndex.PageSettings:
                     HideSearchStuff();
@@ -193,7 +202,7 @@ namespace MALClient.ViewModels
                     CurrentStatus = "Recommendations";
                     View.Navigate(typeof(RecomendationsPage), args);
                     break;
-                    case PageIndex.PageCalendar:
+                case PageIndex.PageCalendar:
                     HideSearchStuff();
                     //RefreshButtonVisibility = Visibility.Visible;
                     //RefreshDataCommand = new RelayCommand(() => ViewModelLocator.CalendarPage.Init(true));
@@ -203,6 +212,11 @@ namespace MALClient.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);
             }
+            if (currPage != null)
+                CurrentMainPage = currPage;
+            CurrentMainPageKind = index;
+            if (currOffPage != null)
+                CurrentOffPage = currOffPage;
             RaisePropertyChanged(() => SearchToggleLock);
         }
 
@@ -212,7 +226,8 @@ namespace MALClient.ViewModels
         {
             ViewModelLocator.AnimeList.Initialized += AnimeListOnInitialized;
             _subscribed = false;
-            Navigate(_postponedNavigationArgs.Item1,_postponedNavigationArgs.Item2);
+            if(_postponedNavigationArgs != null)
+                 Navigate(_postponedNavigationArgs.Item1,_postponedNavigationArgs.Item2);
         }
 
         #region Helpers
@@ -268,9 +283,9 @@ namespace MALClient.ViewModels
             }
         }
 
-        private async void AnimeListOnInitializedLoadArgs()
+        private void AnimeListOnInitializedLoadArgs()
         {
-            await Navigate(PageIndex.PageAnimeDetails,
+            Navigate(PageIndex.PageAnimeDetails,
                 new AnimeDetailsPageNavigationArgs(View.InitDetails.Item1, View.InitDetails.Item2, null, null));
             ViewModelLocator.AnimeList.Initialized -= AnimeListOnInitializedLoadArgs;
         }

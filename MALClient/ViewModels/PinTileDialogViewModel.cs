@@ -240,7 +240,7 @@ namespace MALClient.ViewModels
         //    PreviewImageNormal = bmp;
         //}
 
-        public async void HidePinDialog()
+        public void HidePinDialog()
         {
             var sb = ViewModelLocator.Main.View.HidePinDialogStoryboard;
             sb.Completed += SbOnCompleted;

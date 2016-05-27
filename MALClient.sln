@@ -11,6 +11,10 @@ Global
 		Debug|ARM = Debug|ARM
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Native Debug|Any CPU = Native Debug|Any CPU
+		Native Debug|ARM = Native Debug|ARM
+		Native Debug|x64 = Native Debug|x64
+		Native Debug|x86 = Native Debug|x86
 		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
 		Release|x64 = Release|x64
@@ -27,6 +31,16 @@ Global
 		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Debug|x86.ActiveCfg = Debug|x86
 		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Debug|x86.Build.0 = Debug|x86
 		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Debug|x86.Deploy.0 = Debug|x86
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|Any CPU.ActiveCfg = Native Debug|x86
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|ARM.ActiveCfg = Native Debug|ARM
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|ARM.Build.0 = Native Debug|ARM
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|ARM.Deploy.0 = Native Debug|ARM
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|x64.ActiveCfg = Native Debug|x64
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|x64.Build.0 = Native Debug|x64
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|x64.Deploy.0 = Native Debug|x64
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|x86.ActiveCfg = Native Debug|x86
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|x86.Build.0 = Native Debug|x86
+		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Native Debug|x86.Deploy.0 = Native Debug|x86
 		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Release|Any CPU.ActiveCfg = Release|x86
 		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Release|ARM.ActiveCfg = Release|ARM
 		{A4F39E9D-1558-4E62-BF76-29620B7B0A06}.Release|ARM.Build.0 = Release|ARM

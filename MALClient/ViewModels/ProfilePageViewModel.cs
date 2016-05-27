@@ -465,7 +465,7 @@ namespace MALClient.ViewModels
             }
         }
 
-        private async void NavigateDetails(FavCharacter character)
+        private void NavigateDetails(FavCharacter character)
         {
             FavAnime = new ObservableCollection<AnimeItemViewModel>();
             FavManga = new ObservableCollection<AnimeItemViewModel>();
@@ -478,7 +478,7 @@ namespace MALClient.ViewModels
             _loadedRecent = false;
             _loadedStats = false;
             _loadedChars = false;
-            await ViewModelLocator.Main.Navigate(PageIndex.PageAnimeDetails,
+            ViewModelLocator.Main.Navigate(PageIndex.PageAnimeDetails,
                 new AnimeDetailsPageNavigationArgs(int.Parse(character.ShowId), character.OriginatingShowName, null,
                     null,
                     new ProfilePageNavigationArgs

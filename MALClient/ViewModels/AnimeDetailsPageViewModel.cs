@@ -284,7 +284,7 @@ namespace MALClient.ViewModels
             {
                 args.Id = await new AnimeDetailsHummingbirdQuery(args.Id).GetHummingbirdId();
             }
-            await ViewModelLocator.Main
+            ViewModelLocator.Main
                 .Navigate(PageIndex.PageAnimeDetails,
                     new AnimeDetailsPageNavigationArgs(args.Id, args.Title, null, null,
                         new AnimeDetailsPageNavigationArgs(Id, Title, null, _animeItemReference)
@@ -576,6 +576,12 @@ namespace MALClient.ViewModels
                 RaisePropertyChanged(() => DetailedDataVisibility);
             }
         }
+
+        public Visibility ReviewsListViewVisibility
+            => Settings.DetailsListReviewsView ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility RecomsListViewVisibility
+            => Settings.DetailsListRecomsView ? Visibility.Visible : Visibility.Collapsed;
 
         private DateTimeOffset _startDateTimeOffset; //= DateTimeOffset.Parse("2015-09-10");
         public bool StartDateValid;
@@ -1001,6 +1007,7 @@ namespace MALClient.ViewModels
 
         public ICommand IncrementEpsCommand => (_animeItemReference as AnimeItemViewModel)?.IncrementWatchedCommand;
         public ICommand DecrementEpsCommand => (_animeItemReference as AnimeItemViewModel)?.DecrementWatchedCommand;
+
 
         #endregion
 

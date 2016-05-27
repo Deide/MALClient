@@ -91,6 +91,14 @@
                                         <ToggleSwitch
                                             IsOn="{Binding IsPivotFilterBarVisible,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                             OnContent="Visible" OffContent="Collapsed" HorizontalAlignment="Center" />
+                                    </Grid>                                    
+                                    <TextBlock Text="Enable swipe to increment/decremnt on grid items." FontWeight="Medium"
+                                               HorizontalAlignment="Center" Margin="0,5"
+                                               TextWrapping="WrapWholeWords" TextAlignment="Center" />
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <ToggleSwitch
+                                            IsOn="{Binding EnableSwipeToIncDec,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                            OnContent="Visible" OffContent="Collapsed" HorizontalAlignment="Center" />
                                     </Grid>
                                 </StackPanel>
                             </Grid>

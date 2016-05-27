@@ -214,7 +214,7 @@ namespace MALClient.Pages
         private double _prevWidth;
         private double _prevHeight;
         private bool _loaded;
-
+        private AnimeListPageNavigationArgs navArgs = null;
         public AnimeListPage()
         {
             InitializeComponent();
@@ -222,6 +222,7 @@ namespace MALClient.Pages
             Loaded += (sender, args) =>
             {
                 ViewModel.CanAddScrollHandler = true;
+                ViewModel.Init(navArgs);
                 _loaded = true;
             };
 
@@ -244,7 +245,7 @@ namespace MALClient.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ViewModel.Init(e.Parameter as AnimeListPageNavigationArgs);
+            navArgs = e.Parameter as AnimeListPageNavigationArgs;
         }
 
         #endregion
@@ -312,5 +313,21 @@ namespace MALClient.Pages
         }
 
         #endregion
+
+        private void UpperPivotNavBarOnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            UpperNavBarPivot.SelectionChanged += UpperNavBarPivotOnSelectionChanged;           
+        }
+
+        private void UpperNavBarPivotOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        {
+            ViewModel.StatusSelectorSelectedIndex = UpperNavBarPivot.SelectedIndex;
+            //UpperNavBarPivot.SelectionChanged -= UpperNavBarPivotOnSelectionChanged;
+        }
+
+        public void SetUpperPivotIndex(int index)
+        {
+            UpperNavBarPivot.SelectedIndex = index;
+        }
     }
 }

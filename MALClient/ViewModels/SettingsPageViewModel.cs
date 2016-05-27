@@ -239,6 +239,12 @@ namespace MALClient.ViewModels
             set { Settings.CalendarSwitchMonSun = !value; }
         }
 
+        public static bool EnableSwipeToIncDec
+        {
+            get { return Settings.EnableSwipeToIncDec; }
+            set { Settings.EnableSwipeToIncDec = value; }
+        }
+
         public List<NewsData> CurrentNews { get; set; } = new List<NewsData>();
 
         public Visibility MalApiDependatedntSectionsVisibility
@@ -263,7 +269,7 @@ namespace MALClient.ViewModels
                                 JsonConvert.DeserializeObject<List<NewsData>>(
                                     await new NewsQuery().GetRequestResponse(false)));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }

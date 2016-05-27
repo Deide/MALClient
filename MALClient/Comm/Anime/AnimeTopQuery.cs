@@ -11,6 +11,8 @@ namespace MALClient.Comm
     internal class AnimeTopQuery : Query
     {
         private readonly bool _animeMode;
+        private static List<TopAnimeData> _prevMangaQuery;
+        private static List<TopAnimeData> _prevAnimeQuery;
 
         public AnimeTopQuery(bool animeMode = true)
         {
@@ -24,6 +26,15 @@ namespace MALClient.Comm
 
         public async Task<List<TopAnimeData>> GetTopAnimeData(bool force = false)
         {
+            if(!force)
+                if (_animeMode)
+                {
+                    if (_prevAnimeQuery != null)
+                        return _prevAnimeQuery;
+                }
+                else if (_prevMangaQuery != null)
+                    return _prevMangaQuery;
+        
             var output = force
                 ? new List<TopAnimeData>()
                 : (await DataCache.RetrieveTopAnimeData(_animeMode) ?? new List<TopAnimeData>());
@@ -85,7 +96,10 @@ namespace MALClient.Comm
                 }
             }
             DataCache.SaveTopAnimeData(output, _animeMode);
-
+            if (_animeMode)
+                _prevAnimeQuery = output;
+            else
+                _prevMangaQuery = output;
             return output;
         }
     }

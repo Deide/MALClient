@@ -70,7 +70,7 @@ namespace MALClient.Comm
                 output = new AnimeDetailsData
                 {
                     SourceId = node.Attribute("id").Value,
-                    Genres =
+                    Genres = 
                         node.Elements("info")
                             .Where(element => element.Attribute("type").Value == "Genres")
                             .Select(element => element.Value)

@@ -226,6 +226,24 @@ namespace MALClient
             set { ApplicationData.Current.LocalSettings.Values["EnableHearthAnimation"] = value; }
         }
 
+        public static bool EnableSwipeToIncDec
+        {
+            get { return (bool) (ApplicationData.Current.LocalSettings.Values["EnableSwipeToIncDec"] ?? true); }
+            set { ApplicationData.Current.LocalSettings.Values["EnableSwipeToIncDec"] = value; }
+        }
+
+        public static bool DetailsListRecomsView
+        {
+            get { return (bool) (ApplicationData.Current.LocalSettings.Values["DetailsListRecomsView"] ?? true); }
+            set { ApplicationData.Current.LocalSettings.Values["DetailsListRecomsView"] = value; }
+        }
+
+        public static bool DetailsListReviewsView
+        {
+            get { return (bool) (ApplicationData.Current.LocalSettings.Values["DetailsListReviewsView"] ?? true); }
+            set { ApplicationData.Current.LocalSettings.Values["DetailsListReviewsView"] = value; }
+        }
+
         #region Views
 
         public static AnimeListDisplayModes WatchingDisplayMode

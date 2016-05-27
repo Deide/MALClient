@@ -77,7 +77,7 @@ namespace MALClient.Comm
                                 Synonyms = new List<string>()
                             });
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                         }
                     }
