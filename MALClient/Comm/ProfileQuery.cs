@@ -175,6 +175,19 @@ namespace MALClient.Comm
                 {
                     //no favs
                 }
+                try
+                {
+                    var animeStats = doc.FirstOfDescendantsWithClass("div", "stats anime");
+                    foreach (var htmlNode in animeStats.FirstOfDescendantsWithClass("ul", "stats-status fl-l").ChildNodes)
+                    {
+                        //do
+                    }
+                }
+                catch (Exception)
+                {
+                    
+                    throw;
+                }
 
 
                 return current;
