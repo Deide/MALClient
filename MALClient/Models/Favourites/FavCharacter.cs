@@ -12,12 +12,5 @@ namespace MALClient.Models.Favourites
         public string ShowId { get; set; }
         public bool FromAnime { get; set; }
         public BitmapImage ImgBitmap { get; private set; }
-
-        public void LoadBitmap()
-        {
-            if (ImgBitmap != null)
-                return;
-            ImgBitmap = new BitmapImage(new Uri(ImgUrl));
-        }
     }
 }

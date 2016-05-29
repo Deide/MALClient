@@ -24,6 +24,7 @@ namespace MALClient.Models
         //
         //User details
         //
+        public MalUser User { get; set; } = new MalUser();
         public string LastOnline { get; set; }
         public string Gender { get; set; }
         public string Birthday { get; set; }

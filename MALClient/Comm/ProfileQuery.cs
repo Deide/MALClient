@@ -13,13 +13,17 @@ namespace MALClient.Comm
 {
     public class ProfileQuery : Query
     {
-        public ProfileQuery(bool feed = false)
+        private string _userName;
+
+        public ProfileQuery(bool feed = false,string userName = "")
         {
+            if (string.IsNullOrEmpty(userName))
+                userName = Credentials.UserName;
             switch (CurrentApiType)
             {
                 case ApiType.Mal:
                     Request =
-                        WebRequest.Create(Uri.EscapeUriString($"http://myanimelist.net/profile/{Credentials.UserName}"));
+                        WebRequest.Create(Uri.EscapeUriString($"http://myanimelist.net/profile/{userName}"));
                     Request.ContentType = "application/x-www-form-urlencoded";
                     Request.Method = "GET";
                     break;
@@ -34,6 +38,7 @@ namespace MALClient.Comm
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            _userName = userName;
         }
 
         public async Task<ProfileData> GetProfileData(bool force = false)
@@ -41,7 +46,7 @@ namespace MALClient.Comm
             var raw = await GetRequestResponse();
             var doc = new HtmlDocument();
             doc.LoadHtml(raw);
-            var current = new ProfileData();
+            var current = new ProfileData {User = {Name = _userName}};
 
             #region Recents
             try
@@ -340,6 +345,10 @@ namespace MALClient.Comm
             current.Birthday = sideInfo[2].LastChild.InnerText;
             current.Location = sideInfo[3].LastChild.InnerText;
             current.Joined = sideInfo[4].LastChild.InnerText;
+            current.User.ImgUrl =
+                doc.FirstOfDescendantsWithClass("div", "user-image mb8").Descendants("img").First().Attributes["src"]
+                    .Value;
+
 
             #endregion
 
@@ -368,8 +377,8 @@ namespace MALClient.Comm
                 curr.User.ImgUrl = comment.Descendants("img").First().Attributes["src"].Value;
                 var textBlock = comment.Descendants("div").First();
                 var header = textBlock.Descendants("div").First();
-                curr.User.Name = header.FirstChild.InnerText;
-                curr.Date = header.LastChild.InnerText;
+                curr.User.Name = header.ChildNodes[1].InnerText;
+                curr.Date = header.ChildNodes[3].InnerText;
                 curr.Content = textBlock.Descendants("div").Skip(1).First().InnerText;
                 current.Comments.Add(curr);
             }
