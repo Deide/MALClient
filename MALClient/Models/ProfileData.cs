@@ -70,9 +70,19 @@ namespace MALClient.Models
             get { return $"Days: {AnimeDays}"; }
         }
 
+        public string AnimeMeanBind
+        {
+            get { return $"Mean: {AnimeMean}"; }
+        }
+
         public string MangaDaysBind
         {
             get { return $"Days: {MangaDays}"; }
+        }
+
+        public string MangaMeanBind
+        {
+            get { return $"Mean: {MangaMean}"; }
         }
 
         //Fav Anime

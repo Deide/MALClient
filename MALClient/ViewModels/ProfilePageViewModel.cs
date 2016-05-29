@@ -124,48 +124,6 @@ namespace MALClient.ViewModels
             }
         }
 
-        public List<FavCharacter> FavCharacters
-        {
-            get { return _favChars; }
-            private set
-            {
-                _favChars = value;
-                RaisePropertyChanged(() => FavCharacters);
-            }
-        }
-
-        public List<FavPerson> FavPeople
-        {
-            get { return _favPpl; }
-            private set
-            {
-                _favPpl = value;
-                RaisePropertyChanged(() => FavPeople);
-            }
-        }
-
-        public PivotItem CurrentlySelectedOuterPivotItem
-        {
-            get { return _currentlySelectedOuterPivotItem; }
-            set
-            {
-                _currentlySelectedOuterPivotItem = value;
-                //RaisePropertyChanged(() => CurrentlySelectedOuterPivotItem);
-                OuterPivotItemChanged(value.Tag as string);
-            }
-        }
-
-        public PivotItem CurrentlySelectedInnerPivotItem
-        {
-            get { return _currentlySelectedInnerPivotItem; }
-            set
-            {
-                _currentlySelectedInnerPivotItem = value;
-                //RaisePropertyChanged(() => CurrentlySelectedInnerPivotItem);
-                InnerPivotItemChanged(value.Tag as string);
-            }
-        }
-
         public AnimeItemViewModel TemporarilySelectedAnimeItem
         {
             get { return null; }
@@ -360,6 +318,22 @@ namespace MALClient.ViewModels
                 }
 
             }
+            AnimeChartValues = new List<int>
+                    {
+                        CurrentData.AnimeWatching,
+                        CurrentData.AnimeCompleted,
+                        CurrentData.AnimeOnHold,
+                        CurrentData.AnimeDropped,
+                        CurrentData.AnimePlanned
+                    };
+            MangaChartValues = new List<int>
+                    {
+                        CurrentData.MangaReading,
+                        CurrentData.MangaCompleted,
+                        CurrentData.MangaOnHold,
+                        CurrentData.MangaDropped,
+                        CurrentData.MangaPlanned
+                    };
             RecentManga = list;
             EmptyRecentAnimeNoticeVisibility = RecentAnime.Count == 0
                 ? Visibility.Visible
@@ -380,92 +354,6 @@ namespace MALClient.ViewModels
                 ? Visibility.Visible
                 : Visibility.Collapsed;
             LoadingVisibility = Visibility.Collapsed;
-        }
-
-        private async void InnerPivotItemChanged(string tag)
-        {
-            if (!_initialized)
-                return;
-            switch (tag)
-            {
-                case "Chars":
-                    if (_loadedChars)
-                        return;
-                    _loadedChars = true;
-                    await Task.Delay(10);
-
-
-                    break;
-                case "Anime":
-                    if (_loadedFavAnime)
-                        break;
-                    _loadedFavAnime = true;
-
-                    break;
-                case "Manga":
-                    if (_loadedFavManga)
-                        break;
-                    _loadedFavManga = true;
-
-
-                    break;
-                case "Ppl":
-                    if (_loadedPpl)
-                        return;
-                    _loadedPpl = true;
-                    await Task.Delay(10);
-                    foreach (var favPerson in CurrentData.FavouritePeople)
-                    {
-                        favPerson.LoadBitmap();
-                        FavPeople.Add(favPerson);
-                    }
-
-                    break;
-            }
-        }
-
-        private async void OuterPivotItemChanged(string tag)
-        {
-            if (!_initialized)
-                return;
-            switch (tag)
-            {
-                case "Favs":
-                    InnerPivotItemChanged(CurrentlySelectedInnerPivotItem.Tag as string);
-                    _loadedRecent = false;
-                    break;
-                case "Recent":
-                    if (_loadedRecent)
-                        break;
-                    _loadedRecent = true;
-                    //in case of duplicate we have to clear this
-                    _loadedFavManga = false;
-                    _loadedFavAnime = false;
-
-
-                    break;
-                case "Stats":
-                    if (_loadedStats)
-                        return;
-                    _loadedStats = true;
-                    AnimeChartValues = new List<int>
-                    {
-                        CurrentData.AnimeWatching,
-                        CurrentData.AnimeCompleted,
-                        CurrentData.AnimeOnHold,
-                        CurrentData.AnimeDropped,
-                        CurrentData.AnimePlanned
-                    };
-                    MangaChartValues = new List<int>
-                    {
-                        CurrentData.MangaReading,
-                        CurrentData.MangaCompleted,
-                        CurrentData.MangaOnHold,
-                        CurrentData.MangaDropped,
-                        CurrentData.MangaPlanned
-                    };
-                    break;
-            }
         }
 
         private void NavigateDetails(FavCharacter character)

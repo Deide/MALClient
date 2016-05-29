@@ -379,7 +379,7 @@ namespace MALClient.Comm
                 var header = textBlock.Descendants("div").First();
                 curr.User.Name = header.ChildNodes[1].InnerText;
                 curr.Date = header.ChildNodes[3].InnerText;
-                curr.Content = textBlock.Descendants("div").Skip(1).First().InnerText;
+                curr.Content = textBlock.Descendants("div").Skip(1).First().InnerText.Trim();
                 current.Comments.Add(curr);
             }
 
