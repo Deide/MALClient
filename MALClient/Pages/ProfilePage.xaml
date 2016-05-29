@@ -170,7 +170,7 @@
                                    Text="No favourite anime added yet..."
                                    TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                            <GridView Grid.Row="1" ItemsSource="{Binding FavAnime}"
+                            <GridView Grid.Row="1" ItemsSource="{Binding FavAnime}" HorizontalAlignment="Center"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <GridView.ItemContainerStyle>
                                     <Style TargetType="GridViewItem">
@@ -188,8 +188,7 @@
                             </GridView>
                         </Grid>
                         <Grid Padding="10" Background="{ThemeResource BrushAnimeItemInnerBackground}" CornerRadius="10"
-                          Margin="10" x:Name="FavManga" HorizontalAlignment="Stretch" RelativePanel.RightOf="FavAnime"
-                          RelativePanel.AlignTopWith="FavAnime">
+                          Margin="10" x:Name="FavManga" HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
@@ -200,7 +199,7 @@
                                    Text="No favourite anime added yet..."
                                    TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                            <GridView Grid.Row="1" ItemsSource="{Binding FavManga}"
+                            <GridView Grid.Row="1" ItemsSource="{Binding FavManga}" HorizontalAlignment="Center"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <GridView.ItemContainerStyle>
                                     <Style TargetType="GridViewItem">
@@ -376,40 +375,50 @@
                         </Style>
                     </Grid.Resources>
                     <Grid Padding="10" Background="{ThemeResource BrushAnimeItemInnerBackground}" CornerRadius="10"
-                          x:Name="RecentAnime" Margin="10" HorizontalAlignment="Stretch">
+                          x:Name="RecentAnime" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <TextBlock Text="Anime" HorizontalAlignment="Center" FontWeight="SemiLight" FontSize="26"
                                    Foreground="{StaticResource SystemControlBackgroundAccentBrush}" />
-                        <TextBlock Grid.Row="1" Visibility="{Binding EmptyRecentMangaNoticeVisibility}"
-                                   Text="None..."
-                                   TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="#FFB9B9B9"
+                        <Grid Grid.Row="1">
+                            <TextBlock Visibility="{Binding EmptyRecentAnimeNoticeVisibility}"
+                                   Text="None..." TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                        <GridView Grid.Row="1" HorizontalAlignment="Center" ItemsSource="{Binding RecentManga}"
+                            <GridView HorizontalAlignment="Center" ItemsSource="{Binding RecentAnime}"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <GridView.ItemTemplate>
-                                <DataTemplate>
-                                    <items:AnimeGridItem DataContext="{Binding}" />
-                                </DataTemplate>
-                            </GridView.ItemTemplate>
-                        </GridView>
+                                <GridView.ItemTemplate>
+                                    <DataTemplate>
+                                        <items:AnimeGridItem DataContext="{Binding}" />
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
+                        </Grid>
+
                     </Grid>
                     <Grid Grid.Column="1" Margin="10" Padding="10" Background="{ThemeResource BrushAnimeItemInnerBackground}"
-                          CornerRadius="10" x:Name="RecentManga" HorizontalAlignment="Stretch">
+                          CornerRadius="10" x:Name="RecentManga" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <TextBlock Text="Manga" HorizontalAlignment="Center" FontWeight="SemiLight" FontSize="26"
                                    Foreground="{StaticResource SystemControlBackgroundAccentBrush}" />
-                        <TextBlock Grid.Row="1" Visibility="{Binding EmptyRecentAnimeNoticeVisibility}"
-                                   Text="None..."
+                        <TextBlock Grid.Row="1" Visibility="{Binding EmptyRecentMangaNoticeVisibility}"
+                                   Text="None updated..."
                                    TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                        <GridView Grid.Row="1" HorizontalAlignment="Center" ItemsSource="{Binding RecentAnime}"
+                        <GridView Grid.Row="1" ItemsSource="{Binding RecentManga}" HorizontalAlignment="Center"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                            <GridView.ItemContainerStyle>
+                                <Style TargetType="GridViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Padding" Value="5,5" />
+                                    <Setter Property="Margin" Value="0,5" />
+                                    <Setter Property="Width" Value="200" />
+                                </Style>
+                            </GridView.ItemContainerStyle>
                             <GridView.ItemTemplate>
                                 <DataTemplate>
                                     <items:AnimeGridItem DataContext="{Binding}" />

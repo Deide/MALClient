@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using MALClient.Items;
 
 namespace MALClient.Models
 {
@@ -43,5 +44,17 @@ namespace MALClient.Models
             AllEpisodes = Convert.ToInt32(xmlObj.Element(anime ? "episodes" : "chapters").Value);
             AllVolumes = !anime ? Convert.ToInt32(xmlObj.Element("volumes").Value) : 0;
         }
+
+        //public static SeasonalAnimeData ToSeasonal(AnimeGeneralDetailsData data)
+        //{
+        //    return new SeasonalAnimeData
+        //    {
+        //        Title = data.Title,
+        //        ImgUrl = data.ImgUrl,
+        //        Id = data.MalId,
+        //        Episodes = data.AllEpisodes.ToString(),
+        //        Score = data.GlobalScore,
+        //    };
+        //}
     }
 }
