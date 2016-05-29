@@ -29,10 +29,9 @@ namespace MALClient
         public MainPage()
         {
             InitializeComponent();
-            //Utils.CheckTiles();
+            
             Loaded += (sender, args) =>
             {
-
                 LogoImage.Source =
                     new BitmapImage(
                         new Uri(Settings.SelectedTheme == ApplicationTheme.Dark

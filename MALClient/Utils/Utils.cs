@@ -462,9 +462,9 @@ namespace MALClient
                         targettedClass);
         }
 
-        public static IEnumerable<HtmlNode> WhereWithClass(this IEnumerable<HtmlNode> doc,string targettedClass)
+        public static IEnumerable<HtmlNode> WhereOfDescendantsWithClass(this HtmlNode doc, string descendants, string targettedClass)
         {
-            return doc.Where(
+            return doc.Descendants(descendants).Where(
                 node =>
                     node.Attributes.Contains("class") &&
                     node.Attributes["class"].Value ==

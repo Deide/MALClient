@@ -443,8 +443,6 @@ namespace MALClient.ViewModels
                     if (_loadedStats)
                         return;
                     _loadedStats = true;
-                    await CurrentData.PopulateWatchStats();
-                    RaisePropertyChanged(() => CurrentData);
                     AnimeChartValues = new List<int>
                     {
                         CurrentData.AnimeWatching,
