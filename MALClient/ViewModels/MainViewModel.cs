@@ -186,14 +186,20 @@ namespace MALClient.ViewModels
                     break;
                 case PageIndex.PageProfile:
                     HideSearchStuff();
-                    RefreshButtonVisibility = Visibility.Visible;
+                    RefreshButtonVisibility = Visibility.Collapsed;
+                    //if (Settings.SelectedApiType == ApiType.Mal)
+                    //    RefreshDataCommand =
+                    //        new RelayCommand(() => ViewModelLocator.ProfilePage.LoadProfileData(null, true));
+                    //else
+                    //    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.HumProfilePage.Init(true));
                     if (Settings.SelectedApiType == ApiType.Mal)
-                        RefreshDataCommand =
-                            new RelayCommand(() => ViewModelLocator.ProfilePage.LoadProfileData(null, true));
-                    else
-                        RefreshDataCommand = new RelayCommand(() => ViewModelLocator.HumProfilePage.Init(true));
-                    if (Settings.SelectedApiType == ApiType.Mal)
+                    {
+                        if(CurrentMainPage == PageIndex.PageProfile)
+                            ViewModelLocator.ProfilePage.LoadProfileData(args as ProfilePageNavigationArgs );
+                            else
                         View.Navigate(typeof(ProfilePage), args);
+                    }
+                        
                     else
                         View.Navigate(typeof(HummingbirdProfilePage), args);
                     break;

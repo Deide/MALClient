@@ -252,16 +252,16 @@ namespace MALClient.ViewModels
         private Dictionary<string, Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>> _othersAbstractions =
             new Dictionary<string, Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>>();
 
+        private string _currUser;
         public async void LoadProfileData(ProfilePageNavigationArgs args, bool force = false)
         {
-            if (!_dataLoaded || force)
+            if (_currUser == null || _currUser != args?.TargetUser || force)
             {
                 LoadingVisibility = Visibility.Visible;
-                args = new ProfilePageNavigationArgs {TargetUser = "zero_omar"};
                 await Task.Run(async () => CurrentData = await new ProfileQuery(false,args?.TargetUser ?? "").GetProfileData(force));
-                _dataLoaded = true;
+                _currUser = args?.TargetUser ?? Credentials.UserName;
             }
-            bool authenticatedUser = (args?.TargetUser ?? "") == Credentials.UserName;
+            bool authenticatedUser = args == null || args.TargetUser == Credentials.UserName;
             RaisePropertyChanged(() => CurrentData);
             if (authenticatedUser)
             {
@@ -314,7 +314,7 @@ namespace MALClient.ViewModels
             }
             else
             {
-                if (!_othersAbstractions.ContainsKey(args.TargetUser))
+                if (!_othersAbstractions.ContainsKey(args?.TargetUser ?? ""))
                 {
                     var data = await new LibraryListQuery(args.TargetUser, AnimeListWorkModes.Anime).GetLibrary(false);
                     var abstractions = new List<AnimeItemAbstraction>();
@@ -377,9 +377,7 @@ namespace MALClient.ViewModels
                 }
                 RecentManga = list;
 
-            }
-
-            
+            }            
             AnimeChartValues = new List<int>
                     {
                         CurrentData.AnimeWatching,

@@ -43,6 +43,11 @@ namespace MALClient.Comm
 
         public async Task<ProfileData> GetProfileData(bool force = false)
         {
+            ProfileData possibleData = null;
+            if (!force)
+                possibleData = await DataCache.RetrieveProfileData(_userName);
+            if (possibleData != null)
+                return possibleData;
             var raw = await GetRequestResponse();
             var doc = new HtmlDocument();
             doc.LoadHtml(raw);
@@ -338,17 +343,31 @@ namespace MALClient.Comm
 
             #region LeftSideBar
 
-            var sideInfo = doc.FirstOfDescendantsWithClass("ul", "user-status border-top pb8 mb4").Descendants("li").ToList();
-
-            current.LastOnline = sideInfo[0].LastChild.InnerText;
-            current.Gender = sideInfo[1].LastChild.InnerText;
-            current.Birthday = sideInfo[2].LastChild.InnerText;
-            current.Location = sideInfo[3].LastChild.InnerText;
-            current.Joined = sideInfo[4].LastChild.InnerText;
-            current.User.ImgUrl =
-                doc.FirstOfDescendantsWithClass("div", "user-image mb8").Descendants("img").First().Attributes["src"]
-                    .Value;
-
+            try
+            {
+                var sideInfo = doc.FirstOfDescendantsWithClass("ul", "user-status border-top pb8 mb4").Descendants("li").ToList();
+                current.User.ImgUrl =
+                    doc.FirstOfDescendantsWithClass("div", "user-image mb8").Descendants("img").First().Attributes["src"]
+                        .Value;
+                try
+                {
+                    current.LastOnline = sideInfo[0].LastChild.InnerText;
+                    current.Gender = sideInfo[1].LastChild.InnerText;
+                    current.Birthday = sideInfo[2].LastChild.InnerText;
+                    current.Location = sideInfo[3].LastChild.InnerText;
+                    current.Joined = sideInfo[4].LastChild.InnerText;
+                }
+                catch (Exception)
+                {
+                    current.LastOnline = sideInfo[0].LastChild.InnerText;
+                    current.Joined = sideInfo[1].LastChild.InnerText;
+                }
+            }
+            catch (Exception)
+            {
+                //???
+            }
+                    
 
             #endregion
 
@@ -370,21 +389,30 @@ namespace MALClient.Comm
 
             #region Comments
 
-            var commentBox = doc.FirstOfDescendantsWithClass("div", "user-comments mt24 pt24");
-            foreach (var comment in commentBox.WhereOfDescendantsWithClass("div", "comment clearfix"))
+            try
             {
-                var curr = new MalComment();
-                curr.User.ImgUrl = comment.Descendants("img").First().Attributes["src"].Value;
-                var textBlock = comment.Descendants("div").First();
-                var header = textBlock.Descendants("div").First();
-                curr.User.Name = header.ChildNodes[1].InnerText;
-                curr.Date = header.ChildNodes[3].InnerText;
-                curr.Content = textBlock.Descendants("div").Skip(1).First().InnerText.Trim();
-                current.Comments.Add(curr);
+                var commentBox = doc.FirstOfDescendantsWithClass("div", "user-comments mt24 pt24");
+                foreach (var comment in commentBox.WhereOfDescendantsWithClass("div", "comment clearfix"))
+                {
+                    var curr = new MalComment();
+                    curr.User.ImgUrl = comment.Descendants("img").First().Attributes["src"].Value;
+                    var textBlock = comment.Descendants("div").First();
+                    var header = textBlock.Descendants("div").First();
+                    curr.User.Name = header.ChildNodes[1].InnerText;
+                    curr.Date = header.ChildNodes[3].InnerText;
+                    curr.Content = textBlock.Descendants("div").Skip(1).First().InnerText.Trim();
+                    current.Comments.Add(curr);
+                }
             }
+            catch (Exception)
+            {
+                //no comments
+            }
+
 
             #endregion
 
+            DataCache.SaveProfileData(_userName,current);
 
             return current;
 

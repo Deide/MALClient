@@ -1,6 +1,7 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using MALClient.Models;
 using MALClient.ViewModels;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -30,7 +31,6 @@ namespace MALClient.Pages
             _lastArgs = e.Parameter as ProfilePageNavigationArgs;
             Utils.GetMainPageInstance().CurrentStatus = $"{Credentials.UserName} - Profile";
 
-
             base.OnNavigatedTo(e);
         }
 
@@ -38,6 +38,16 @@ namespace MALClient.Pages
         {
             (DataContext as ProfilePageViewModel).Cleanup();
             base.OnNavigatedFrom(e);
+        }
+
+        private void ListViewBase_OnItemClick(object sender, ItemClickEventArgs e)
+        {
+            ViewModelLocator.Main.Navigate(PageIndex.PageProfile, new ProfilePageNavigationArgs { TargetUser = (e.ClickedItem as MalUser).Name });
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModelLocator.Main.Navigate(PageIndex.PageProfile,new ProfilePageNavigationArgs {TargetUser = (string)(sender as Button).Tag});
         }
     }
 }
