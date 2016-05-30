@@ -373,17 +373,25 @@ namespace MALClient.Comm
 
             #region Friends
 
-            var friends = doc.FirstOfDescendantsWithClass("div", "user-friends pt4 pb12").Descendants("a");
-            foreach (var friend in friends)
+            try
             {
-                var curr = new MalUser();
-                var styleString = friend.Attributes["style"].Value.Substring(22);
-                curr.ImgUrl = styleString.Replace("/r/76x120", "");
-                curr.ImgUrl = curr.ImgUrl.Substring(0, curr.ImgUrl.IndexOf('?'));
+                var friends = doc.FirstOfDescendantsWithClass("div", "user-friends pt4 pb12").Descendants("a");
+                foreach (var friend in friends)
+                {
+                    var curr = new MalUser();
+                    var styleString = friend.Attributes["style"].Value.Substring(22);
+                    curr.ImgUrl = styleString.Replace("/r/76x120", "");
+                    curr.ImgUrl = curr.ImgUrl.Substring(0, curr.ImgUrl.IndexOf('?'));
 
-                curr.Name = friend.InnerText;                
-                current.Friends.Add(curr);
+                    curr.Name = friend.InnerText;
+                    current.Friends.Add(curr);
+                }
             }
+            catch (Exception)
+            {
+                //
+            }
+
 
             #endregion
 
@@ -400,7 +408,7 @@ namespace MALClient.Comm
                     var header = textBlock.Descendants("div").First();
                     curr.User.Name = header.ChildNodes[1].InnerText;
                     curr.Date = header.ChildNodes[3].InnerText;
-                    curr.Content = textBlock.Descendants("div").Skip(1).First().InnerText.Trim();
+                    curr.Content = WebUtility.HtmlDecode(textBlock.Descendants("div").Skip(1).First().InnerText.Trim());
                     current.Comments.Add(curr);
                 }
             }
