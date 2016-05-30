@@ -87,13 +87,13 @@
                 <Grid Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
                     <Grid Padding="10" Background="{ThemeResource BrushAnimeItemInnerBackground}" CornerRadius="10" Margin="10">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Image MaxWidth="150" MaxHeight="150" Stretch="UniformToFill" Margin="5">
+                        <Image Width="150" Height="150" Stretch="UniformToFill" Margin="5">
                             <Image.Source>
-                                <BitmapImage UriSource="{Binding CurrentData.User.ImgUrl}" DecodePixelHeight="150" DecodePixelWidth="150" DecodePixelType="Logical" />
+                                <BitmapImage UriSource="{Binding CurrentData.User.ImgUrl}"  DecodePixelType="Logical" DecodePixelHeight="150" DecodePixelWidth="150"/>
                             </Image.Source>
                         </Image>
                         <Grid Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
@@ -169,7 +169,7 @@
                                    Text="No favourite anime added yet..."
                                    TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                            <GridView Grid.Row="1" ItemsSource="{Binding FavAnime}" HorizontalAlignment="Center"
+                            <GridView Grid.Row="1" RightTapped="AnimesGridIndefinite_OnRightTapped" ItemsSource="{Binding FavAnime}" HorizontalAlignment="Center"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <GridView.ItemContainerStyle>
                                     <Style TargetType="GridViewItem">
@@ -198,7 +198,7 @@
                                    Text="No favourite anime added yet..."
                                    TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                            <GridView Grid.Row="1" ItemsSource="{Binding FavManga}" HorizontalAlignment="Center"
+                            <GridView Grid.Row="1" RightTapped="AnimesGridIndefinite_OnRightTapped" ItemsSource="{Binding FavManga}" HorizontalAlignment="Center"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <GridView.ItemContainerStyle>
                                     <Style TargetType="GridViewItem">
@@ -385,7 +385,7 @@
                             <TextBlock Visibility="{Binding EmptyRecentAnimeNoticeVisibility}"
                                    Text="None..." TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                            <GridView HorizontalAlignment="Center" ItemsSource="{Binding RecentAnime}"
+                            <GridView HorizontalAlignment="Center" RightTapped="AnimesGridIndefinite_OnRightTapped" ItemsSource="{Binding RecentAnime}"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <GridView.ItemTemplate>
                                     <DataTemplate>
@@ -408,7 +408,7 @@
                                    Text="None updated..."
                                    TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="#FFB9B9B9"
                                    Margin="5" />
-                        <GridView Grid.Row="1" ItemsSource="{Binding RecentManga}" HorizontalAlignment="Center"
+                        <GridView Grid.Row="1" RightTapped="AnimesGridIndefinite_OnRightTapped" ItemsSource="{Binding RecentManga}" HorizontalAlignment="Center"
                                   SelectedItem="{Binding TemporarilySelectedAnimeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <GridView.ItemContainerStyle>
                                 <Style TargetType="GridViewItem">

@@ -304,15 +304,9 @@ namespace MALClient.Pages
 
         #endregion
 
-        private void UpperPivotNavBarOnTapped(object sender, TappedRoutedEventArgs e)
-        {
-            UpperNavBarPivot.SelectionChanged += UpperNavBarPivotOnSelectionChanged;           
-        }
-
         private void UpperNavBarPivotOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
             ViewModel.StatusSelectorSelectedIndex = UpperNavBarPivot.SelectedIndex;
-            //UpperNavBarPivot.SelectionChanged -= UpperNavBarPivotOnSelectionChanged;
         }
 
         public void SetUpperPivotIndex(int index)

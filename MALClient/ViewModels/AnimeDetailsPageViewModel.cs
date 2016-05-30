@@ -1194,6 +1194,7 @@ namespace MALClient.ViewModels
                     ImgUrl = _imgUrl,
                     Type = type,
                     Id = Id,
+                    AllEpisodes = AllEpisodes,
                     MalId = MalId,
                     MyStatus = AnimeStatus.PlanToWatch,
                     MyEpisodes = 0,
@@ -1207,6 +1208,7 @@ namespace MALClient.ViewModels
                     ImgUrl = _imgUrl,
                     Type = type,
                     Id = Id,
+                    AllEpisodes = AllEpisodes,
                     MalId = MalId,
                     MyStatus = AnimeStatus.PlanToWatch,
                     MyEpisodes = 0,
@@ -1337,8 +1339,7 @@ namespace MALClient.ViewModels
             for (var i = 0; i < _synonyms.Count; i++)
                 _synonyms[i] = Regex.Replace(_synonyms[i], @" ?\(.*?\)", string.Empty);
             //removes string from brackets (sthsth) lol ->  lol
-            if (_animeItemReference == null)
-                AllEpisodes = Convert.ToInt32(data.AllEpisodes);
+            AllEpisodes = Convert.ToInt32(data.AllEpisodes);
             PopulateData();
         }
 

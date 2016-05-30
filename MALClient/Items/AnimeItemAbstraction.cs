@@ -53,7 +53,8 @@ namespace MALClient.Items
         {
             RepresentsAnime = false;
             Auth = auth;
-            EntryData = data;
+            MyStartDate = data.MyStartDate;
+            MyEndDate = data.MyEndDate;
             _firstConstructor = true;
         }
 

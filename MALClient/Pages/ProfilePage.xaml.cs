@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using MALClient.Models;
 using MALClient.ViewModels;
@@ -29,8 +30,6 @@ namespace MALClient.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             _lastArgs = e.Parameter as ProfilePageNavigationArgs;
-            Utils.GetMainPageInstance().CurrentStatus = $"{Credentials.UserName} - Profile";
-
             base.OnNavigatedTo(e);
         }
 
@@ -48,6 +47,14 @@ namespace MALClient.Pages
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             ViewModelLocator.Main.Navigate(PageIndex.PageProfile,new ProfilePageNavigationArgs {TargetUser = (string)(sender as Button).Tag});
+        }
+
+
+        private void AnimesGridIndefinite_OnRightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            if ((e.OriginalSource as FrameworkElement).DataContext is AnimeItemViewModel)
+                ItemFlyoutService.ShowAnimeGridItemFlyout(e.OriginalSource as FrameworkElement);
+            e.Handled = true;
         }
     }
 }

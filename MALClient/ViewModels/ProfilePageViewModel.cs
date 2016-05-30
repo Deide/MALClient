@@ -261,8 +261,10 @@ namespace MALClient.ViewModels
                 await Task.Run(async () => CurrentData = await new ProfileQuery(false,args?.TargetUser ?? "").GetProfileData(force));
                 _currUser = args?.TargetUser ?? Credentials.UserName;
             }
+            ViewModelLocator.Main.CurrentStatus = $"{_currUser} - Profile";
             bool authenticatedUser = args == null || args.TargetUser == Credentials.UserName;
             RaisePropertyChanged(() => CurrentData);
+            LoadingVisibility = Visibility.Collapsed;
             if (authenticatedUser)
             {
                 _initialized = true;
@@ -413,7 +415,7 @@ namespace MALClient.ViewModels
             EmptyFavPeopleNoticeVisibility = CurrentData.FavouritePeople.Count == 0
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-            LoadingVisibility = Visibility.Collapsed;
+
         }
 
         private void NavigateDetails(FavCharacter character)
