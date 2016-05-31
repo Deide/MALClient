@@ -308,6 +308,8 @@
                 <Style TargetType="GridViewItem">
                     <Setter Property="Padding" Value="5,5" />
                     <Setter Property="Margin" Value="2,5" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
                 </Style>
             </GridView.ItemContainerStyle>
             <GridView.ItemContainerTransitions>

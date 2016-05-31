@@ -64,6 +64,9 @@ namespace MALClient.ViewModels
 
         private ICommand _navigatePersonPageCommand;
 
+        private ICommand _navAnimeListCommand;
+        private ICommand _navMangaListCommand;
+
         private List<AnimeItemViewModel> _recentAnime;
         private List<AnimeItemViewModel> _recentManga;
 
@@ -186,6 +189,16 @@ namespace MALClient.ViewModels
                 _navigatePersonPageCommand ??
                 (_navigatePersonPageCommand = new RelayCommand<FavPerson>(NavigatePersonWebPage));
 
+        public ICommand NavigateAnimeListCommand
+            =>
+                _navAnimeListCommand ??
+                (_navAnimeListCommand = new RelayCommand(() => ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList,new AnimeListPageNavigationArgs(0,AnimeListWorkModes.Anime) { ListSource = _currUser})));
+
+        public ICommand NavigateMangaListCommand
+            =>
+                _navMangaListCommand ??
+                (_navMangaListCommand = new RelayCommand(() => ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList,new AnimeListPageNavigationArgs(0,AnimeListWorkModes.Manga) { ListSource = _currUser})));
+
         public Visibility EmptyFavAnimeNoticeVisibility
         {
             get { return _emptyFavAnimeNoticeVisibility; }
@@ -246,10 +259,21 @@ namespace MALClient.ViewModels
             }
         }
 
+        private Visibility _loadingOhersLibrariesProgressVisiblity = Visibility.Collapsed;
+        public Visibility LoadingOhersLibrariesProgressVisiblity
+        {
+            get { return _loadingOhersLibrariesProgressVisiblity; }
+            set
+            {
+                _loadingOhersLibrariesProgressVisiblity = value;
+                RaisePropertyChanged(() => LoadingOhersLibrariesProgressVisiblity);
+            }
+        }
+
         #endregion
 
         //anime -<>- manga
-        private Dictionary<string, Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>> _othersAbstractions =
+        private readonly Dictionary<string, Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>> _othersAbstractions =
             new Dictionary<string, Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>>();
 
         private string _currUser;
@@ -261,6 +285,10 @@ namespace MALClient.ViewModels
                 await Task.Run(async () => CurrentData = await new ProfileQuery(false,args?.TargetUser ?? "").GetProfileData(force));
                 _currUser = args?.TargetUser ?? Credentials.UserName;
             }
+            FavAnime = new List<AnimeItemViewModel>();
+            FavManga = new List<AnimeItemViewModel>();
+            RecentManga = new List<AnimeItemViewModel>();
+            RecentAnime = new List<AnimeItemViewModel>();
             ViewModelLocator.Main.CurrentStatus = $"{_currUser} - Profile";
             bool authenticatedUser = args == null || args.TargetUser == Credentials.UserName;
             RaisePropertyChanged(() => CurrentData);
@@ -318,15 +346,22 @@ namespace MALClient.ViewModels
             {
                 if (!_othersAbstractions.ContainsKey(args?.TargetUser ?? ""))
                 {
+                    LoadingOhersLibrariesProgressVisiblity = Visibility.Visible;
                     var data = await new LibraryListQuery(args.TargetUser, AnimeListWorkModes.Anime).GetLibrary(false);
+
                     var abstractions = new List<AnimeItemAbstraction>();
                     foreach (var libraryData in data.Where(entry => CurrentData.FavouriteAnime.Any(i => i == entry.Id) || CurrentData.RecentAnime.Any(i => i == entry.Id)))
                         abstractions.Add(new AnimeItemAbstraction(false,libraryData as AnimeLibraryItemData));
+
                     data = await new LibraryListQuery(args.TargetUser, AnimeListWorkModes.Manga).GetLibrary(false);
+
                     var mangaAbstractions = new List<AnimeItemAbstraction>();
                     foreach (var libraryData in data.Where(entry => CurrentData.FavouriteManga.Any(i => i == entry.Id) || CurrentData.FavouriteAnime.Any(i => i == entry.Id)))
                         mangaAbstractions.Add(new AnimeItemAbstraction(false,libraryData as MangaLibraryItemData));
+
                     _othersAbstractions.Add(args.TargetUser,new Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>(abstractions,mangaAbstractions));
+
+                    LoadingOhersLibrariesProgressVisiblity = Visibility.Collapsed;
                 }
 
                 var source = _othersAbstractions[args.TargetUser];

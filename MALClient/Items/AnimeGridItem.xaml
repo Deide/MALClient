@@ -61,7 +61,7 @@
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
                 <Image x:Name="Image" Grid.Row="0"
-               controlsExt:ImageExtensions.FadeInOnLoaded="True" Grid.ColumnSpan="2" Stretch="UniformToFill">
+               controlsExt:ImageExtensions.FadeInOnLoaded="True" Grid.ColumnSpan="2" Stretch="Fill">
                     <Image.Source>
                         <BitmapImage UriSource="{x:Bind ViewModel.ImgUrl,Mode=OneWay}" DecodePixelWidth="250" DecodePixelHeight="355" DecodePixelType="Logical"/>
                     </Image.Source>

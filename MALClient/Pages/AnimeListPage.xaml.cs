@@ -26,7 +26,7 @@ namespace MALClient.Pages
     {
         public readonly int CurrPage;
         public readonly bool Descending;
-        public readonly string ListSource;
+        public string ListSource;
         public readonly bool NavArgs;
         public readonly int Status;
         public readonly int? StatusIndex;
