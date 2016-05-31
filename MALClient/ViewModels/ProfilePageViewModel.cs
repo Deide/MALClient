@@ -347,16 +347,17 @@ namespace MALClient.ViewModels
                 if (!_othersAbstractions.ContainsKey(args?.TargetUser ?? ""))
                 {
                     LoadingOhersLibrariesProgressVisiblity = Visibility.Visible;
-                    var data = await new LibraryListQuery(args.TargetUser, AnimeListWorkModes.Anime).GetLibrary(false);
+                    var data = new List<ILibraryData>();
+                    await Task.Run( async () => data = await new LibraryListQuery(args.TargetUser, AnimeListWorkModes.Anime).GetLibrary(false));
 
                     var abstractions = new List<AnimeItemAbstraction>();
                     foreach (var libraryData in data.Where(entry => CurrentData.FavouriteAnime.Any(i => i == entry.Id) || CurrentData.RecentAnime.Any(i => i == entry.Id)))
                         abstractions.Add(new AnimeItemAbstraction(false,libraryData as AnimeLibraryItemData));
 
-                    data = await new LibraryListQuery(args.TargetUser, AnimeListWorkModes.Manga).GetLibrary(false);
+                    await Task.Run(async () => data = await new LibraryListQuery(args.TargetUser, AnimeListWorkModes.Manga).GetLibrary(false));
 
                     var mangaAbstractions = new List<AnimeItemAbstraction>();
-                    foreach (var libraryData in data.Where(entry => CurrentData.FavouriteManga.Any(i => i == entry.Id) || CurrentData.FavouriteAnime.Any(i => i == entry.Id)))
+                    foreach (var libraryData in data.Where(entry => CurrentData.FavouriteManga.Any(i => i == entry.Id) || CurrentData.RecentManga.Any(i => i == entry.Id)))
                         mangaAbstractions.Add(new AnimeItemAbstraction(false,libraryData as MangaLibraryItemData));
 
                     _othersAbstractions.Add(args.TargetUser,new Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>(abstractions,mangaAbstractions));

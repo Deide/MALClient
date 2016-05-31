@@ -129,12 +129,7 @@ namespace MALClient.ViewModels
 
             //give visual feedback
             Loading = true;
-            /*so the thing is:
-                 * Without this delay app will have quite a bit of chance to crash due to some win32 exception.
-                 * Sometimes it's access violation, sometimes it doesn't even say.
-                 * I've read that image caching fails when thre's some kind of load on it.
-                 * This is why this delay is here, 10ms of user's life isn't that bad,ain't it?             
-                */
+
             await Task.Delay(20);
 
             //depending on args
@@ -142,8 +137,10 @@ namespace MALClient.ViewModels
             if (args != null) //Save current mode
             {
                 WorkMode = args.WorkMode;
-                if(!string.IsNullOrEmpty(args.ListSource))
+                if (!string.IsNullOrEmpty(args.ListSource))
                     ListSource = args.ListSource;
+                else
+                    ListSource = Credentials.UserName;
                 if (args.NavArgs) // Use args if we have any
                 {
 
@@ -159,6 +156,7 @@ namespace MALClient.ViewModels
             else //assume default AnimeList
             {
                 WorkMode = AnimeListWorkModes.Anime;
+                ListSource = Credentials.UserName;
             }
             ViewModelLocator.Hamburger.UpdateAnimeFiltersSelectedIndex();
             RaisePropertyChanged(() => CurrentlySelectedDisplayMode);
