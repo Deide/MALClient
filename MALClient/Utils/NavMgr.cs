@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Input;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using MALClient.Pages;
 using MALClient.ViewModels;
@@ -12,7 +14,8 @@ namespace MALClient
     public static class NavMgr
     {
         #region BackNavigation
-
+        private static bool _oneTimeHandler;
+        private static ICommand _currentOverride;
         private static readonly Stack<AnimeDetailsPageNavigationArgs> _detailsNavStack =
             new Stack<AnimeDetailsPageNavigationArgs>(10);
 
@@ -24,6 +27,15 @@ namespace MALClient
 
         public static void CurrentViewOnBackRequested()
         {
+            if (_currentOverride != null)
+            {
+                _currentOverride.Execute(null);
+                _currentOverride = null;
+                if (_detailsNavStack.Count == 0)
+                    ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Collapsed;
+                return;
+            }
+
             if (_detailsNavStack.Count == 0) //when we are called from mouse back button
                 return;
 
@@ -35,7 +47,14 @@ namespace MALClient
         public static void ResetBackNav()
         {
             _detailsNavStack.Clear();
+            _currentOverride = null;
             ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Collapsed;
+        }
+
+        public static void RegisterOneTimeOverride(ICommand command)
+        {
+            _currentOverride = command;
+            ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Visible;
         }
 
         #endregion

@@ -172,6 +172,7 @@
     <Compile Include="Models\AnimeLibraryItemData.cs" />
     <Compile Include="Models\ApiResponses\HummingbirdLibraryResponses.cs" />
     <Compile Include="Models\ApiResponses\HummingbirdUserResponses.cs" />
+    <Compile Include="Models\CachedEntryModel.cs" />
     <Compile Include="Models\Favourites\FavCharacter.cs" />
     <Compile Include="Models\Favourites\FavPerson.cs" />
     <Compile Include="Models\ILibraryData.cs" />
@@ -223,11 +224,32 @@
     <Compile Include="Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsAboutPage.xaml.cs">
+      <DependentUpon>SettingsAboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsCachingPage.xaml.cs">
+      <DependentUpon>SettingsCachingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsCalendarPage.xaml.cs">
+      <DependentUpon>SettingsCalendarPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsGeneralPage.xaml.cs">
+      <DependentUpon>SettingsGeneralPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsHomePage.xaml.cs">
+      <DependentUpon>SettingsHomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsMiscPage.xaml.cs">
+      <DependentUpon>SettingsMiscPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsNewsPage.xaml.cs">
+      <DependentUpon>SettingsNewsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsSlidersPage.xaml.cs">
+      <DependentUpon>SettingsSlidersPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\AlternatingListView.cs" />
-    <Compile Include="UserControls\CachedEntryItem.xaml.cs">
-      <DependentUpon>CachedEntryItem.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Flyouts\GridItemFlyout.xaml.cs">
       <DependentUpon>GridItemFlyout.xaml</DependentUpon>
     </Compile>
@@ -381,11 +403,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\CachedEntryItem.xaml">
+    <Page Include="Flyouts\GridItemFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Flyouts\GridItemFlyout.xaml">
+    <Page Include="Pages\SettingsPages\SettingsAboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsCachingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsCalendarPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsGeneralPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsHomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsMiscPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsNewsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsSlidersPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
