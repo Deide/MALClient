@@ -98,12 +98,12 @@
                 </Grid.ColumnDefinitions>
                 <Button IsTabStop="False" HorizontalAlignment="Right"
                         VerticalAlignment="Center" Width="45" Height="48" Grid.Column="0"
-                        Background="Transparent"
-                        Command="{Binding NavigateBackCommand}"
-                        BorderThickness="0,0,0,1"
-                        BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
+                        Command="{Binding NavigateBackCommand}" 
                         Visibility="{Binding NavigateBackButtonVisibility}">
-                    <SymbolIcon Symbol="Back" Foreground="{StaticResource SystemControlBackgroundAccentBrush}" />
+                    <SymbolIcon Symbol="Back" Foreground="White"/>
+                    <Button.Background>
+                        <SolidColorBrush Color="{StaticResource SystemAccentColor}" Opacity=".5"></SolidColorBrush>
+                    </Button.Background>
                 </Button>
                 <Button IsTabStop="False" HorizontalAlignment="Right"
                         VerticalAlignment="Center" Width="45" Height="48" Grid.Column="3" Background="Transparent"
