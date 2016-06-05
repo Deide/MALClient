@@ -110,7 +110,8 @@ namespace MALClient.ViewModels
                      index == PageIndex.PageProfile ||
                      index == PageIndex.PageLogIn ||
                      index == PageIndex.PageMangaSearch ||
-                     index == PageIndex.PageCalendar)
+                     index == PageIndex.PageCalendar ||
+                     index == PageIndex.PageArticles)
             {
                 ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(false);
                 currPage = index;
@@ -194,12 +195,12 @@ namespace MALClient.ViewModels
                     //    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.HumProfilePage.Init(true));
                     if (Settings.SelectedApiType == ApiType.Mal)
                     {
-                        if(CurrentMainPage == PageIndex.PageProfile)
-                            ViewModelLocator.ProfilePage.LoadProfileData(args as ProfilePageNavigationArgs );
-                            else
-                        View.Navigate(typeof(ProfilePage), args);
+                        if (CurrentMainPage == PageIndex.PageProfile)
+                            ViewModelLocator.ProfilePage.LoadProfileData(args as ProfilePageNavigationArgs);
+                        else
+                            View.Navigate(typeof(ProfilePage), args);
                     }
-                        
+
                     else
                         View.Navigate(typeof(HummingbirdProfilePage), args);
                     break;
@@ -216,6 +217,11 @@ namespace MALClient.ViewModels
                     //RefreshDataCommand = new RelayCommand(() => ViewModelLocator.CalendarPage.Init(true));
                     CurrentStatus = "Calendar";
                     View.Navigate(typeof(CalendarPage), args);
+                    break;
+                case PageIndex.PageArticles:
+                    HideSearchStuff();
+                    CurrentStatus = "Articles";
+                    View.Navigate(typeof(MalArticlesPage), args);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);

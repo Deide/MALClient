@@ -120,6 +120,7 @@
     <Compile Include="Comm\Anime\AnimeDetailsHummingbirdQuery.cs" />
     <Compile Include="Comm\Anime\AnimeGeneralDetailsQuery.cs" />
     <Compile Include="Comm\Anime\AnimeTopQuery.cs" />
+    <Compile Include="Comm\Articles\MalArticleQuery.cs" />
     <Compile Include="Comm\CommUtils\HtmlClassDefinitionsQuery.cs" />
     <Compile Include="Comm\CommUtils\HtmlClassMgr.cs" />
     <Compile Include="Comm\ListParameters.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Comm\AuthQuery.cs" />
     <Compile Include="Comm\Anime\AnimeDirectRecommendationsQuery.cs" />
     <Compile Include="Comm\CommUtils\IParameters.cs" />
+    <Compile Include="Comm\Articles\MalArticlesIndexQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
     <Compile Include="Comm\Manga\MangaRemoveQuery.cs" />
     <Compile Include="Comm\Manga\MangaAddQuery.cs" />
@@ -177,6 +179,7 @@
     <Compile Include="Models\Favourites\FavPerson.cs" />
     <Compile Include="Models\ILibraryData.cs" />
     <Compile Include="Models\ISeasonalAnimeBaseData.cs" />
+    <Compile Include="Models\MalNewsUnitModel.cs" />
     <Compile Include="Models\MangaLibraryItemData.cs" />
     <Compile Include="Models\NewsData.cs" />
     <Compile Include="Models\ProfileData.cs" />
@@ -208,6 +211,9 @@
     </Compile>
     <Compile Include="Pages\HummingbirdProfilePage.xaml.cs">
       <DependentUpon>HummingbirdProfilePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\MalArticlesPage.xaml.cs">
+      <DependentUpon>MalArticlesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PageIndex.cs" />
     <Compile Include="Pages\IDetailsPageArgs.cs" />
@@ -281,6 +287,7 @@
     <Compile Include="ViewModels\HamburgerControlViewModel.cs" />
     <Compile Include="ViewModels\HummingbirdProfilePageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MalArticlesViewModel.cs" />
     <Compile Include="ViewModels\PinTileDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfilePageViewModel.cs" />
     <Compile Include="ViewModels\RecommendationsViewModel.cs" />
@@ -388,6 +395,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\LogInPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\MalArticlesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

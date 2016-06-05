@@ -29,6 +29,7 @@ namespace MALClient.UserControls
         TopAnime,
         TopManga,
         Calendar,
+        Articles
     }
 
     public sealed partial class HamburgerControl : UserControl
@@ -50,9 +51,6 @@ namespace MALClient.UserControls
         }
 
         private HamburgerControlViewModel ViewModel => (HamburgerControlViewModel) DataContext;
-
-        public AlternatingListView AnimeFilters => AlternatingListViewAnime;
-        public AlternatingListView MangaFilters => AlternatingListViewManga;
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
@@ -111,11 +109,13 @@ namespace MALClient.UserControls
             {
                 ViewModel.HamburgerWidthChanged(true);
                 MidSeparator.Width = BottomSeparator.Width = 250;
+                Mid2Separator.Width = BottomSeparator.Width = 250;
             }
             else
             {
                 ViewModel.HamburgerWidthChanged(false);
                 MidSeparator.Width = BottomSeparator.Width = 60;
+                Mid2Separator.Width = BottomSeparator.Width = 60;
             }
         }
 
