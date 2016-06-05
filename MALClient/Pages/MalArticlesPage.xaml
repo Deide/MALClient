@@ -13,7 +13,7 @@
     </Page.Resources>
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <WebView x:Name="ArticleWebView"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScriptNotify="ArticleWebView_OnScriptNotify" Visibility="{Binding WebViewVisibility}"/>
+        <WebView x:Name="ArticleWebView" NavigationStarting="ArticleWebView_OnNavigationStarting" RequestedTheme="Dark" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScriptNotify="ArticleWebView_OnScriptNotify" Visibility="{Binding WebViewVisibility}"/>
         <ListView SelectionMode="None" ItemsSource="{Binding Articles}" IsItemClickEnabled="True" ItemClick="ListViewBase_OnItemClick" Visibility="{Binding WebViewVisibility,Converter={StaticResource VisiblityInverterConverter}}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">

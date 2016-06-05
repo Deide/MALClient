@@ -51,12 +51,18 @@ namespace MALClient.ViewModels
         public async void Init()
         {
             Articles = await new MalArticlesIndexQuery().GetArticlesIndex();
+            ViewModelLocator.Main.CurrentStatus = "Articles";
         }
 
         public async void LoadArticle(MalNewsUnitModel data)
         {
             WebViewVisibility = Visibility.Visible;
-            NavMgr.RegisterOneTimeMainOverride(new RelayCommand(() => WebViewVisibility = Visibility.Collapsed));
+            ViewModelLocator.Main.CurrentStatus = data.Title;
+            NavMgr.RegisterOneTimeMainOverride(new RelayCommand(() =>
+            {
+                WebViewVisibility = Visibility.Collapsed;
+                ViewModelLocator.Main.CurrentStatus = "Articles";
+            }));
             OpenWebView?.Invoke(await new MalArticleQuery(data.Url).GetArticleHtml());
         }
     }
