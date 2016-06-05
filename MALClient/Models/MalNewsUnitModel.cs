@@ -14,6 +14,6 @@ namespace MALClient.Models
         public string Highlight { get; set; }
         public string Author { get; set; }
         public string Views { get; set; }
-        public string Details { get; set; }
+        public string Tags { get; set; }
     }
 }

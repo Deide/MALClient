@@ -461,16 +461,15 @@ namespace MALClient.ViewModels
             }
         }
 
-        public ICommand _navigateBackCommand;
+        private ICommand _navigateBackCommand;
 
-        public ICommand NavigateBackCommand
-        {
-            get
-            {
-                return _navigateBackCommand ??
-                       (_navigateBackCommand = new RelayCommand(NavMgr.CurrentViewOnBackRequested));
-            }
-        }
+        public ICommand NavigateBackCommand => _navigateBackCommand ??
+                                               (_navigateBackCommand = new RelayCommand(NavMgr.CurrentViewOnBackRequested));
+
+        private ICommand _navigateMainBackCommand;
+
+        public ICommand NavigateMainBackCommand => _navigateMainBackCommand ??
+                                                   (_navigateMainBackCommand = new RelayCommand(NavMgr.CurrentMainViewOnBackRequested));
 
 
         private ICommand _hideOffContentCommand;
@@ -514,7 +513,7 @@ namespace MALClient.ViewModels
         }
 
 
-        public Visibility _navigateBackButtonVisibility = Visibility.Collapsed;
+        private Visibility _navigateBackButtonVisibility = Visibility.Collapsed;
 
         public Visibility NavigateBackButtonVisibility
         {
@@ -523,6 +522,18 @@ namespace MALClient.ViewModels
             {
                 _navigateBackButtonVisibility = value;
                 RaisePropertyChanged(() => NavigateBackButtonVisibility);
+            }
+        }
+
+        private Visibility _navigateMainBackButtonVisibility = Visibility.Collapsed;
+
+        public Visibility NavigateMainBackButtonVisibility
+        {
+            get { return _navigateMainBackButtonVisibility; }
+            set
+            {
+                _navigateMainBackButtonVisibility = value;
+                RaisePropertyChanged(() => NavigateMainBackButtonVisibility);
             }
         }
 

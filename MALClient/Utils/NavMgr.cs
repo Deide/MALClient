@@ -4,6 +4,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using MALClient.Pages;
 using MALClient.ViewModels;
+using System;
 
 namespace MALClient
 {
@@ -14,8 +15,8 @@ namespace MALClient
     public static class NavMgr
     {
         #region BackNavigation
-        private static bool _oneTimeHandler;
         private static ICommand _currentOverride;
+        private static ICommand _currentOverrideMain;
         private static readonly Stack<AnimeDetailsPageNavigationArgs> _detailsNavStack =
             new Stack<AnimeDetailsPageNavigationArgs>(10);
 
@@ -55,6 +56,22 @@ namespace MALClient
         {
             _currentOverride = command;
             ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Visible;
+        }
+
+        public static void RegisterOneTimeMainOverride(ICommand command)
+        {
+            _currentOverrideMain = command;
+            ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Visible;
+        }
+
+        internal static void CurrentMainViewOnBackRequested()
+        {
+            if (_currentOverrideMain != null)
+            {
+                _currentOverrideMain.Execute(null);
+                _currentOverrideMain = null;
+                ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
+            }
         }
 
         #endregion

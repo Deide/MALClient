@@ -36,7 +36,18 @@ namespace MALClient.Comm
                 var contentDivs = newsUnit.Descendants("div").ToList();
                 current.Title = WebUtility.HtmlDecode(contentDivs[0].Descendants("p").First().InnerText.Trim());
                 current.Highlight = WebUtility.HtmlDecode(contentDivs[1].InnerText.Trim());
-                //current.Details = contentDivs[3].InnerText;
+                var infos = contentDivs[2].Descendants("p").ToList();
+                current.Author = infos[0].InnerText.Trim();
+                current.Views = infos[1].InnerText.Trim();
+                try
+                {
+                    current.Tags = string.Join(", ", contentDivs[3].Descendants("a").Select(node => node.InnerText.Trim()));
+                }
+                catch (Exception)
+                {
+                    //no tags
+                }
+                
                 output.Add(current);
             }
 
