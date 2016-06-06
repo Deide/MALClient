@@ -22,7 +22,7 @@
         <ItemsControl ItemsSource="{Binding SettingsPages}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Command="{Binding SettingsPage.RequestNavigationCommand,Source={StaticResource Locator}}" CommandParameter="{Binding PageType}" Background="Transparent" HorizontalAlignment="Stretch" Padding="0" HorizontalContentAlignment="Left" Margin="0,6,15,6">
+                    <Button Command="{Binding SettingsPage.RequestNavigationCommand,Source={StaticResource Locator}}" CommandParameter="{Binding PageType}" Background="Transparent" HorizontalAlignment="Stretch" Padding="0" HorizontalContentAlignment="Left" Margin="5,6,15,6">
                         <Grid HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -39,7 +39,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="{Binding Header}" FontWeight="Medium"/>
-                                <TextBlock Grid.Row="1" Text="{Binding Subtitle}" FontWeight="SemiLight" Foreground="LightGray"/>
+                                <TextBlock Grid.Row="1" Text="{Binding Subtitle}" FontWeight="SemiLight" Foreground="{ThemeResource BrushSettingsSubtitle}"/>
                             </Grid>
                         </Grid>
                     </Button>

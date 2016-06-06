@@ -96,7 +96,7 @@
                     <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="50" />
                 </Grid.ColumnDefinitions>
-                <Button IsTabStop="False" HorizontalAlignment="Right"
+                <Button IsTabStop="False" HorizontalAlignment="Right" Background="{ThemeResource SystemControlHighlightListAccentLowBrush}"
                         VerticalAlignment="Center" Width="45" Height="48" Grid.Column="0"
                         Command="{Binding NavigateBackCommand}" 
                         Visibility="{Binding NavigateBackButtonVisibility}" Background="{ThemeResource SystemControlHighlightListAccentLowBrush}">
