@@ -48,22 +48,55 @@ namespace MALClient.ViewModels
             }
         }
 
-        public async void Init()
+        private Visibility _articleIndexVisibility = Visibility.Visible;
+
+        public Visibility ArticleIndexVisibility
         {
-            Articles = await new MalArticlesIndexQuery().GetArticlesIndex();
+            get { return _articleIndexVisibility; }
+            set
+            {
+                _articleIndexVisibility = value;
+                RaisePropertyChanged(() => ArticleIndexVisibility);
+            }
+        }
+
+        private Visibility _loadingVisibility = Visibility.Collapsed;
+
+        public Visibility LoadingVisibility
+        {
+            get { return _loadingVisibility; }
+            set
+            {
+                _loadingVisibility = value;
+                RaisePropertyChanged(() => LoadingVisibility);
+            }
+        }
+
+        public async void Init(bool force = false)
+        {
+            ArticleIndexVisibility = Visibility.Visible;
+            WebViewVisibility = Visibility.Collapsed;
+            if (Articles.Count == 0 || force)
+            {
+                LoadingVisibility = Visibility.Visible;
+                Articles = await Task.Run(async () => await new MalArticlesIndexQuery().GetArticlesIndex());
+                LoadingVisibility = Visibility.Collapsed;
+            }
             ViewModelLocator.Main.CurrentStatus = "Articles";
         }
 
-        public async void LoadArticle(MalNewsUnitModel data)
+        private async void LoadArticle(MalNewsUnitModel data)
         {
-            WebViewVisibility = Visibility.Visible;
+            LoadingVisibility = Visibility.Visible;
+            ArticleIndexVisibility = Visibility.Collapsed;
             ViewModelLocator.Main.CurrentStatus = data.Title;
             NavMgr.RegisterOneTimeMainOverride(new RelayCommand(() =>
             {
                 WebViewVisibility = Visibility.Collapsed;
+                ArticleIndexVisibility = Visibility.Visible;
                 ViewModelLocator.Main.CurrentStatus = "Articles";
             }));
-            OpenWebView?.Invoke(await new MalArticleQuery(data.Url).GetArticleHtml());
+            OpenWebView?.Invoke(await new MalArticleQuery(data.Url,data.Title).GetArticleHtml());
         }
     }
 }

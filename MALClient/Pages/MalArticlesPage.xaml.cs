@@ -28,11 +28,13 @@ namespace MALClient.Pages
     {
         public MalArticlesViewModel ViewModel => DataContext as MalArticlesViewModel;
 
-        const string Begin = @"<html><script type=""text/javascript"">for (var i = 0; i < document.links.length; i++) { document.links[i].onclick = function() { window.external.notify('LaunchLink:' + this.value); return false; } }</script><body><div>";
+        const string Begin = @"<html><body id='root'><div id='content'>";
         #region Css
         const string Css =
             @"<style type=""text/css"">@charset ""UTF-8"";
-
+            ::-webkit-scrollbar { 
+                display: none; 
+            }
 	        html, body
 	        {
 		        background-color: #2a2c2a;
@@ -57,6 +59,21 @@ namespace MALClient.Pages
             a:active{color:AccentColourBase}
             a:visited{color:AccentColourDark}
             a:hover{color:AccentColourLight}
+        #root{
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #content{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
+            overflow-y: scroll;
+        }
         h1 {
 	        font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
 	        font-size: 24px;
@@ -187,17 +204,27 @@ namespace MALClient.Pages
             }
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            ArticleWebView.NavigateToString("");
+            base.OnNavigatedFrom(e);
+        }
+
         private void ArticleWebView_OnNavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             try
             {
                 if (args.Uri != null)
                 {
-                    if (args.Uri.ToString().Contains("anime") || args.Uri.ToString().Contains("manga"))
+                  if (args.Uri.ToString().Contains("anime/") || args.Uri.ToString().Contains("manga/"))
                     {
                         var link = args.Uri.ToString().Substring(7).Split('/');
-                        ViewModelLocator.Main.Navigate(PageIndex.PageAnimeDetails, new AnimeDetailsPageNavigationArgs(int.Parse(link[2]), link[3], null, null));
-                    }               
+                        ViewModelLocator.Main.Navigate(PageIndex.PageAnimeDetails,
+                            new AnimeDetailsPageNavigationArgs(int.Parse(link[2]), link[3], null, null)
+                            {
+                                AnimeMode = link[1] == "anime"
+                            });
+                    }
                     args.Cancel = true;
                 }
             }
@@ -205,7 +232,13 @@ namespace MALClient.Pages
             {
                 args.Cancel = true;
             }
-            
+
+        }
+
+        private void ArticleWebView_OnNavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        {
+            ViewModel.LoadingVisibility = Visibility.Collapsed;
+            ViewModel.WebViewVisibility = Visibility.Visible;
         }
     }
 }

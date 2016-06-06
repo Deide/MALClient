@@ -10,6 +10,9 @@ using MALClient.Models;
 using MALClient.Pages;
 using Newtonsoft.Json;
 
+
+//Okay it's big copy paste... feel free to laugh
+
 namespace MALClient
 {
     /// <summary>
@@ -713,6 +716,106 @@ namespace MALClient
             return null;
         }
 
-#endregion
+        #endregion
+
+        #region ArticlesIndex
+        public static async void SaveArticleIndexData(List<MalNewsUnitModel> data)
+        {
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    var folder =
+                        await
+                            ApplicationData.Current.LocalFolder.CreateFolderAsync(
+                                "Articles",
+                                CreationCollisionOption.OpenIfExists);
+                    var json =
+                        JsonConvert.SerializeObject(new Tuple<DateTime, List<MalNewsUnitModel>>(DateTime.UtcNow, data));
+                    var file =
+                        await
+                            folder.CreateFileAsync("mal_article_index.json",
+                                CreationCollisionOption.ReplaceExisting);
+                    await FileIO.WriteTextAsync(file, json);
+                });
+            }
+            catch (Exception)
+            {
+                //magic
+            }
+        }
+
+        public static async Task<List<MalNewsUnitModel>> RetrieveArticleIndexData()
+        {
+            try
+            {
+                var folder =
+                    await
+                        ApplicationData.Current.LocalFolder.CreateFolderAsync("Articles",
+                            CreationCollisionOption.OpenIfExists);
+                var file = await folder.GetFileAsync("mal_article_index.json");
+                var data = await FileIO.ReadTextAsync(file);
+                var tuple =
+                    JsonConvert.DeserializeObject<Tuple<DateTime, List<MalNewsUnitModel>>>(data);
+                return CheckForOldDataDetails(tuple.Item1, 1) ? tuple.Item2 : null;
+            }
+            catch (Exception)
+            {
+                //No file
+            }
+            return null;
+        }
+
+        #endregion
+        
+        #region ArticlesContent
+        public static async void SaveArticleContentData(string title,string htmlData)
+        {
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    var folder =
+                        await
+                            ApplicationData.Current.LocalFolder.CreateFolderAsync(
+                                "Articles",
+                                CreationCollisionOption.OpenIfExists);
+                    var json =
+                        JsonConvert.SerializeObject(new Tuple<DateTime, string>(DateTime.UtcNow, htmlData));
+                    var file =
+                        await
+                            folder.CreateFileAsync($"mal_article_html_{title}.json",
+                                CreationCollisionOption.ReplaceExisting);
+                    await FileIO.WriteTextAsync(file, json);
+                });
+            }
+            catch (Exception)
+            {
+                //magic
+            }
+        }
+
+        public static async Task<string> RetrieveArticleContentData(string title)
+        {
+            try
+            {
+                var folder =
+                    await
+                        ApplicationData.Current.LocalFolder.CreateFolderAsync("Articles",
+                            CreationCollisionOption.OpenIfExists);
+                var file = await folder.GetFileAsync($"mal_article_html_{title}.json");
+                var data = await FileIO.ReadTextAsync(file);
+                var tuple =
+                    JsonConvert.DeserializeObject<Tuple<DateTime, string>>(data);
+                return CheckForOldDataDetails(tuple.Item1) ? tuple.Item2 : null; //7 days of validnessssss
+            }
+            catch (Exception)
+            {
+                //No file
+            }
+            return null;
+        }
+
+        #endregion
     }
 }

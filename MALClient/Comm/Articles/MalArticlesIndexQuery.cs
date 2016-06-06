@@ -19,8 +19,14 @@ namespace MALClient.Comm
             Request.Method = "GET";
         }
 
-        public async Task<List<MalNewsUnitModel>> GetArticlesIndex()
+        public async Task<List<MalNewsUnitModel>> GetArticlesIndex(bool force = false)
         {
+            if (!force)
+            {
+                var possibleData = await DataCache.RetrieveArticleIndexData();
+                if (possibleData != null)
+                    return possibleData;
+            }
             var output = new List<MalNewsUnitModel>();
             var raw = await GetRequestResponse();
             if (string.IsNullOrEmpty(raw))
@@ -50,7 +56,7 @@ namespace MALClient.Comm
                 
                 output.Add(current);
             }
-
+            DataCache.SaveArticleIndexData(output);
             return output;
         }
 

@@ -13,8 +13,9 @@
     </Page.Resources>
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <WebView x:Name="ArticleWebView" NavigationStarting="ArticleWebView_OnNavigationStarting" RequestedTheme="Dark" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScriptNotify="ArticleWebView_OnScriptNotify" Visibility="{Binding WebViewVisibility}"/>
-        <ListView SelectionMode="None" ItemsSource="{Binding Articles}" IsItemClickEnabled="True" ItemClick="ListViewBase_OnItemClick" Visibility="{Binding WebViewVisibility,Converter={StaticResource VisiblityInverterConverter}}">
+        <WebView x:Name="ArticleWebView" NavigationCompleted="ArticleWebView_OnNavigationCompleted" NavigationStarting="ArticleWebView_OnNavigationStarting" RequestedTheme="Dark" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScriptNotify="ArticleWebView_OnScriptNotify" Visibility="{Binding WebViewVisibility}"/>
+        <ProgressRing IsActive="True" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding LoadingVisibility}"/>
+        <ListView SelectionMode="None" ItemsSource="{Binding Articles}" IsItemClickEnabled="True" ItemClick="ListViewBase_OnItemClick" Visibility="{Binding ArticleIndexVisibility}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Margin" Value="1,5"/>

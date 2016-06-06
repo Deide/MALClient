@@ -10,8 +10,10 @@ namespace MALClient.Comm.Articles
 {
     public class MalArticleQuery : Query
     {
-        public MalArticleQuery(string url)
+        private string _title;
+        public MalArticleQuery(string url,string title)
         {
+            _title = title;
             Request =
                 WebRequest.Create(Uri.EscapeUriString(url));
             Request.ContentType = "application/x-www-form-urlencoded";
@@ -20,12 +22,17 @@ namespace MALClient.Comm.Articles
 
         public async Task<string> GetArticleHtml()
         {
+            var possibleData = await DataCache.RetrieveArticleContentData(_title);
+            if (possibleData != null)
+                return possibleData;
             var raw = await GetRequestResponse();
             if (string.IsNullOrEmpty(raw))
                 return null;
             var doc = new HtmlDocument();
             doc.LoadHtml(raw);
-            return doc.FirstOfDescendantsWithClass("div", "news-container").OuterHtml;
+            var htmlData = doc.FirstOfDescendantsWithClass("div", "news-container").OuterHtml;
+            DataCache.SaveArticleContentData(_title,htmlData);
+            return htmlData;
         }
     }
 }
