@@ -99,7 +99,7 @@
                 <Button IsTabStop="False" HorizontalAlignment="Right" Background="{ThemeResource SystemControlHighlightListAccentLowBrush}"
                         VerticalAlignment="Center" Width="45" Height="48" Grid.Column="0"
                         Command="{Binding NavigateBackCommand}" 
-                        Visibility="{Binding NavigateBackButtonVisibility}" Background="{ThemeResource SystemControlHighlightListAccentLowBrush}">
+                        Visibility="{Binding NavigateBackButtonVisibility}">
                     <SymbolIcon Symbol="Back" Foreground="White"/>
                 </Button>
                 <Button IsTabStop="False" HorizontalAlignment="Right"

@@ -215,6 +215,9 @@
     <Compile Include="Pages\MalArticlesPage.xaml.cs">
       <DependentUpon>MalArticlesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsArticlesPage.xaml.cs">
+      <DependentUpon>SettingsArticlesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\PageIndex.cs" />
     <Compile Include="Utils\IDetailsPageArgs.cs" />
     <Compile Include="Pages\LogInPage.xaml.cs">
@@ -419,6 +422,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SettingsPages\SettingsAboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsArticlesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

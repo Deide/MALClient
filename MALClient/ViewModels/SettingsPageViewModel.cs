@@ -69,6 +69,7 @@ namespace MALClient.ViewModels
             new SettingsPageEntry {Header = "General",Subtitle = "Default filters, theme etc.",Symbol = Symbol.Setting,PageType = typeof(SettingsGeneralPage)},
             new SettingsPageEntry {Header = "Caching",Subtitle = "Cached data and caching options.",Symbol = Symbol.SaveLocal,PageType = typeof(SettingsCachingPage)},
             new SettingsPageEntry {Header = "Calendar",Subtitle = "Build options, behaviours etc.",Symbol = Symbol.CalendarWeek,PageType = typeof(SettingsCalendarPage)},
+            new SettingsPageEntry {Header = "Articles",Subtitle = "Article view settings.",Symbol = Symbol.PreviewLink,PageType = typeof(SettingsArticlesPage)},
             new SettingsPageEntry {Header = "News",Subtitle = "News regarding app development, bugs etc.",Symbol = Symbol.PostUpdate,PageType = typeof(SettingsNewsPage)},
             new SettingsPageEntry {Header = "About",Subtitle = "Github repo, donations etc.",Symbol = Symbol.Manage,PageType = typeof(SettingsAboutPage)},
             new SettingsPageEntry {Header = "Miscellaneous",Subtitle = "Review popup settings...",Symbol = Symbol.Placeholder,PageType = typeof(SettingsMiscPage)}
@@ -300,6 +301,12 @@ namespace MALClient.ViewModels
         {
             get { return Settings.DetailsListRecomsView; }
             set { Settings.DetailsListRecomsView = value; }
+        }
+
+        public static bool ArticlesLaunchExternalLinks
+        {
+            get { return Settings.ArticlesLaunchExternalLinks; }
+            set { Settings.ArticlesLaunchExternalLinks = value; }
         }
 
         private List<NewsData> _currentNews { get; set; } = new List<NewsData>();

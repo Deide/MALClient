@@ -525,7 +525,7 @@
                                             Margin="0,0,2,0"
                                             VerticalAlignment="Center"
                                             Foreground="{Binding ElementName=TxtSettings , Path=Foreground}" />
-                                <TextBlock x:Name="TxtSettings" Text="Settings&amp;About" HorizontalAlignment="Left"
+                                <TextBlock x:Name="TxtSettings" Text="Settings &amp; About" HorizontalAlignment="Left"
                                            Foreground="{Binding Path=TxtForegroundBrushes[Settings]}"
                                            Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
                             </Grid>

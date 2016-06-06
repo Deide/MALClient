@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -15,6 +16,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using MALClient.Comm;
+using MALClient.Comm.Anime;
 using MALClient.ViewModels;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -158,7 +161,9 @@ namespace MALClient.Pages
         .news-info-block
         {
 	        width: 100%;
-	        background-color: #0d0d0d;
+	        border-style: solid;
+            border-width: 0px 0px 2px 0px;
+            border-color: AccentColourDark;
         }
 
         .information
@@ -210,22 +215,30 @@ namespace MALClient.Pages
             base.OnNavigatedFrom(e);
         }
 
-        private void ArticleWebView_OnNavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        private async void ArticleWebView_OnNavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             try
             {
                 if (args.Uri != null)
                 {
-                  if (args.Uri.ToString().Contains("anime/") || args.Uri.ToString().Contains("manga/"))
+                    args.Cancel = true;
+                    if (Regex.IsMatch(args.Uri.ToString(), "anime\\/\\d") || (Settings.SelectedApiType != ApiType.Hummingbird && Regex.IsMatch(args.Uri.ToString(), "manga\\/\\d")))
                     {
                         var link = args.Uri.ToString().Substring(7).Split('/');
+                        int id = int.Parse(link[2]);
+                        if (Settings.SelectedApiType == ApiType.Hummingbird) //id switch            
+                            id = await new AnimeDetailsHummingbirdQuery(id).GetHummingbirdId();
                         ViewModelLocator.Main.Navigate(PageIndex.PageAnimeDetails,
-                            new AnimeDetailsPageNavigationArgs(int.Parse(link[2]), link[3], null, null)
+                            new AnimeDetailsPageNavigationArgs(id, link[3], null, null)
                             {
                                 AnimeMode = link[1] == "anime"
                             });
                     }
-                    args.Cancel = true;
+                    else if(Settings.ArticlesLaunchExternalLinks)
+                    {
+                        await Launcher.LaunchUriAsync(args.Uri);
+                    }
+                    
                 }
             }
             catch (Exception)
