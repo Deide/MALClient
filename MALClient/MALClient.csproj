@@ -209,12 +209,12 @@
     <Compile Include="Pages\HummingbirdProfilePage.xaml.cs">
       <DependentUpon>HummingbirdProfilePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\PageIndex.cs" />
-    <Compile Include="Pages\IDetailsPageArgs.cs" />
+    <Compile Include="Utils\PageIndex.cs" />
+    <Compile Include="Utils\IDetailsPageArgs.cs" />
     <Compile Include="Pages\LogInPage.xaml.cs">
       <DependentUpon>LogInPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\PageUtils.cs" />
+    <Compile Include="Utils\PageUtils.cs" />
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>

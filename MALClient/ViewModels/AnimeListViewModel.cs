@@ -1001,8 +1001,8 @@ namespace MALClient.ViewModels
             {
                 if (value == _statusSelectorSelectedIndex)
                     return;
-                View.SetUpperPivotIndex(value);
                 _statusSelectorSelectedIndex = value;
+                View.SetUpperPivotIndex(value);               
                 RaisePropertyChanged(() => StatusSelectorSelectedIndex);
                 ViewModelLocator.Hamburger.UpdateAnimeFiltersSelectedIndex();
                 if (!Initializing)

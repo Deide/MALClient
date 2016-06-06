@@ -96,14 +96,11 @@
                     <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="50" />
                 </Grid.ColumnDefinitions>
-                <Button IsTabStop="False" HorizontalAlignment="Right"
+                <Button IsTabStop="False" HorizontalAlignment="Right" Background="{ThemeResource SystemControlHighlightListAccentLowBrush}"
                         VerticalAlignment="Center" Width="45" Height="48" Grid.Column="0"
                         Command="{Binding NavigateBackCommand}" 
                         Visibility="{Binding NavigateBackButtonVisibility}">
                     <SymbolIcon Symbol="Back" Foreground="White"/>
-                    <Button.Background>
-                        <SolidColorBrush Color="{StaticResource SystemAccentColor}" Opacity=".5"></SolidColorBrush>
-                    </Button.Background>
                 </Button>
                 <Button IsTabStop="False" HorizontalAlignment="Right"
                         VerticalAlignment="Center" Width="45" Height="48" Grid.Column="3" Background="Transparent"
