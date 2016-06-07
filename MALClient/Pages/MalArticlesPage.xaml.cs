@@ -42,11 +42,12 @@ namespace MALClient.Pages
 	        {
 		        background-color: #2a2c2a;
 		        color: white;
+                font-family: 'Segoe UI';
 	        }
 	        .userimg
 	        {
 		        display: block;
-		        margin: 0 auto;
+		        margin: 10px auto;
 		        max-width: 100%;
 		        height: auto;
 		        -webkit-box-shadow: 0px 0px 67px 5px rgba(0,0,0,0.58);
@@ -76,6 +77,7 @@ namespace MALClient.Pages
             left: 0;
             right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
             overflow-y: scroll;
+            padding-right: 20px;
         }
         h1 {
 	        font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
@@ -177,23 +179,31 @@ namespace MALClient.Pages
         }</style>";
 #endregion
 
+        private MalArticlesPageNavigationArgs _lastArgs;
+
         public MalArticlesPage()
         {
             this.InitializeComponent();
-            Loaded += (sedner,args) => ViewModel.Init();
+            Loaded += (sedner,args) => ViewModel.Init(_lastArgs);
             ViewModel.OpenWebView += ViewModelOnOpenWebView;
         }
 
         private void ViewModelOnOpenWebView(string html)
         {
             var uiSettings = new Windows.UI.ViewManagement.UISettings();
-            var color = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.AccentLight1);
-            var color1 = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.AccentDark1);
+            var color = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Accent);
+            var color1 = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.AccentDark2);
             var color2 = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.AccentLight2);
-            var css = Css.Replace("AccentColourBase", "#" + color2.ToString().Substring(3)).
-                Replace("AccentColourLight", "#" + color.ToString().Substring(3)).
+            var css = Css.Replace("AccentColourBase", "#" + color.ToString().Substring(3)).
+                Replace("AccentColourLight", "#" + color2.ToString().Substring(3)).
                 Replace("AccentColourDark", "#" + color1.ToString().Substring(3));
             ArticleWebView.NavigateToString(css + Begin + html + "</div></body></html>");
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            _lastArgs = e.Parameter as MalArticlesPageNavigationArgs;
+            base.OnNavigatedTo(e);
         }
 
         private void ListViewBase_OnItemClick(object sender, ItemClickEventArgs e)
@@ -225,6 +235,14 @@ namespace MALClient.Pages
                     if (Regex.IsMatch(args.Uri.ToString(), "anime\\/\\d") || (Settings.SelectedApiType != ApiType.Hummingbird && Regex.IsMatch(args.Uri.ToString(), "manga\\/\\d")))
                     {
                         var link = args.Uri.ToString().Substring(7).Split('/');
+                        if (link[3] == "")
+                        {
+                            if (Settings.ArticlesLaunchExternalLinks)
+                            {
+                                await Launcher.LaunchUriAsync(args.Uri);
+                            }
+                            return;
+                        }
                         int id = int.Parse(link[2]);
                         if (Settings.SelectedApiType == ApiType.Hummingbird) //id switch            
                             id = await new AnimeDetailsHummingbirdQuery(id).GetHummingbirdId();

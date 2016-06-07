@@ -251,6 +251,12 @@ namespace MALClient.ViewModels
                     return AnimeListPageNavigationArgs.TopAnime;
                 case PageIndex.PageTopManga:
                     return AnimeListPageNavigationArgs.TopManga;
+                case PageIndex.PageProfile:
+                    return new ProfilePageNavigationArgs {TargetUser = Credentials.UserName};
+                case PageIndex.PageArticles:
+                    return MalArticlesPageNavigationArgs.Articles;
+                case PageIndex.PageNews:
+                    return MalArticlesPageNavigationArgs.News;
                 default:
                     return null;
             }
@@ -325,6 +331,7 @@ namespace MALClient.ViewModels
             TxtForegroundBrushes["TopManga"] = new SolidColorBrush(color);
             TxtForegroundBrushes["Calendar"] = new SolidColorBrush(color);
             TxtForegroundBrushes["Articles"] = new SolidColorBrush(color);
+            TxtForegroundBrushes["News"] = new SolidColorBrush(color);
 
             TxtBorderBrushThicknesses["AnimeList"] = new Thickness(0);
             TxtBorderBrushThicknesses["MangaList"] = new Thickness(0);
@@ -340,6 +347,7 @@ namespace MALClient.ViewModels
             TxtBorderBrushThicknesses["TopManga"] = new Thickness(0);
             TxtBorderBrushThicknesses["Calendar"] = new Thickness(0);
             TxtBorderBrushThicknesses["Articles"] = new Thickness(0);
+            TxtBorderBrushThicknesses["News"] = new Thickness(0);
         }
 
         public void SetActiveButton(HamburgerButtons val)

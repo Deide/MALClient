@@ -19,11 +19,19 @@ namespace MALClient
         private static ICommand _currentOverrideMain;
         private static readonly Stack<AnimeDetailsPageNavigationArgs> _detailsNavStack =
             new Stack<AnimeDetailsPageNavigationArgs>(10);
+        private static readonly Stack<ProfilePageNavigationArgs> _profileNavigationStack =
+            new Stack<ProfilePageNavigationArgs>(10);
 
-        public static void RegisterBackNav(object args)
+        public static void RegisterBackNav(AnimeDetailsPageNavigationArgs args)
         {
-            _detailsNavStack.Push(args as AnimeDetailsPageNavigationArgs);
+            _detailsNavStack.Push(args);
             ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Visible;
+        }
+
+        public static void RegisterBackNav(ProfilePageNavigationArgs args)
+        {
+            _profileNavigationStack.Push(args);
+            ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Visible;
         }
 
         public static void CurrentViewOnBackRequested()
@@ -72,6 +80,14 @@ namespace MALClient
                 _currentOverrideMain = null;
                 ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
             }
+
+
+            if (_profileNavigationStack.Count == 0) //when we are called from mouse back button
+                return;
+
+            ViewModelLocator.Main.Navigate(PageIndex.PageProfile, _profileNavigationStack.Pop());
+            if (_detailsNavStack.Count == 0)
+                ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
         }
 
         #endregion

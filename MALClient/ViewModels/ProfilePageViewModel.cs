@@ -277,9 +277,17 @@ namespace MALClient.ViewModels
             new Dictionary<string, Tuple<List<AnimeItemAbstraction>, List<AnimeItemAbstraction>>>();
 
         private string _currUser;
+        public ProfilePageNavigationArgs PrevArgs;
         public async void LoadProfileData(ProfilePageNavigationArgs args, bool force = false)
         {
-            if (_currUser == null || _currUser != args?.TargetUser || force)
+            if (args == null)
+                args = PrevArgs;
+            else
+                PrevArgs = args;
+
+            if(args == null)
+                return;
+            if (_currUser == null || _currUser != args.TargetUser || force)
             {
                 LoadingVisibility = Visibility.Visible;
                 await Task.Run(async () => CurrentData = await new ProfileQuery(false,args?.TargetUser ?? "").GetProfileData(force));

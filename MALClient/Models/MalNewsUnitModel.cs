@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace MALClient.Models
 {
+    public enum MalNewsType
+    {
+        Article,
+        News,
+    }
+
     public class MalNewsUnitModel
     {
         public string ImgUrl { get; set; }
@@ -15,5 +21,6 @@ namespace MALClient.Models
         public string Author { get; set; }
         public string Views { get; set; }
         public string Tags { get; set; }
+        public MalNewsType Type { get; set; }
     }
 }

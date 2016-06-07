@@ -5,14 +5,17 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using MALClient.Models;
 
 namespace MALClient.Comm.Articles
 {
     public class MalArticleQuery : Query
     {
-        private string _title;
-        public MalArticleQuery(string url,string title)
+        private readonly string _title;
+        private readonly MalNewsType _type;
+        public MalArticleQuery(string url,string title,MalNewsType type)
         {
+            _type = type;
             _title = title;
             Request =
                 WebRequest.Create(Uri.EscapeUriString(url));
@@ -22,7 +25,7 @@ namespace MALClient.Comm.Articles
 
         public async Task<string> GetArticleHtml()
         {
-            var possibleData = await DataCache.RetrieveArticleContentData(_title);
+            var possibleData = await DataCache.RetrieveArticleContentData(_title,_type);
             if (possibleData != null)
                 return possibleData;
             var raw = await GetRequestResponse();
@@ -31,7 +34,7 @@ namespace MALClient.Comm.Articles
             var doc = new HtmlDocument();
             doc.LoadHtml(raw);
             var htmlData = doc.FirstOfDescendantsWithClass("div", "news-container").OuterHtml;
-            DataCache.SaveArticleContentData(_title,htmlData);
+            DataCache.SaveArticleContentData(_title,htmlData,_type);
             return htmlData;
         }
     }

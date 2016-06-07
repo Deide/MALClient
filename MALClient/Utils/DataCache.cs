@@ -8,6 +8,7 @@ using MALClient.Comm.Anime;
 using MALClient.Items;
 using MALClient.Models;
 using MALClient.Pages;
+using MALClient.ViewModels;
 using Newtonsoft.Json;
 
 
@@ -719,7 +720,7 @@ namespace MALClient
         #endregion
 
         #region ArticlesIndex
-        public static async void SaveArticleIndexData(List<MalNewsUnitModel> data)
+        public static async void SaveArticleIndexData(ArticlePageWorkMode mode,List<MalNewsUnitModel> data)
         {
             try
             {
@@ -734,7 +735,7 @@ namespace MALClient
                         JsonConvert.SerializeObject(new Tuple<DateTime, List<MalNewsUnitModel>>(DateTime.UtcNow, data));
                     var file =
                         await
-                            folder.CreateFileAsync("mal_article_index.json",
+                            folder.CreateFileAsync(mode == ArticlePageWorkMode.Articles ? "mal_article_index.json" : "mal_news_index.json",
                                 CreationCollisionOption.ReplaceExisting);
                     await FileIO.WriteTextAsync(file, json);
                 });
@@ -745,7 +746,7 @@ namespace MALClient
             }
         }
 
-        public static async Task<List<MalNewsUnitModel>> RetrieveArticleIndexData()
+        public static async Task<List<MalNewsUnitModel>> RetrieveArticleIndexData(ArticlePageWorkMode mode)
         {
             try
             {
@@ -753,7 +754,7 @@ namespace MALClient
                     await
                         ApplicationData.Current.LocalFolder.CreateFolderAsync("Articles",
                             CreationCollisionOption.OpenIfExists);
-                var file = await folder.GetFileAsync("mal_article_index.json");
+                var file = await folder.GetFileAsync(mode == ArticlePageWorkMode.Articles ? "mal_article_index.json" : "mal_news_index.json");
                 var data = await FileIO.ReadTextAsync(file);
                 var tuple =
                     JsonConvert.DeserializeObject<Tuple<DateTime, List<MalNewsUnitModel>>>(data);
@@ -769,7 +770,7 @@ namespace MALClient
         #endregion
         
         #region ArticlesContent
-        public static async void SaveArticleContentData(string title,string htmlData)
+        public static async void SaveArticleContentData(string title,string htmlData,MalNewsType type)
         {
             try
             {
@@ -784,18 +785,18 @@ namespace MALClient
                         JsonConvert.SerializeObject(new Tuple<DateTime, string>(DateTime.UtcNow, htmlData));
                     var file =
                         await
-                            folder.CreateFileAsync($"mal_article_html_{title}.json",
+                            folder.CreateFileAsync($"mal_{(type == MalNewsType.Article ? "article" : "news")}_html_{title}.json",
                                 CreationCollisionOption.ReplaceExisting);
                     await FileIO.WriteTextAsync(file, json);
                 });
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //magic
             }
         }
 
-        public static async Task<string> RetrieveArticleContentData(string title)
+        public static async Task<string> RetrieveArticleContentData(string title, MalNewsType type)
         {
             try
             {
@@ -803,7 +804,7 @@ namespace MALClient
                     await
                         ApplicationData.Current.LocalFolder.CreateFolderAsync("Articles",
                             CreationCollisionOption.OpenIfExists);
-                var file = await folder.GetFileAsync($"mal_article_html_{title}.json");
+                var file = await folder.GetFileAsync($"mal_{(type == MalNewsType.Article ? "article" : "news")}_html_{title}.json");
                 var data = await FileIO.ReadTextAsync(file);
                 var tuple =
                     JsonConvert.DeserializeObject<Tuple<DateTime, string>>(data);

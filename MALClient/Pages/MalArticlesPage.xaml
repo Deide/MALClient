@@ -8,10 +8,6 @@
     xmlns:converters="using:MALClient.XamlConverters"
     mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator},Path=MalArticles}">
 
-    <Page.Resources>
-        <converters:VisiblityInverterConverter x:Key="VisiblityInverterConverter"/>
-    </Page.Resources>
-    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <WebView x:Name="ArticleWebView" NavigationCompleted="ArticleWebView_OnNavigationCompleted" NavigationStarting="ArticleWebView_OnNavigationStarting" RequestedTheme="Dark" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScriptNotify="ArticleWebView_OnScriptNotify" Visibility="{Binding WebViewVisibility}"/>
         <ProgressRing IsActive="True" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding LoadingVisibility}"/>
@@ -29,12 +25,12 @@
                 <DataTemplate>
                     <Grid Background="{ThemeResource BrushAnimeItemBackground}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="Auto" MaxWidth="200"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image Stretch="Fill" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Top">
                             <Image.Source>
-                                <BitmapImage UriSource="{Binding ImgUrl}" DecodePixelType="Logical" DecodePixelHeight="200" DecodePixelWidth="200"/>
+                                <BitmapImage UriSource="{Binding ImgUrl}" DecodePixelType="Logical" DecodePixelHeight="{Binding Source={StaticResource Locator},Path=MalArticles.ThumbnailHeight}" DecodePixelWidth="{Binding Source={StaticResource Locator},Path=MalArticles.ThumbnailWidth}"/>
                             </Image.Source>
                         </Image>
                         <Grid Grid.Column="1" Margin="15,2,5,10">

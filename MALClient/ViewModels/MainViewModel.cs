@@ -111,7 +111,8 @@ namespace MALClient.ViewModels
                      index == PageIndex.PageLogIn ||
                      index == PageIndex.PageMangaSearch ||
                      index == PageIndex.PageCalendar ||
-                     index == PageIndex.PageArticles)
+                     index == PageIndex.PageArticles ||
+                     index == PageIndex.PageNews)
             {
                 ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(false);
                 currPage = index;
@@ -187,12 +188,12 @@ namespace MALClient.ViewModels
                     break;
                 case PageIndex.PageProfile:
                     HideSearchStuff();
-                    RefreshButtonVisibility = Visibility.Collapsed;
-                    //if (Settings.SelectedApiType == ApiType.Mal)
-                    //    RefreshDataCommand =
-                    //        new RelayCommand(() => ViewModelLocator.ProfilePage.LoadProfileData(null, true));
-                    //else
-                    //    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.HumProfilePage.Init(true));
+                    RefreshButtonVisibility = Visibility.Visible;
+                    if (Settings.SelectedApiType == ApiType.Mal)
+                        RefreshDataCommand =
+                            new RelayCommand(() => ViewModelLocator.ProfilePage.LoadProfileData(null, true));
+                    else
+                        RefreshDataCommand = new RelayCommand(() => ViewModelLocator.HumProfilePage.Init(true));
                     if (Settings.SelectedApiType == ApiType.Mal)
                     {
                         if (CurrentMainPage == PageIndex.PageProfile)
@@ -219,8 +220,10 @@ namespace MALClient.ViewModels
                     View.Navigate(typeof(CalendarPage), args);
                     break;
                 case PageIndex.PageArticles:
+                case PageIndex.PageNews:
                     HideSearchStuff();
-                    CurrentStatus = "Articles";
+                    RefreshButtonVisibility = Visibility.Visible;
+                    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.MalArticles.Init(args as MalArticlesPageNavigationArgs,true));
                     View.Navigate(typeof(MalArticlesPage), args);
                     break;
                 default:
