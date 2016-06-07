@@ -6,7 +6,7 @@
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="BrushDeepBackground" Color="White" />
-            <SolidColorBrush x:Key="BrushAppBars" Color="#e6e6e6" />
+            <SolidColorBrush x:Key="BrushAppBars" Color="#dbdbdb" />
             <SolidColorBrush x:Key="BrushPivotHeaderBackground" Color="#E1E1E1" />
             <SolidColorBrush x:Key="BrushHamburgerBackground" Color="#f3f3f3" />
             <SolidColorBrush x:Key="BrushAnimeItemBackground" Color="#F0F0F0" />
@@ -22,7 +22,7 @@
             <SolidColorBrush x:Key="BrushDetailsUpperBackground" Color="LightGray" Opacity=".25" />
             <SolidColorBrush x:Key="BrushDetailsMoreButton" Color="#E6E6E6" />
             <SolidColorBrush x:Key="BrushPivotInnerHeaderBarBackground" Color="#f3f3f3" />
-            <SolidColorBrush x:Key="BrushSplitter" Color="#e6e6e6" />
+            <SolidColorBrush x:Key="BrushSplitter" Color="#dbdbdb" />
             <SolidColorBrush x:Key="BrushHamburgerMenuButtonsBorder" Color="#1f1f1f" />
             <SolidColorBrush x:Key="BrushHamburgerSplitter" Color="#aff8f8f8" />
             <SolidColorBrush x:Key="BrushHamburgerSplitterBorder" Color="#bfbfbf" />

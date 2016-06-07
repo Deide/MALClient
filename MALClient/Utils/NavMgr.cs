@@ -60,6 +60,13 @@ namespace MALClient
             ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Collapsed;
         }
 
+        public static void ResetMainBackNav()
+        {
+            _profileNavigationStack.Clear();
+            _currentOverrideMain = null;
+            ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
+        }
+
         public static void RegisterOneTimeOverride(ICommand command)
         {
             _currentOverride = command;
@@ -91,5 +98,7 @@ namespace MALClient
         }
 
         #endregion
+
+
     }
 }

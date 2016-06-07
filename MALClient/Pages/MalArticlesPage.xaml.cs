@@ -35,13 +35,10 @@ namespace MALClient.Pages
         #region Css
         const string Css =
             @"<style type=""text/css"">@charset ""UTF-8"";
-            ::-webkit-scrollbar { 
-                display: none; 
-            }
 	        html, body
 	        {
-		        background-color: #2a2c2a;
-		        color: white;
+		        background-color: BodyBackgroundThemeColor;
+		        color: BodyForegroundThemeColor;
                 font-family: 'Segoe UI';
 	        }
 	        .userimg
@@ -78,6 +75,7 @@ namespace MALClient.Pages
             right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
             overflow-y: scroll;
             padding-right: 20px;
+            padding-left: 5px;
         }
         h1 {
 	        font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
@@ -116,13 +114,14 @@ namespace MALClient.Pages
         hr {
             display: block;
             height: 2px;
-	        background-color: #0d0d0d;
+	        background-color: HorizontalSeparatorColor;
 	        border-radius: 10px 10px 10px 10px;
 	        -moz-border-radius: 10px 10px 10px 10px;
 	        -webkit-border-radius: 10px 10px 10px 10px;
 	        border: 1px solid #1f1f1f;
             margin: 1em 0;
-            padding: 0; 
+            margin-right: 20px;
+            padding-right: 0;
         }
         p {
 	        font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
@@ -196,7 +195,12 @@ namespace MALClient.Pages
             var color2 = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.AccentLight2);
             var css = Css.Replace("AccentColourBase", "#" + color.ToString().Substring(3)).
                 Replace("AccentColourLight", "#" + color2.ToString().Substring(3)).
-                Replace("AccentColourDark", "#" + color1.ToString().Substring(3));
+                Replace("AccentColourDark", "#" + color1.ToString().Substring(3))
+                .Replace("BodyBackgroundThemeColor",
+                    Settings.SelectedTheme == ApplicationTheme.Dark ? "#2d2d2d" : "#e6e6e6")
+                .Replace("BodyForegroundThemeColor",
+                    Settings.SelectedTheme == ApplicationTheme.Dark ? "white" : "black").Replace(
+                "HorizontalSeparatorColor", Settings.SelectedTheme == ApplicationTheme.Dark ? "#0d0d0d" : "#b3b3b3");
             ArticleWebView.NavigateToString(css + Begin + html + "</div></body></html>");
         }
 
@@ -221,6 +225,7 @@ namespace MALClient.Pages
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            NavMgr.ResetMainBackNav();
             ArticleWebView.NavigateToString("");
             base.OnNavigatedFrom(e);
         }
@@ -231,10 +236,14 @@ namespace MALClient.Pages
             {
                 if (args.Uri != null)
                 {
+                    string uri = args.Uri.ToString();
+                    var paramIndex = uri.IndexOf('?');
+                    if (paramIndex != -1)
+                        uri = uri.Substring(0, paramIndex);
                     args.Cancel = true;
-                    if (Regex.IsMatch(args.Uri.ToString(), "anime\\/\\d") || (Settings.SelectedApiType != ApiType.Hummingbird && Regex.IsMatch(args.Uri.ToString(), "manga\\/\\d")))
+                    if (Regex.IsMatch(uri, "anime\\/\\d") || (Settings.SelectedApiType != ApiType.Hummingbird && Regex.IsMatch(uri, "manga\\/\\d")))
                     {
-                        var link = args.Uri.ToString().Substring(7).Split('/');
+                        var link = uri.Substring(7).Split('/');
                         if (link[3] == "")
                         {
                             if (Settings.ArticlesLaunchExternalLinks)
