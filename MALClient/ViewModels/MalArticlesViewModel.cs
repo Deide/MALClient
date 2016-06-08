@@ -142,7 +142,7 @@ namespace MALClient.ViewModels
 
             Articles.Clear();
             LoadingVisibility = Visibility.Visible;
-            Articles = await Task.Run(async () => await new MalArticlesIndexQuery(args.WorkMode).GetArticlesIndex(force));
+            Articles = await new MalArticlesIndexQuery(args.WorkMode).GetArticlesIndex(force);
             LoadingVisibility = Visibility.Collapsed;
         }
 

@@ -47,7 +47,7 @@ namespace MALClient.Comm
                             var current = new MalNewsUnitModel();
                             var img = newsUnit.Descendants("a").First();
                             current.Url = img.Attributes["href"].Value;
-                            current.ImgUrl = img.Descendants("img").First().Attributes["src"].Value;
+                            current.ImgUrl = img.Descendants("img").First().Attributes["data-src"].Value;
                             var contentDivs = newsUnit.Descendants("div").ToList();
                             current.Title = WebUtility.HtmlDecode(contentDivs[0].Descendants("p").First().InnerText.Trim());
                             current.Highlight = WebUtility.HtmlDecode(contentDivs[1].InnerText.Trim());
