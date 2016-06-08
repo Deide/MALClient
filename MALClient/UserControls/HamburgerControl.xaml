@@ -408,8 +408,7 @@
                                 <TextBlock Text="&#xE006;" FontFamily="Segoe MDL2 Assets"
                                            HorizontalAlignment="Center" Grid.Column="0" Margin="0,0,2,0"
                                            VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"
-                                           Visibility="{Binding AdLoadingSpinnerVisibility,Converter={StaticResource VisiblityInverterConverter}}"
-                                           >
+                                           Visibility="{Binding AdLoadingSpinnerVisibility,Converter={StaticResource VisiblityInverterConverter}}">
                                     <TextBlock.RenderTransform>
                                         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                                     </TextBlock.RenderTransform>
@@ -417,11 +416,23 @@
                                         <SolidColorBrush x:Name="HearthSupport" Color="{StaticResource SystemAccentColor}"/>
                                     </TextBlock.Foreground>
                                 </TextBlock>
-                                <ProgressRing VerticalAlignment="Center" HorizontalAlignment="Center"
-                                              Grid.Column="0" IsActive="True"
-                                              Visibility="{Binding AdLoadingSpinnerVisibility}" />
                                 <TextBlock Text="Support me!" HorizontalAlignment="Left"
-                                           TextWrapping="WrapWholeWords" FontSize="14" FontWeight="SemiLight"
+                                           TextWrapping="WrapWholeWords"
+                                           Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
+                            </Grid>
+                        </Button>
+                        <Button HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                PointerEntered="Button_PointerEntered"
+                                PointerExited="Button_PointerExited" Click="OpenRepo">
+                            <Grid Height="35">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="FeedbackImage" Stretch="UniformToFill" Width="30" Height="30"/>
+                                <TextBlock Text="Feedback" HorizontalAlignment="Left"                                  
                                            Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
                             </Grid>
                         </Button>
@@ -447,7 +458,7 @@
                                            Foreground="{Binding Path=TxtForegroundBrushes[LogIn]}"
                                            Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
                             </Grid>
-                        </Button>
+                        </Button>                        
                         <Button x:Name="BtnProfile" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
                                 Background="Transparent"
                                 BorderThickness="0"

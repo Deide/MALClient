@@ -1,11 +1,13 @@
 ﻿using System;
 using Windows.ApplicationModel.Store;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using MALClient.ViewModels;
 
 #pragma warning disable 4014
@@ -51,9 +53,6 @@ namespace MALClient.UserControls
 
         private HamburgerControlViewModel ViewModel => (HamburgerControlViewModel) DataContext;
 
-        public AlternatingListView AnimeFilters => AlternatingListViewAnime;
-        public AlternatingListView MangaFilters => AlternatingListViewManga;
-
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             ViewModel.UpdateProfileImg();
@@ -61,6 +60,10 @@ namespace MALClient.UserControls
                 ButtonExpandAnimeFiltersOnClick(null, null);
             if (Settings.HamburgerMangaFiltersExpanded)
                 ButtonExpandMangaFiltersOnClick(null, null);
+
+            FeedbackImage.Source = Settings.SelectedTheme == ApplicationTheme.Dark
+                ? new BitmapImage(new Uri("ms-appx:///Assets/GitHub-Mark-Light-120px-plus.png"))
+                : new BitmapImage(new Uri("ms-appx:///Assets/GitHub-Mark-120px-plus.png"));
         }
 
         private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -132,6 +135,11 @@ namespace MALClient.UserControls
             {
                 // no donation
             }
+        }
+
+        private async void OpenRepo(object sender, RoutedEventArgs e)
+        {
+           await Launcher.LaunchUriAsync(new Uri("https://github.com/Mordonus/MALClient/issues"));
         }
     }
 }
