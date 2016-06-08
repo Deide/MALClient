@@ -1233,6 +1233,16 @@ namespace MALClient.ViewModels
             RaisePropertyChanged(() => DecrementEpsCommand);
         }
 
+        public void CurrentAnimeHasBeenAddedToList(IAnimeData reference)
+        {
+            _animeItemReference = reference;
+            MyDetailsVisibility = true;
+            AddAnimeVisibility = false;
+            RaisePropertyChanged(() => IsIncrementButtonEnabled);
+            RaisePropertyChanged(() => IncrementEpsCommand);
+            RaisePropertyChanged(() => DecrementEpsCommand);
+        }
+
         private async void RemoveAnime()
         {
             var uSure = false;

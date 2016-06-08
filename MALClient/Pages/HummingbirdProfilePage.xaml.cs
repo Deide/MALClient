@@ -44,10 +44,6 @@ namespace MALClient.Pages
             (e.ClickedItem as AnimeItemViewModel).NavigateDetails();
         }
 
-        private void IgnorePivotScroll(object sender, PointerRoutedEventArgs e)
-        {
-            e.Handled = false;
-        }
 
         private void Pivot_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {

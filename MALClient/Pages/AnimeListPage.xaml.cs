@@ -200,14 +200,18 @@ namespace MALClient.Pages
             ViewModel.TemporarilySelectedAnimeItem = e.ClickedItem as AnimeItemViewModel;
         }
 
-        private void AnimesItemsIndefinite_OnItemClick(object sender, ItemClickEventArgs e)
+        private async void AnimesItemsIndefinite_OnItemClick(object sender, ItemClickEventArgs e)
         {
             ViewModel.TemporarilySelectedAnimeItem = e.ClickedItem as AnimeItemViewModel;
+            await Task.Delay(50);
+            AnimesItemsIndefinite.ScrollIntoView(e.ClickedItem);
         }
 
-        private void AnimesGridIndefinite_OnItemClick(object sender, ItemClickEventArgs e)
-        {
+        private async void AnimesGridIndefinite_OnItemClick(object sender, ItemClickEventArgs e)
+        {          
             ViewModel.TemporarilySelectedAnimeItem = e.ClickedItem as AnimeItemViewModel;
+            await Task.Delay(50);
+            AnimesGridIndefinite.ScrollIntoView(e.ClickedItem);
         }
 
         #region Init
