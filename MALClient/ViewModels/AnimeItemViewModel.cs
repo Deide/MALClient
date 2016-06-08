@@ -856,6 +856,8 @@ namespace MALClient.ViewModels
 
         private async void IncrementWatchedEp()
         {
+            if (IncrementEpsVisibility == Visibility.Collapsed)
+                return;
             LoadingUpdate = Visibility.Visible;
 
             var trigCompleted = true;
@@ -885,6 +887,8 @@ namespace MALClient.ViewModels
 
         private async void DecrementWatchedEp()
         {
+            if (DecrementEpsVisibility == Visibility.Collapsed)
+                return;
             LoadingUpdate = Visibility.Visible;
             MyEpisodes--;
             AdjustIncrementButtonsVisibility();
