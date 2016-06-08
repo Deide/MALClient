@@ -225,6 +225,8 @@ namespace MALClient.ViewModels
                         SetSortOrder(SortOptions.SortWatched); //index
                         SetDesiredStatus(null);
                         CurrentSeason = null;
+                        if(SeasonSelection.Count != 0)
+                            SeasonalUrlsSelectedIndex = 1;
                     }
                     StatusAllLabel = WorkMode == AnimeListWorkModes.SeasonalAnime ? "Airing" : "All";
 
@@ -579,7 +581,7 @@ namespace MALClient.ViewModels
                 case AnimeListWorkModes.SeasonalAnime:
                         var tResponse = new List<SeasonalAnimeData>();
                         await Task.Run(new Func<Task>(async () =>
-                            tResponse = await new AnimeSeasonalQuery(CurrentSeason).GetSeasonalAnime()));
+                            tResponse = await new AnimeSeasonalQuery(CurrentSeason).GetSeasonalAnime(force)));
                         data.AddRange(tResponse);
                     break;
                 case AnimeListWorkModes.TopAnime:

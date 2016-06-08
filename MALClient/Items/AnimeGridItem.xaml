@@ -60,15 +60,13 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0"
+            <Image Grid.Row="0"
                controlsExt:ImageExtensions.FadeInOnLoaded="True" Grid.ColumnSpan="2" Stretch="Fill">
-                    <Image.Source>
-                        <BitmapImage UriSource="{x:Bind ViewModel.ImgUrl,Mode=OneWay}" DecodePixelWidth="250" DecodePixelHeight="355" DecodePixelType="Logical"/>
-                    </Image.Source>
-                </Image>
-                <ProgressRing Grid.Row="0" IsActive="True" Visibility="{x:Bind ViewModel.LoadingUpdate,Mode=OneWay}" Height="40" Width="40"
-                      HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Grid Grid.Row="0" Width="Auto" MinWidth="35" HorizontalAlignment="Right" VerticalAlignment="Top"
+                <Image.Source>
+                    <BitmapImage UriSource="{x:Bind ViewModel.ImgUrl,Mode=OneWay}" DecodePixelWidth="250" DecodePixelHeight="355" DecodePixelType="Logical"/>
+                </Image.Source>
+            </Image>
+            <Grid Grid.Row="0" Width="Auto" MinWidth="35" HorizontalAlignment="Right" VerticalAlignment="Top"
               Visibility="{x:Bind ViewModel.UpdateButtonsVisibility,Mode=OneWay}">
                     <Grid.Background>
                         <SolidColorBrush Color="Black" Opacity=".75" />
@@ -91,25 +89,43 @@
                     <Grid.Background>
                         <SolidColorBrush Color="Black" Opacity=".75" />
                     </Grid.Background>
-                    <TextBlock Text="{x:Bind ViewModel.AirDayBind,Mode=OneWay}" FontWeight="SemiLight" VerticalAlignment="Center"
+                    <TextBlock Text="{x:Bind ViewModel.AirDayBind}" FontWeight="SemiLight" VerticalAlignment="Center"
                        HorizontalAlignment="Center" Margin="1" TextAlignment="Center"
-                       Foreground="{x:Bind ViewModel.AirDayBrush,Mode=OneWay}" FontSize="20" />
+                       Foreground="{x:Bind ViewModel.AirDayBrush}" FontSize="20" />
                 </Grid>
                 <Grid Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
               Visibility="{x:Bind ViewModel.Type,Mode=OneWay,Converter={StaticResource AnyTextToVisibilityConverter}}">
                     <Grid.Background>
                         <SolidColorBrush Color="Black" Opacity=".75" />
                     </Grid.Background>
-                    <TextBlock Text="{x:Bind ViewModel.Type,Mode=OneWay}" Foreground="White" FontWeight="SemiLight" FontStyle="Italic" FontSize="13"
+                    <TextBlock Text="{x:Bind ViewModel.Type}" Foreground="White" FontWeight="SemiLight" FontStyle="Italic" FontSize="13"
                        VerticalAlignment="Bottom" Margin="5,0,5,5" />
                 </Grid>
-                <Grid Grid.Row="1" BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
-              BorderThickness="0,1.5,0,0"
-              VerticalAlignment="Stretch"
+            <Grid Grid.Row="1" BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
+              BorderThickness="0,1.5,0,0" VerticalAlignment="Stretch"
               Background="{ThemeResource BrushAnimeItemBackground}">
-                    <TextBlock Text="{x:Bind ViewModel.Title,Mode=OneWay}" Margin="2" Height="Auto" FontWeight="SemiBold"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{x:Bind ViewModel.Title}" Margin="2" Height="Auto" FontWeight="SemiBold"
                        TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" />
-                </Grid>
+                <ProgressBar Margin="0,2" IsIndeterminate="True" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{x:Bind ViewModel.LoadingUpdate,Mode=OneWay}" 
+                          VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+                <Button Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="45" Width="45" RenderTransformOrigin="0.5,0.5"
+                        Command="{x:Bind ViewModel.AddAnimeCommand,Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.AddToListVisibility,Mode=OneWay}"
+                        Background="{ThemeResource AppBarBackgroundThemeBrush}"
+                        BorderThickness="2" BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}">
+                    <SymbolIcon Symbol="Add" />
+                    <ToolTipService.ToolTip>
+                        <ToolTip Content="Add anime to my list."/>
+                    </ToolTipService.ToolTip>
+                    <Button.RenderTransform>
+                        <ScaleTransform ScaleY=".75" ScaleX=".75" />
+                    </Button.RenderTransform>
+                </Button>
+            </Grid>
             <Button Grid.Row="0"
                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="40" Width="40"
                 Visibility="Visible" RenderTransformOrigin="0.5,0.5" Click="BtnMoreClick">

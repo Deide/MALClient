@@ -15,6 +15,7 @@ using GalaSoft.MvvmLight.Command;
 using MALClient.Comm;
 using MALClient.Comm.Anime;
 using MALClient.Items;
+using MALClient.Models;
 using MALClient.Pages;
 
 namespace MALClient.ViewModels
@@ -82,12 +83,49 @@ namespace MALClient.ViewModels
 
         private async void AddThisToMyList()
         {
+            LoadingUpdate = Visibility.Visible;
             var response =
                 ParentAbstraction.RepresentsAnime
                     ? await new AnimeAddQuery(Id.ToString()).GetRequestResponse()
                     : await new MangaAddQuery(Id.ToString()).GetRequestResponse();
+            LoadingUpdate = Visibility.Collapsed;
             if (Settings.SelectedApiType == ApiType.Mal && !response.Contains("Created"))
                 return;
+            var startDate = "0000-00-00";
+            if (Settings.SetStartDateOnListAdd)
+                startDate = DateTimeOffset.Now.ToString("yyyy-MM-dd");
+            var animeItem = ParentAbstraction.RepresentsAnime
+               ? new AnimeLibraryItemData
+               {
+                   Title = Title,
+                   ImgUrl = ImgUrl,
+                   Type = ParentAbstraction.Type,
+                   Id = Id,
+                   AllEpisodes = AllEpisodes,
+                   MalId = ParentAbstraction.MalId,
+                   MyStatus = AnimeStatus.PlanToWatch,
+                   MyEpisodes = 0,
+                   MyScore = 0,
+                   MyStartDate = startDate,
+                   MyEndDate = AnimeItemViewModel.InvalidStartEndDate
+               }
+               : new MangaLibraryItemData
+               {
+                   Title = Title,
+                   ImgUrl = ImgUrl,
+                   Type = ParentAbstraction.Type,
+                   Id = Id,
+                   AllEpisodes = AllEpisodes,
+                   MalId = ParentAbstraction.MalId,
+                   MyStatus = AnimeStatus.PlanToWatch,
+                   MyEpisodes = 0,
+                   MyScore = 0,
+                   MyStartDate = startDate,
+                   MyEndDate = AnimeItemViewModel.InvalidStartEndDate,
+                   AllVolumes = AllVolumes,
+                   MyVolumes = MyVolumes
+               };
+            ParentAbstraction.EntryData = animeItem;
             _seasonalState = false;
             SetAuthStatus(true);
             MyScore = 0;
@@ -99,9 +137,13 @@ namespace MALClient.ViewModels
                 MyVolumes = 0;
 
             ItemManipulationMode = ManipulationModes.All;
-            AdjustIncrementButtonsVisibility();
             AddToListVisibility = Visibility.Collapsed;
             ViewModelLocator.AnimeList.AddAnimeEntry(ParentAbstraction);
+            await Task.Delay(10);      
+            RaisePropertyChanged(() => MyStatusBindShort);     
+            RaisePropertyChanged(() => MyStatusBind);     
+            if(ViewModelLocator.AnimeDetails.Id == Id)
+                ViewModelLocator.AnimeDetails.CurrentAnimeHasBeenAddedToList(this);
         }
 
         public static void UpdateScoreFlyoutChoices()
@@ -296,7 +338,6 @@ namespace MALClient.ViewModels
                 if (ParentAbstraction.MyStatus == value)
                     return;
                 ParentAbstraction.MyStatus = value;
-                AdjustIncrementButtonsOrientation();
                 AdjustIncrementButtonsVisibility();
                 RaisePropertyChanged(() => MyStatusBind);
                 RaisePropertyChanged(() => MyStatusBindShort);
@@ -327,7 +368,6 @@ namespace MALClient.ViewModels
                 if (ParentAbstraction.MyScore == value)
                     return;
                 ParentAbstraction.MyScore = value;
-                AdjustIncrementButtonsOrientation();
                 AdjustIncrementButtonsVisibility();
                 RaisePropertyChanged(() => MyScoreBind);
                 RaisePropertyChanged(() => MyScoreBindShort);
@@ -799,21 +839,6 @@ namespace MALClient.ViewModels
                 IncrementEpsVisibility = Visibility.Visible;
                 DecrementEpsVisibility = Visibility.Visible;
             }
-        }
-
-        private void AdjustIncrementButtonsOrientation()
-        {
-            //Too wide update buttons
-            //if (MyScore != 0)
-            //{
-            //    IncrementButtonsOrientation = Orientation.Horizontal;
-            //    return;
-            //}
-            //if (MyStatus == (int) AnimeStatus.Dropped ||
-            //    MyStatus == (int) AnimeStatus.OnHold ||
-            //    MyStatus == (int) AnimeStatus.Completed ||
-            //    MyStatus == (int) AnimeStatus.Watching)
-            //    IncrementButtonsOrientation = Orientation.Vertical;
         }
 
         #endregion
