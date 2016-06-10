@@ -54,7 +54,7 @@ namespace MALClient.Pages
         private void NavigateProfile(string target)
         {
             NavMgr.RegisterBackNav(ViewModel.PrevArgs);
-            ViewModelLocator.Main.Navigate(PageIndex.PageProfile, new ProfilePageNavigationArgs { TargetUser = target });
+            ViewModelLocator.Main.Navigate(PageIndex.PageProfile, new ProfilePageNavigationArgs(target));
         }
 
 

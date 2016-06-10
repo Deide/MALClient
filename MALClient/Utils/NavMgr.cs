@@ -85,7 +85,9 @@ namespace MALClient
             {
                 _currentOverrideMain.Execute(null);
                 _currentOverrideMain = null;
-                ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
+                if (_profileNavigationStack.Count == 0)
+                    ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
+                return;
             }
 
 
@@ -93,7 +95,7 @@ namespace MALClient
                 return;
 
             ViewModelLocator.Main.Navigate(PageIndex.PageProfile, _profileNavigationStack.Pop());
-            if (_detailsNavStack.Count == 0)
+            if (_profileNavigationStack.Count == 0)
                 ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
         }
 

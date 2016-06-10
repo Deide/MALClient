@@ -21,6 +21,11 @@ namespace MALClient.ViewModels
     public class ProfilePageNavigationArgs
     {
         public string TargetUser { get; set; }
+
+        public ProfilePageNavigationArgs(string target)
+        {
+            TargetUser = target;
+        }
     }
 
     public sealed class ProfilePageViewModel : ViewModelBase
@@ -192,7 +197,15 @@ namespace MALClient.ViewModels
         public ICommand NavigateAnimeListCommand
             =>
                 _navAnimeListCommand ??
-                (_navAnimeListCommand = new RelayCommand(() => ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList,new AnimeListPageNavigationArgs(0,AnimeListWorkModes.Anime) { ListSource = _currUser})));
+                (_navAnimeListCommand = new RelayCommand(() =>
+                {
+                    NavMgr.RegisterOneTimeMainOverride(new RelayCommand(() =>
+                    {
+                        ViewModelLocator.Main.Navigate(PageIndex.PageProfile,new ProfilePageNavigationArgs(CurrentData.User.Name));
+                    }));
+                    ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList,
+                        new AnimeListPageNavigationArgs(0, AnimeListWorkModes.Anime) {ListSource = _currUser});
+                }));
 
         public ICommand NavigateMangaListCommand
             =>

@@ -36,9 +36,9 @@ namespace MALClient.ViewModels
 
     public class MalArticlesViewModel : ViewModelBase
     {
-        private List<MalNewsUnitModel> _articles = new List<MalNewsUnitModel>();
+        private SmartObservableCollection<MalNewsUnitModel> _articles = new SmartObservableCollection<MalNewsUnitModel>();
 
-        public List<MalNewsUnitModel> Articles
+        public SmartObservableCollection<MalNewsUnitModel> Articles
         {
             get { return _articles; }
             set
@@ -91,8 +91,8 @@ namespace MALClient.ViewModels
             }
         }
 
-        private double _thumbnailWidth = 200;
-        private double _thumbnailHeight = 200;
+        private double _thumbnailWidth = 150;
+        private double _thumbnailHeight = 150;
 
         public double ThumbnailWidth
         {
@@ -121,7 +121,7 @@ namespace MALClient.ViewModels
             WebViewVisibility = Visibility.Collapsed;
             ViewModelLocator.Main.CurrentStatus = args.WorkMode == ArticlePageWorkMode.Articles ? "Articles" : "News";
 
-            if (_prevWorkMode == args?.WorkMode)
+            if (_prevWorkMode == args.WorkMode)
                 return;
 
 
@@ -129,7 +129,7 @@ namespace MALClient.ViewModels
             switch (args.WorkMode)
             {
                 case ArticlePageWorkMode.Articles:
-                    ThumbnailWidth = ThumbnailHeight = 200;
+                    ThumbnailWidth = ThumbnailHeight = 150;
                     break;
                 case ArticlePageWorkMode.News:
                     ThumbnailWidth = 100;
@@ -140,9 +140,12 @@ namespace MALClient.ViewModels
             }
             _prevWorkMode = args.WorkMode;
 
+            var data = new List<MalNewsUnitModel>();
             Articles.Clear();
             LoadingVisibility = Visibility.Visible;
-            Articles = await new MalArticlesIndexQuery(args.WorkMode).GetArticlesIndex(force);
+            await Task.Delay(10);
+            await Task.Run(new Func<Task>(async () => data = await new MalArticlesIndexQuery(args.WorkMode).GetArticlesIndex(force)));
+            Articles.AddRange(data);
             LoadingVisibility = Visibility.Collapsed;
         }
 
@@ -155,7 +158,7 @@ namespace MALClient.ViewModels
             {
                 WebViewVisibility = Visibility.Collapsed;
                 ArticleIndexVisibility = Visibility.Visible;
-                ViewModelLocator.Main.CurrentStatus = "Articles";
+                ViewModelLocator.Main.CurrentStatus = _prevWorkMode != null && _prevWorkMode.Value == ArticlePageWorkMode.Articles ? "Artilces" : "News";
             }));
             OpenWebView?.Invoke(await new MalArticleQuery(data.Url, data.Title,data.Type).GetArticleHtml());
         }

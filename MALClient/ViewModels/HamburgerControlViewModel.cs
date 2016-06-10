@@ -252,7 +252,7 @@ namespace MALClient.ViewModels
                 case PageIndex.PageTopManga:
                     return AnimeListPageNavigationArgs.TopManga;
                 case PageIndex.PageProfile:
-                    return new ProfilePageNavigationArgs {TargetUser = Credentials.UserName};
+                    return new ProfilePageNavigationArgs(Credentials.UserName);
                 case PageIndex.PageArticles:
                     return MalArticlesPageNavigationArgs.Articles;
                 case PageIndex.PageNews:

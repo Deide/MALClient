@@ -14,6 +14,8 @@ namespace MALClient.Comm
     {
         private ArticlePageWorkMode _mode;
 
+        private static Dictionary<ArticlePageWorkMode, List<MalNewsUnitModel>> _cachedData =
+            new Dictionary<ArticlePageWorkMode, List<MalNewsUnitModel>>();
         public MalArticlesIndexQuery(ArticlePageWorkMode mode)
         {
             _mode = mode;
@@ -27,6 +29,8 @@ namespace MALClient.Comm
         {
             if (!force)
             {
+                if (_cachedData.ContainsKey(_mode))
+                    return _cachedData[_mode];
                 var possibleData = await DataCache.RetrieveArticleIndexData(_mode);
                 if (possibleData != null)
                     return possibleData;
@@ -107,6 +111,7 @@ namespace MALClient.Comm
                     throw new ArgumentOutOfRangeException();
             }
 
+            _cachedData[_mode] = output;
             DataCache.SaveArticleIndexData(_mode,output);
             return output;
         }
