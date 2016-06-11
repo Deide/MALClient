@@ -137,63 +137,11 @@ namespace MALClient.ViewModels
                             (Settings.CalendarIncludePlanned && abstraction.MyStatus == (int) AnimeStatus.PlanToWatch) ||
                             (Settings.CalendarIncludeWatching && abstraction.MyStatus == (int) AnimeStatus.Watching)))
             {
-                if (abstraction.AirDay != -1)
+                try
                 {
-                    int day = abstraction.AirDay - 1;
-                    if (Settings.AirDayOffset != 0)
+                    if (abstraction.AirDay != -1)
                     {
-                        var sum = Settings.AirDayOffset + day;
-                        if (sum > 6)
-                            day = sum - 7;
-                        else if (sum < 0)
-                            day = 7 + sum;
-                        else
-                            day += Settings.AirDayOffset;
-                    }
-                    if(day >= 0 && day <=7)
-                     CalendarData[day].Items.Add(abstraction.ViewModel);
-                }
-                else if (Settings.SelectedApiType == ApiType.Mal && !abstraction.LoadedVolatile)
-                {
-                    idsToFetch.Add(abstraction);
-                }
-            }
-            if (idsToFetch.Count > 0)
-            {
-                CalendarBuildingVisibility = Visibility.Visible;
-                MaxProgressValue = idsToFetch.Count;
-                foreach (var abstraction in idsToFetch)
-                {
-                    var data =
-                        await
-                            new AnimeGeneralDetailsQuery().GetAnimeDetails(false, abstraction.Id.ToString(),
-                                abstraction.Title, true);
-                    int day;
-                    try
-                    {
-                        day = data.StartDate != AnimeItemViewModel.InvalidStartEndDate &&
-                              (string.Equals(data.Status, "Currently Airing", StringComparison.CurrentCultureIgnoreCase) ||
-                               string.Equals(data.Status, "Not yet aired", StringComparison.CurrentCultureIgnoreCase))
-                            ? (int) DateTime.Parse(data.StartDate).DayOfWeek + 1
-                            : -1;
-                    }
-                    catch (Exception)
-                    {
-                        day = -1;
-                    }
-
-                    DataCache.RegisterVolatileData(abstraction.Id, new VolatileDataCache
-                    {
-                        DayOfAiring = day,
-                        GlobalScore = data.GlobalScore,
-                        AirStartDate = data.StartDate == AnimeItemViewModel.InvalidStartEndDate ? null : data.StartDate
-                    });
-                    if (day != -1)
-                    {
-                        abstraction.AirDay = day;
-                        abstraction.GlobalScore = data.GlobalScore;
-                        abstraction.ViewModel.UpdateVolatileData();
-                        day--;
+                        int day = abstraction.AirDay - 1;
                         if (Settings.AirDayOffset != 0)
                         {
                             var sum = Settings.AirDayOffset + day;
@@ -204,66 +152,142 @@ namespace MALClient.ViewModels
                             else
                                 day += Settings.AirDayOffset;
                         }
-                        CalendarData[day].Items.Add(abstraction.ViewModel);
+                        if (day >= 0 && day <= 7)
+                            CalendarData[day].Items.Add(abstraction.ViewModel);
                     }
-                    ProgressValue++;
-                }
-            }
-
-            if (Settings.CalendarSwitchMonSun)
-            {
-                CalendarData.Move(0, 6);
-                CalendarData[0].Header = Utils.DayToString(DayOfWeek.Monday, true);
-                CalendarData[6].Header = Utils.DayToString(DayOfWeek.Sunday, true);
-                for (int i = 1; i < 6; i++)
-                    CalendarData[i].Header = Utils.DayToString((DayOfWeek) i + 1, true);
-            }
-            else
-                for (int i = 0; i < 7; i++)
-                    CalendarData[i].Header = Utils.DayToString((DayOfWeek) i, true);
-            List<CalendarPivotPage> emptyPages = new List<CalendarPivotPage>();
-            foreach (var calendarPivotPage in CalendarData.Take(CalendarData.Count - 1))
-            {
-                if (calendarPivotPage.Items.Count > 0)
-                    calendarPivotPage.Sub = calendarPivotPage.Items.Count.ToString();
-                else
-                {
-                    if (Settings.CalendarRemoveEmptyDays)
-                        emptyPages.Add(calendarPivotPage);
-                    else
-                        calendarPivotPage.Sub = "-";
-                }
-                if (calendarPivotPage.Items.Count != 0)
-                    (CalendarData[7] as CalendarSummaryPivotPage).Data.Add(
-                        new Tuple<string, List<AnimeItemViewModel>>(calendarPivotPage.FullHeader, calendarPivotPage.Items));
-            }
-            foreach (var emptyPage in emptyPages)
-                CalendarData.Remove(emptyPage);
-
-
-
-            RaisePropertyChanged(() => CalendarData);
-            if (Settings.CalendarStartOnToday)
-            {
-                //we have to find it because it may have been removed
-                //we will do this by comparing header string
-                string today = Utils.DayToString(DateTime.Now.DayOfWeek, true);
-                int index = CalendarData.Count - 1;
-                for (int i = 0; i < CalendarData.Count - 1; i++)
-                {
-                    if (CalendarData[i].Header == today)
+                    else if (Settings.SelectedApiType == ApiType.Mal && !abstraction.LoadedVolatile)
                     {
-                        index = i;
-                        break;
+                        idsToFetch.Add(abstraction);
                     }
                 }
-                CalendarPivotIndex = index;
-            }
-            else
-                CalendarPivotIndex = CalendarData.Count - 1;
+                catch (Exception)
+                {
+                   //there are some numm ref crashes and I don't know really know where
+                   // probably MAL returns some odd stuff and we cannot get details
+                }
 
-            CalendarBuildingVisibility = Visibility.Collapsed;
-            CalendarVisibility = Visibility.Visible;
+            }
+            if (idsToFetch.Count > 0)
+            {
+                try
+                {
+                    CalendarBuildingVisibility = Visibility.Visible;
+                    MaxProgressValue = idsToFetch.Count;
+                    foreach (var abstraction in idsToFetch)
+                    {
+                        var data =
+                            await
+                                new AnimeGeneralDetailsQuery().GetAnimeDetails(false, abstraction.Id.ToString(),
+                                    abstraction.Title, true);
+                        int day;
+                        try
+                        {
+                            day = data.StartDate != AnimeItemViewModel.InvalidStartEndDate &&
+                                  (string.Equals(data.Status, "Currently Airing", StringComparison.CurrentCultureIgnoreCase) ||
+                                   string.Equals(data.Status, "Not yet aired", StringComparison.CurrentCultureIgnoreCase))
+                                ? (int)DateTime.Parse(data.StartDate).DayOfWeek + 1
+                                : -1;
+                        }
+                        catch (Exception)
+                        {
+                            day = -1;
+                        }
+
+                        DataCache.RegisterVolatileData(abstraction.Id, new VolatileDataCache
+                        {
+                            DayOfAiring = day,
+                            GlobalScore = data.GlobalScore,
+                            AirStartDate = data.StartDate == AnimeItemViewModel.InvalidStartEndDate ? null : data.StartDate
+                        });
+                        if (day != -1)
+                        {
+                            abstraction.AirDay = day;
+                            abstraction.GlobalScore = data.GlobalScore;
+                            abstraction.ViewModel.UpdateVolatileData();
+                            day--;
+                            if (Settings.AirDayOffset != 0)
+                            {
+                                var sum = Settings.AirDayOffset + day;
+                                if (sum > 6)
+                                    day = sum - 7;
+                                else if (sum < 0)
+                                    day = 7 + sum;
+                                else
+                                    day += Settings.AirDayOffset;
+                            }
+                            CalendarData[day].Items.Add(abstraction.ViewModel);
+                        }
+                        ProgressValue++;
+                    }
+                }
+                catch (Exception)
+                {
+                    //searching for crash source
+                }
+                
+            }
+            try
+            {
+                if (Settings.CalendarSwitchMonSun)
+                {
+                    CalendarData.Move(0, 6);
+                    CalendarData[0].Header = Utils.DayToString(DayOfWeek.Monday, true);
+                    CalendarData[6].Header = Utils.DayToString(DayOfWeek.Sunday, true);
+                    for (int i = 1; i < 6; i++)
+                        CalendarData[i].Header = Utils.DayToString((DayOfWeek)i + 1, true);
+                }
+                else
+                    for (int i = 0; i < 7; i++)
+                        CalendarData[i].Header = Utils.DayToString((DayOfWeek)i, true);
+                List<CalendarPivotPage> emptyPages = new List<CalendarPivotPage>();
+                foreach (var calendarPivotPage in CalendarData.Take(CalendarData.Count - 1))
+                {
+                    if (calendarPivotPage.Items.Count > 0)
+                        calendarPivotPage.Sub = calendarPivotPage.Items.Count.ToString();
+                    else
+                    {
+                        if (Settings.CalendarRemoveEmptyDays)
+                            emptyPages.Add(calendarPivotPage);
+                        else
+                            calendarPivotPage.Sub = "-";
+                    }
+                    if (calendarPivotPage.Items.Count != 0)
+                        (CalendarData[7] as CalendarSummaryPivotPage).Data.Add(
+                            new Tuple<string, List<AnimeItemViewModel>>(calendarPivotPage.FullHeader, calendarPivotPage.Items));
+                }
+                foreach (var emptyPage in emptyPages)
+                    CalendarData.Remove(emptyPage);
+
+
+
+                RaisePropertyChanged(() => CalendarData);
+                if (Settings.CalendarStartOnToday)
+                {
+                    //we have to find it because it may have been removed
+                    //we will do this by comparing header string
+                    string today = Utils.DayToString(DateTime.Now.DayOfWeek, true);
+                    int index = CalendarData.Count - 1;
+                    for (int i = 0; i < CalendarData.Count - 1; i++)
+                    {
+                        if (CalendarData[i].Header == today)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    CalendarPivotIndex = index;
+                }
+                else
+                    CalendarPivotIndex = CalendarData.Count - 1;
+
+                CalendarBuildingVisibility = Visibility.Collapsed;
+                CalendarVisibility = Visibility.Visible;
+            }
+            catch (Exception)
+            {
+                //now it won't crash at least, this will have to do untill I have some way to reproduce those issues
+            }
+            
         }
     }
 }
