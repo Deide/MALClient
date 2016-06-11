@@ -44,6 +44,7 @@ namespace MALClient.UserControls
 
         private bool _animeFiltersExpanded;
         private bool _mangaFiltersExpanded;
+        private bool _topCategoriesExpanded;
 
         public HamburgerControl()
         {
@@ -110,6 +111,23 @@ namespace MALClient.UserControls
             _mangaFiltersExpanded = !_mangaFiltersExpanded;
         }
 
+
+        private void ButtonExpandTopCategoriesOnClick(object sender, RoutedEventArgs e)
+        {
+            if (!_topCategoriesExpanded)
+            {
+                ExpandTopAnimeCategoriesStoryboard.Begin();
+                RotateTopAnimeCategoriesStoryboard.Begin();
+            }
+            else
+            {
+                CollapseTopAnimeCategoriesStoryboard.Begin();
+                RotateBackTopAnimeCategoriesStoryboard.Begin();
+            }
+
+            _topCategoriesExpanded = !_topCategoriesExpanded;
+        }
+
         private void HamburgerControl_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (e.NewSize.Width == 250.0)
@@ -145,5 +163,6 @@ namespace MALClient.UserControls
         {
            await Launcher.LaunchUriAsync(new Uri("https://github.com/Mordonus/MALClient/issues"));
         }
+
     }
 }

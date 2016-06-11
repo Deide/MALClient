@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MALClient.Comm;
 using MALClient.Models.Favourites;
 using MALClient.Pages;
+using MALClient.ViewModels;
 
 namespace MALClient.Models
 {

@@ -316,6 +316,7 @@
                     <PopupThemeTransition FromVerticalOffset="100"/>
                     <AddDeleteThemeTransition/>
                     <ReorderThemeTransition/>
+                    <RepositionThemeTransition/>
                 </TransitionCollection>
             </GridView.ItemContainerTransitions>
             <GridView.ItemsPanel>

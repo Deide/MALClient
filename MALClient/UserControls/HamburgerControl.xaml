@@ -15,11 +15,12 @@
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:VisiblityInverterConverter x:Key="VisiblityInverterConverter" />
+        <!-- Anime -->
         <Storyboard x:Name="ExpandAnimeListFiltersStoryboard" TargetName="AnimeFiltersList" TargetProperty="Height">
-            <DoubleAnimation EnableDependentAnimation="True" From="0.0" To="265.0" Duration="0:0:.25" />
+            <DoubleAnimation EnableDependentAnimation="True" From="0.0" To="115" Duration="0:0:.25" />
         </Storyboard>
         <Storyboard x:Name="CollapseAnimeListFiltersStoryboard" TargetName="AnimeFiltersList" TargetProperty="Height">
-            <DoubleAnimation EnableDependentAnimation="True" From="265.0" To="0.0" Duration="0:0:.25" />
+            <DoubleAnimation EnableDependentAnimation="True" From="115" To="0.0" Duration="0:0:.25" />
         </Storyboard>
         <Storyboard x:Name="RotateAnimeListFiltersStoryboard" TargetName="ExpandAnimeFiltersButton"
                     TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)">
@@ -44,9 +45,69 @@
                     TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)">
             <DoubleAnimation EnableDependentAnimation="True" From="0.0" To="90.0" Duration="0:0:.25" />
         </Storyboard>
-        <Storyboard x:Name="SupportMeStoryboard" TargetName="HearthSupport" TargetProperty="Color" AutoReverse="True" RepeatBehavior="Forever">
-            <ColorAnimation From="{StaticResource SystemAccentColor}" To="Red" SpeedRatio=".5"/>
+        <!-- Top -->
+        <Storyboard x:Name="ExpandTopAnimeCategoriesStoryboard" TargetName="TopCategoriesList" TargetProperty="Height">
+            <DoubleAnimation EnableDependentAnimation="True" From="0.0" To="140" Duration="0:0:.25" />
         </Storyboard>
+        <Storyboard x:Name="CollapseTopAnimeCategoriesStoryboard" TargetName="TopCategoriesList"
+                    TargetProperty="Height">
+            <DoubleAnimation EnableDependentAnimation="True" From="140" To="0.0" Duration="0:0:.25" />
+        </Storyboard>
+        <Storyboard x:Name="RotateTopAnimeCategoriesStoryboard" TargetName="ExpandTopAnimeCategoriesButton"
+                    TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)">
+            <DoubleAnimation EnableDependentAnimation="True" From="90.0" To="0.0" Duration="0:0:.25" />
+        </Storyboard>
+        <Storyboard x:Name="RotateBackTopAnimeCategoriesStoryboard" TargetName="ExpandTopAnimeCategoriesButton"
+                    TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)">
+            <DoubleAnimation EnableDependentAnimation="True" From="0.0" To="90.0" Duration="0:0:.25" />
+        </Storyboard>
+        <Storyboard x:Name="SupportMeStoryboard" TargetName="HearthSupport" TargetProperty="Color" AutoReverse="True"
+                    RepeatBehavior="Forever">
+            <ColorAnimation From="{StaticResource SystemAccentColor}" To="Red" SpeedRatio=".5" />
+        </Storyboard>
+        <Style x:Key="GridViewItemCustomStyle" TargetType="GridViewItem">
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="TabNavigation" Value="Local" />
+            <Setter Property="IsHoldingEnabled" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,4,4" />
+            <Setter Property="MinWidth" Value="{ThemeResource GridViewItemMinWidth}" />
+            <Setter Property="MinHeight" Value="30" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewItem">
+                        <ListViewItemPresenter
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            SelectionCheckMarkVisualEnabled="True"
+                            CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                            CheckBoxBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                            DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
+                            DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
+                            FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
+                            FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                            PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}"
+                            PointerOverBackground="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"
+                            PointerOverForeground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                            SelectedBackground="Transparent"
+                            SelectedForeground="{ThemeResource SystemControlBackgroundAccentBrush}"
+                            SelectedPointerOverBackground="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"
+                            PressedBackground="{ThemeResource SystemControlHighlightListMediumBrush}"
+                            SelectedPressedBackground="{ThemeResource SystemControlHighlightListAccentHighBrush}"
+                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                            DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                            ReorderHintOffset="{ThemeResource GridViewItemReorderHintThemeOffset}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            ContentMargin="{TemplateBinding Padding}"
+                            CheckMode="Overlay" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid VerticalAlignment="Stretch">
@@ -108,20 +169,34 @@
                                 </Button>
                                 <Grid x:Name="AnimeFiltersList" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
                                       Height="0">
-                                    <Grid Background="{ThemeResource BrushHamburgerDropdownBackground}"
-                                          VerticalAlignment="Stretch"
-                                          Width="50" HorizontalAlignment="Left" />
-                                    <local:AlternatingListView Background="{ThemeResource BrushAppBarInner}"
-                                                               x:Name="AlternatingListViewAnime"
-                                                               ItemsSource="{Binding AnimeListFilters}"
-                                                               SelectedIndex="{Binding CurrentAnimeFiltersSelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                               InvertRowAlternation="True">
-                                        <local:AlternatingListView.ItemTemplate>
+                                    <Grid.Background>
+                                        <SolidColorBrush Color="Black" Opacity=".25" />
+                                    </Grid.Background>
+                                    <GridView
+                                        ItemsSource="{Binding AnimeListFilters}"
+                                        SelectedIndex="{Binding CurrentAnimeFiltersSelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                        <GridView.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Item2}" FontWeight="SemiLight" />
+                                                <TextBlock Text="{Binding Item2}"
+                                                           VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                                           TextAlignment="Center" />
                                             </DataTemplate>
-                                        </local:AlternatingListView.ItemTemplate>
-                                    </local:AlternatingListView>
+                                        </GridView.ItemTemplate>
+                                        <GridView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <ItemsWrapGrid ItemHeight="35" MaximumRowsOrColumns="2"
+                                                               Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </GridView.ItemsPanel>
+                                        <GridView.ItemContainerStyle>
+                                            <Style TargetType="GridViewItem"
+                                                   BasedOn="{StaticResource GridViewItemCustomStyle}">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                <Setter Property="Width" Value="122" />
+                                                <Setter Property="Margin" Value="0" />
+                                            </Style>
+                                        </GridView.ItemContainerStyle>
+                                    </GridView>
                                 </Grid>
                             </Grid>
                         </Button>
@@ -215,29 +290,110 @@
                                 BorderThickness="0"
                                 PointerEntered="Button_PointerEntered"
                                 PointerExited="Button_PointerExited"
+                                RightTapped="ButtonExpandTopCategoriesOnClick"
                                 Command="{Binding ButtonNavigationCommand}"
                                 CommandParameter="11">
-                            <Grid Height="45">
+                            <Grid Height="Auto">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="60" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="45" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                                 <Border
                                     BorderThickness="{Binding TxtBorderBrushThicknesses[TopAnime]}"
                                     BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}"
                                     Grid.ColumnSpan="2" />
-                                <SymbolIcon Symbol="OutlineStar" HorizontalAlignment="Center"
+                                <SymbolIcon Grid.Row="0" HorizontalAlignment="Center" Symbol="OutlineStar"
                                             Grid.Column="0" Margin="0,0,2,0"
                                             VerticalAlignment="Center"
-                                            Foreground="{Binding ElementName=TxtTop , Path=Foreground}" />
-                                <TextBlock x:Name="TxtTop" Text="Top Anime"
+                                            Foreground="{Binding ElementName=TxtTopAnime , Path=Foreground}" />
+                                <TextBlock Grid.Row="0" x:Name="TxtTopAnime" Text="Top Anime"
                                            FontWeight="Medium"
                                            Foreground="{Binding Path=TxtForegroundBrushes[TopAnime]}"
                                            HorizontalAlignment="Left" Grid.Column="1"
                                            VerticalAlignment="Center"
                                            TextAlignment="Center" />
+                                <Button x:Name="ExpandTopAnimeCategoriesButton" Grid.Row="0" Background="Transparent"
+                                        Click="ButtonExpandTopCategoriesOnClick" Width="35" Height="35"
+                                        Margin="0,0,5,0"
+                                        Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                                        RenderTransformOrigin="0.5,0.5">
+                                    <Button.RenderTransform>
+                                        <RotateTransform Angle="90.0" />
+                                    </Button.RenderTransform>
+                                    <SymbolIcon Symbol="Remote" />
+                                </Button>
+                                <Grid x:Name="TopCategoriesList" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
+                                      Height="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width=".5*" />
+                                        <ColumnDefinition Width=".5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.Background>
+                                        <SolidColorBrush Color="Black" Opacity=".25" />
+                                    </Grid.Background>
+                                    <Grid.Resources>
+                                        <Style TargetType="Button">
+                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Height" Value="35" />
+                                        </Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextAlignment" Value="Center" />
+                                        </Style>
+                                    </Grid.Resources>
+                                    <StackPanel Grid.Column="0" Margin="1,0">
+                                        <Button  Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="0">
+                                            <TextBlock Foreground="{Binding TopCategoriesForegorundBrushes[General]}"
+                                                       Text="General" />
+                                        </Button>
+                                        <Button Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="2">
+                                            <TextBlock Foreground="{Binding TopCategoriesForegorundBrushes[Upcoming]}"
+                                                       Text="Upcoming" />
+                                        </Button>
+                                        <Button Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="4">
+                                            <TextBlock Foreground="{Binding TopCategoriesForegorundBrushes[Movies]}"
+                                                       Text="Movies" />
+                                        </Button>
+                                        <Button Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="6">
+                                            <TextBlock Foreground="{Binding TopCategoriesForegorundBrushes[Popular]}"
+                                                       Text="Popular" />
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="1,0">
+                                        <Button Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="1">
+                                            <TextBlock Foreground="{Binding TopCategoriesForegorundBrushes[Airing]}"
+                                                       Text="Airing" />
+                                        </Button>
+                                        <Button Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="3">
+                                            <TextBlock Foreground="{Binding TopCategoriesForegorundBrushes[Tv]}"
+                                                       Text="TV Series" />
+                                        </Button>
+                                        <Button Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="5">
+                                            <TextBlock Foreground="{Binding TopCategoriesForegorundBrushes[Ovas]}"
+                                                       Text="OVAs" />
+                                        </Button>
+                                        <Button Command="{Binding ButtonNavigationTopAnimeCommand}"
+                                                CommandParameter="7">
+                                            <TextBlock
+                                                Foreground="{Binding TopCategoriesForegorundBrushes[Favourited]}"
+                                                Text="Favourites" />
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+
                             </Grid>
-                        </Button>                        
+                        </Button>
                         <Button HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -413,7 +569,7 @@
                                            VerticalAlignment="Center"
                                            TextAlignment="Center" />
                             </Grid>
-                        </Button>                       
+                        </Button>
                         <Button HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -453,9 +609,9 @@
                                 PointerExited="Button_PointerExited" Visibility="Visible">
                             <Button.Flyout>
                                 <MenuFlyout>
-                                    <MenuFlyoutItem Text="Donate $0.99" Tag="Donate1" Click="Donate"/>
-                                    <MenuFlyoutItem Text="Donate $1.99" Tag="Donate2" Click="Donate"/>
-                                    <MenuFlyoutItem Text="Donate $2.99" Tag="Donate3" Click="Donate"/>
+                                    <MenuFlyoutItem Text="Donate $0.99" Tag="Donate1" Click="Donate" />
+                                    <MenuFlyoutItem Text="Donate $1.99" Tag="Donate2" Click="Donate" />
+                                    <MenuFlyoutItem Text="Donate $2.99" Tag="Donate3" Click="Donate" />
                                 </MenuFlyout>
                             </Button.Flyout>
                             <Grid Height="35">
@@ -471,7 +627,8 @@
                                         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                                     </TextBlock.RenderTransform>
                                     <TextBlock.Foreground>
-                                        <SolidColorBrush x:Name="HearthSupport" Color="{StaticResource SystemAccentColor}"/>
+                                        <SolidColorBrush x:Name="HearthSupport"
+                                                         Color="{StaticResource SystemAccentColor}" />
                                     </TextBlock.Foreground>
                                 </TextBlock>
                                 <TextBlock Text="Support me!" HorizontalAlignment="Left"
@@ -489,8 +646,8 @@
                                     <ColumnDefinition Width="60" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Image x:Name="FeedbackImage" Stretch="UniformToFill" Width="30" Height="30"/>
-                                <TextBlock Text="Feedback" HorizontalAlignment="Left"                                  
+                                <Image x:Name="FeedbackImage" Stretch="UniformToFill" Width="30" Height="30" />
+                                <TextBlock Text="Feedback" HorizontalAlignment="Left"
                                            Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
                             </Grid>
                         </Button>
@@ -516,7 +673,7 @@
                                            Foreground="{Binding Path=TxtForegroundBrushes[LogIn]}"
                                            Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
                             </Grid>
-                        </Button>                        
+                        </Button>
                         <Button x:Name="BtnProfile" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
                                 Background="Transparent"
                                 BorderThickness="0"

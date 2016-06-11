@@ -32,6 +32,7 @@ namespace MALClient.ViewModels
 
         private ICommand _buttonAdCommand;
         private ICommand _buttonNavigationCommand;
+        private ICommand _buttonNavigationTopAnimeCommand;
 
         private bool? _prevState;
 
@@ -46,6 +47,7 @@ namespace MALClient.ViewModels
         public HamburgerControlViewModel()
         {
             ResetActiveButton();
+            ResetTopCategoryButtons();
             SetActiveButton(Credentials.Authenticated
                 ? (Settings.DefaultMenuTab == "anime" ? HamburgerButtons.AnimeList : HamburgerButtons.MangaList)
                 : HamburgerButtons.LogIn);
@@ -55,6 +57,7 @@ namespace MALClient.ViewModels
             => Application.Current.RequestedTheme == ApplicationTheme.Dark ? Colors.FloralWhite : Colors.Black;
 
         public Dictionary<string, Brush> TxtForegroundBrushes { get; } = new Dictionary<string, Brush>();
+        public Dictionary<string, Brush> TopCategoriesForegorundBrushes { get; } = new Dictionary<string, Brush>();
 
         public Dictionary<string, Thickness> TxtBorderBrushThicknesses { get; } = new Dictionary<string, Thickness>();
 
@@ -131,63 +134,10 @@ namespace MALClient.ViewModels
         }
 
         public ICommand ButtonNavigationCommand
-        {
-            get
-            {
-                return _buttonNavigationCommand ?? (_buttonNavigationCommand = new RelayCommand<object>(ButtonClick));
-            }
-        }
+            => _buttonNavigationCommand ?? (_buttonNavigationCommand = new RelayCommand<object>(ButtonClick));
 
-       
-        //public ICommand ButtonAdCommand
-        //{
-        //    get
-        //    {
-        //        return _buttonAdCommand ?? (_buttonAdCommand = new RelayCommand(() =>
-        //        {
-        //            AdLoadingSpinnerVisibility = Visibility.Visible;
-        //            if (VungleAdInstance == null)
-        //            {
-        //                VungleAdInstance = AdFactory.GetInstance("5735f9ae0b3973633c00004b");
-
-        //                VungleAdInstance.OnAdPlayableChanged += VungleAdInstanceOnOnAdPlayableChanged;
-        //            }
-
-        //            //var ad = new InterstitialAd();
-        //            //AdLoadingSpinnerVisibility = Visibility.Visible;
-        //            //ad.AdReady += (sender, o1) =>
-        //            //{
-        //            //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
-        //            //    ad.Show();
-        //            //};
-        //            //ad.ErrorOccurred += async (sender, args) =>
-        //            //{
-        //            //    var msg =
-        //            //        new MessageDialog(
-        //            //            "Microsoft has no ads for you :(\nYou can still donate if you want to...",
-        //            //            "Thanks for trying!");
-        //            //    await msg.ShowAsync();
-        //            //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
-        //            //};
-        //            //ad.Completed += (sender, o) => Utils.GiveStatusBarFeedback("Thank you so much :D");
-
-        //            //ad.RequestAd(AdType.Video, "0b4d3120-9383-4469-9e80-812a15f124e3", "294830");
-        //        }
-        //            ));
-        //    }
-        //}
-
-        //private async void VungleAdInstanceOnOnAdPlayableChanged(object sender, AdPlayableEventArgs adPlayableEventArgs)
-        //{
-        //    AdLoadingSpinnerVisibility = Visibility.Visible;
-        //    await
-        //        VungleAdInstance.PlayAdAsync(new AdConfig
-        //        {
-        //            Incentivized = true,
-        //            SoundEnabled = true
-        //        });
-        //}
-
+        public ICommand ButtonNavigationTopAnimeCommand
+            => _buttonNavigationTopAnimeCommand ?? (_buttonNavigationTopAnimeCommand = new RelayCommand<object>(ButtonClickTopCategory));
 
         public Visibility UsrImgPlaceholderVisibility
         {
@@ -235,6 +185,17 @@ namespace MALClient.ViewModels
             }
         }
 
+        private void ButtonClickTopCategory(object o)
+        {
+            if (o == null)
+                return;
+            TopAnimeType type = (TopAnimeType)int.Parse(o as string);
+            ViewModelLocator.Main.Navigate(PageIndex.PageTopAnime, AnimeListPageNavigationArgs.TopAnime(type));
+            SetActiveButton(type);
+            SetActiveButton(HamburgerButtons.TopAnime);
+            
+        }
+
         private object GetAppropriateArgsForPage(PageIndex page)
         {
             switch (page)
@@ -248,7 +209,7 @@ namespace MALClient.ViewModels
                 case PageIndex.PageSearch:
                     return new SearchPageNavigationArgs();
                 case PageIndex.PageTopAnime:
-                    return AnimeListPageNavigationArgs.TopAnime;
+                    return AnimeListPageNavigationArgs.TopAnime(TopAnimeType.General);
                 case PageIndex.PageTopManga:
                     return AnimeListPageNavigationArgs.TopManga;
                 case PageIndex.PageProfile:
@@ -350,9 +311,35 @@ namespace MALClient.ViewModels
             TxtBorderBrushThicknesses["News"] = new Thickness(0);
         }
 
+        private void ResetTopCategoryButtons()
+        {
+            var color = RequestedFontColor;
+            TopCategoriesForegorundBrushes["General"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Airing"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Upcoming"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Tv"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Movies"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Ovas"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Popular"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Favourited"] = new SolidColorBrush(color);
+        }
+
+        public void SetActiveButton(TopAnimeType val)
+        {
+            ResetTopCategoryButtons();
+            TopCategoriesForegorundBrushes[val.ToString()] =
+                Application.Current.Resources["SystemControlBackgroundAccentBrush"] as Brush;
+            RaisePropertyChanged(() => TopCategoriesForegorundBrushes);
+        }
+
         public void SetActiveButton(HamburgerButtons val)
         {
             ResetActiveButton();
+            if (val != HamburgerButtons.TopAnime)
+            {
+                ResetTopCategoryButtons();
+                RaisePropertyChanged(() => TopCategoriesForegorundBrushes);
+            }
             TxtForegroundBrushes[val.ToString()] =
                 Application.Current.Resources["SystemControlBackgroundAccentBrush"] as Brush;
             TxtBorderBrushThicknesses[val.ToString()] = new Thickness(4, 0, 0, 0);
