@@ -69,7 +69,7 @@ namespace MALClient.Comm
                                 Id = Convert.ToInt32(entry.id.ToString()),
                                 MalId = Convert.ToInt32(entry.mal_id.ToString()),
                                 AllEpisodes = allEps,
-                                StartDate = AnimeItemViewModel.InvalidStartEndDate, //TODO : Do sth
+                                StartDate = AnimeItemViewModel.InvalidStartEndDate,
                                 EndDate = AnimeItemViewModel.InvalidStartEndDate,
                                 Status = entry.status.ToString(),
                                 Synopsis = entry.synopsis.ToString(),

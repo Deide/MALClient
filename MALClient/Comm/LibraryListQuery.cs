@@ -157,7 +157,7 @@ namespace MALClient.Comm
                                         MalId = entry.anime.mal_id,
                                         Id = entry.anime.id,
                                         AllEpisodes = entry.anime.episode_count,
-                                        MyStartDate = AnimeItemViewModel.InvalidStartEndDate, //TODO : Do sth
+                                        MyStartDate = AnimeItemViewModel.InvalidStartEndDate,
                                         MyEndDate = AnimeItemViewModel.InvalidStartEndDate,
                                         MyEpisodes = Convert.ToInt32(entry.episodes_watched.ToString()),
                                         MyScore = score,

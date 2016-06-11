@@ -2,6 +2,7 @@
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+using GalaSoft.MvvmLight.Command;
 using MALClient.Models;
 using MALClient.ViewModels;
 
@@ -15,6 +16,7 @@ namespace MALClient.Pages
     public sealed partial class ProfilePage : Page
     {
         private static ProfilePageNavigationArgs _lastArgs;
+        private ProfilePageViewModel ViewModel => DataContext as ProfilePageViewModel;
 
         public ProfilePage()
         {
@@ -24,7 +26,7 @@ namespace MALClient.Pages
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            (DataContext as ProfilePageViewModel).LoadProfileData(_lastArgs);
+            ViewModel.LoadProfileData(_lastArgs);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -41,12 +43,18 @@ namespace MALClient.Pages
 
         private void ListViewBase_OnItemClick(object sender, ItemClickEventArgs e)
         {
-            ViewModelLocator.Main.Navigate(PageIndex.PageProfile, new ProfilePageNavigationArgs { TargetUser = (e.ClickedItem as MalUser).Name });
+            NavigateProfile((e.ClickedItem as MalUser).Name);
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            ViewModelLocator.Main.Navigate(PageIndex.PageProfile,new ProfilePageNavigationArgs {TargetUser = (string)(sender as Button).Tag});
+            NavigateProfile((string)(sender as Button).Tag);
+        }
+
+        private void NavigateProfile(string target)
+        {
+            NavMgr.RegisterBackNav(ViewModel.PrevArgs);
+            ViewModelLocator.Main.Navigate(PageIndex.PageProfile, new ProfilePageNavigationArgs(target));
         }
 
 

@@ -20,7 +20,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <AppxBundle>Auto</AppxBundle>
-    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <AppxPackageDir>C:\Users\dogie\Documents\VisualStudioBuilds\</AppxPackageDir>
     <PackageCertificateThumbprint>87205DEB851A1C5CC6CE7E65C7C282B812C6EE97</PackageCertificateThumbprint>
     <HockeyAppResourceId>b79e78858bdf44c4bfc3a1f37c8fd90c</HockeyAppResourceId>
@@ -120,6 +120,7 @@
     <Compile Include="Comm\Anime\AnimeDetailsHummingbirdQuery.cs" />
     <Compile Include="Comm\Anime\AnimeGeneralDetailsQuery.cs" />
     <Compile Include="Comm\Anime\AnimeTopQuery.cs" />
+    <Compile Include="Comm\Articles\MalArticleQuery.cs" />
     <Compile Include="Comm\CommUtils\HtmlClassDefinitionsQuery.cs" />
     <Compile Include="Comm\CommUtils\HtmlClassMgr.cs" />
     <Compile Include="Comm\ListParameters.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Comm\AuthQuery.cs" />
     <Compile Include="Comm\Anime\AnimeDirectRecommendationsQuery.cs" />
     <Compile Include="Comm\CommUtils\IParameters.cs" />
+    <Compile Include="Comm\Articles\MalArticlesIndexQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
     <Compile Include="Comm\Manga\MangaRemoveQuery.cs" />
     <Compile Include="Comm\Manga\MangaAddQuery.cs" />
@@ -141,6 +143,15 @@
     <Compile Include="Comm\NewsQuery.cs" />
     <Compile Include="Comm\Query.cs" />
     <Compile Include="Comm\Anime\AnimeRelatedQuery.cs" />
+    <Compile Include="Flyouts\HamburgerFlyouts\HamburgerTopCategoriesFlyout.xaml.cs">
+      <DependentUpon>HamburgerTopCategoriesFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Flyouts\HamburgerFlyouts\HamburgerMangaFiltersFlyout .xaml.cs">
+      <DependentUpon>HamburgerMangaFiltersFlyout .xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Flyouts\HamburgerFlyouts\HamburgerAnimeFiltersFlyout.xaml.cs">
+      <DependentUpon>HamburgerAnimeFiltersFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Flyouts\ListItemFlyout.xaml.cs">
       <DependentUpon>ListItemFlyout.xaml</DependentUpon>
     </Compile>
@@ -177,6 +188,7 @@
     <Compile Include="Models\Favourites\FavPerson.cs" />
     <Compile Include="Models\ILibraryData.cs" />
     <Compile Include="Models\ISeasonalAnimeBaseData.cs" />
+    <Compile Include="Models\MalNewsUnitModel.cs" />
     <Compile Include="Models\MangaLibraryItemData.cs" />
     <Compile Include="Models\NewsData.cs" />
     <Compile Include="Models\ProfileData.cs" />
@@ -209,6 +221,13 @@
     <Compile Include="Pages\HummingbirdProfilePage.xaml.cs">
       <DependentUpon>HummingbirdProfilePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\MalArticlesPage.xaml.cs">
+      <DependentUpon>MalArticlesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPages\SettingsArticlesPage.xaml.cs">
+      <DependentUpon>SettingsArticlesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\HamburgerFlyoutService.cs" />
     <Compile Include="Utils\PageIndex.cs" />
     <Compile Include="Utils\IDetailsPageArgs.cs" />
     <Compile Include="Pages\LogInPage.xaml.cs">
@@ -281,6 +300,7 @@
     <Compile Include="ViewModels\HamburgerControlViewModel.cs" />
     <Compile Include="ViewModels\HummingbirdProfilePageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MalArticlesViewModel.cs" />
     <Compile Include="ViewModels\PinTileDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfilePageViewModel.cs" />
     <Compile Include="ViewModels\RecommendationsViewModel.cs" />
@@ -329,6 +349,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Flyouts\HamburgerFlyouts\HamburgerTopCategoriesFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Flyouts\HamburgerFlyouts\HamburgerMangaFiltersFlyout .xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Flyouts\HamburgerFlyouts\HamburgerAnimeFiltersFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Flyouts\ListItemFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -393,6 +425,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\MalArticlesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\ProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -410,6 +446,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SettingsPages\SettingsAboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsPages\SettingsArticlesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

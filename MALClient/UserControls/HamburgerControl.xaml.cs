@@ -31,6 +31,8 @@ namespace MALClient.UserControls
         TopAnime,
         TopManga,
         Calendar,
+        Articles,
+        News
     }
 
     public sealed partial class HamburgerControl : UserControl
@@ -42,6 +44,7 @@ namespace MALClient.UserControls
 
         private bool _animeFiltersExpanded;
         private bool _mangaFiltersExpanded;
+        private bool _topCategoriesExpanded;
 
         public HamburgerControl()
         {
@@ -60,6 +63,8 @@ namespace MALClient.UserControls
                 ButtonExpandAnimeFiltersOnClick(null, null);
             if (Settings.HamburgerMangaFiltersExpanded)
                 ButtonExpandMangaFiltersOnClick(null, null);
+            if (Settings.HamburgerTopCategoriesExpanded)
+                ButtonExpandTopCategoriesOnClick(null, null);
 
             FeedbackImage.Source = Settings.SelectedTheme == ApplicationTheme.Dark
                 ? new BitmapImage(new Uri("ms-appx:///Assets/GitHub-Mark-Light-120px-plus.png"))
@@ -76,8 +81,15 @@ namespace MALClient.UserControls
             (sender as Button).Background = new SolidColorBrush(Colors.Transparent);
         }
 
-        private void ButtonExpandAnimeFiltersOnClick(object sender, RoutedEventArgs e)
+        private void ButtonExpandAnimeFiltersOnRightClick(object sender, RoutedEventArgs e)
         {
+            if (ViewModel.HamburgerExpanded)
+                ButtonExpandAnimeFiltersOnClick(null, null);
+            else
+                HamburgerFlyoutService.ShowAnimeFiltersFlyout(sender as FrameworkElement);
+        }
+        private void ButtonExpandAnimeFiltersOnClick(object sender, RoutedEventArgs e)
+        {           
             if (!_animeFiltersExpanded)
             {
                 ExpandAnimeListFiltersStoryboard.Begin();
@@ -90,6 +102,14 @@ namespace MALClient.UserControls
             }
 
             _animeFiltersExpanded = !_animeFiltersExpanded;
+        }
+
+        private void ButtonExpandMangaFiltersOnRightClick(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.HamburgerExpanded)
+                ButtonExpandMangaFiltersOnClick(null, null);
+            else
+                HamburgerFlyoutService.ShowAnimeMangaFiltersFlyout(sender as FrameworkElement);
         }
 
         private void ButtonExpandMangaFiltersOnClick(object sender, RoutedEventArgs e)
@@ -108,17 +128,62 @@ namespace MALClient.UserControls
             _mangaFiltersExpanded = !_mangaFiltersExpanded;
         }
 
-        private void HamburgerControl_OnSizeChanged(object sender, SizeChangedEventArgs e)
+
+        private void ButtonExpandTopCategoriesOnRightClick(object sender, RoutedEventArgs e)
         {
-            if (e.NewSize.Width == 250.0)
+            if(ViewModel.HamburgerExpanded)
+                ButtonExpandTopCategoriesOnClick(null,null);
+            else
+                HamburgerFlyoutService.ShowTopCategoriesFlyout(sender as FrameworkElement);
+        }
+
+        private void ButtonExpandTopCategoriesOnClick(object sender, RoutedEventArgs e)
+        {
+            if (!_topCategoriesExpanded)
             {
-                ViewModel.HamburgerWidthChanged(true);
-                MidSeparator.Width = BottomSeparator.Width = 250;
+                ExpandTopAnimeCategoriesStoryboard.Begin();
+                RotateTopAnimeCategoriesStoryboard.Begin();
             }
             else
             {
+                CollapseTopAnimeCategoriesStoryboard.Begin();
+                RotateBackTopAnimeCategoriesStoryboard.Begin();
+            }
+
+            _topCategoriesExpanded = !_topCategoriesExpanded;
+        }
+
+        private void HamburgerControl_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width == 250.0) //opened
+            {
+                ViewModel.HamburgerWidthChanged(true);
+                MidSeparator.Width = BottomSeparator.Width = 250;
+                Mid2Separator.Width = BottomSeparator.Width = 250;
+            }
+            else //closed
+            {
                 ViewModel.HamburgerWidthChanged(false);
                 MidSeparator.Width = BottomSeparator.Width = 60;
+                Mid2Separator.Width = BottomSeparator.Width = 60;
+                if (_topCategoriesExpanded)
+                {
+                    CollapseTopAnimeCategoriesStoryboard.Begin();
+                    RotateBackTopAnimeCategoriesStoryboard.Begin();
+                    _topCategoriesExpanded = false;
+                }
+                if (_animeFiltersExpanded)
+                {
+                    CollapseAnimeListFiltersStoryboard.Begin();
+                    RotateBackAnimeListFiltersStoryboard.Begin();
+                    _animeFiltersExpanded = false;
+                }
+                if (_mangaFiltersExpanded)
+                {
+                    CollapseMangaListFiltersStoryboard.Begin();
+                    RotateBackMangaListFiltersStoryboard.Begin();
+                    _mangaFiltersExpanded = false;
+                }
             }
         }
 
@@ -141,5 +206,6 @@ namespace MALClient.UserControls
         {
            await Launcher.LaunchUriAsync(new Uri("https://github.com/Mordonus/MALClient/issues"));
         }
+
     }
 }

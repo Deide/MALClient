@@ -243,7 +243,7 @@ namespace MALClient.ViewModels
                 case PageIndex.PageAnimeDetails:
                     await FetchData();
                     if (param.RegisterBackNav) //we are already going back
-                        NavMgr.RegisterBackNav(param.PrevPageSetup);
+                        NavMgr.RegisterBackNav(param.PrevPageSetup as AnimeDetailsPageNavigationArgs);
                     break;
                 case PageIndex.PageRecomendations:
                     ExtractData(param.AnimeElement);

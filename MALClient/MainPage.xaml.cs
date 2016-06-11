@@ -129,6 +129,17 @@ namespace MALClient
                     NavMgr.CurrentViewOnBackRequested();
             }
         }
+
+        private void MainContent_OnPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (e.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
+            {
+                var properties = e.GetCurrentPoint(this).Properties;
+                if (properties.IsXButton1Pressed)
+                    NavMgr.CurrentMainViewOnBackRequested();
+            }
+        }
+
         /// <summary>
         /// Hack for pivot not to consume mouse wheel.
         /// </summary>
@@ -144,5 +155,7 @@ namespace MALClient
             if((e.OriginalSource as FrameworkElement).Name == "PinDialog")
                 ViewModelLocator.Main.PinDialogViewModel.CloseDialogCommand.Execute(null);
         }
+
+
     }
 }

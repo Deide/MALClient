@@ -15,6 +15,78 @@ using MALClient.Pages;
 
 namespace MALClient.ViewModels
 {
+
+    public enum AnimeListWorkModes
+    {
+        Anime,
+        SeasonalAnime,
+        Manga,
+        TopAnime,
+        TopManga
+    }
+
+    public class AnimeListPageNavigationArgs
+    {
+        public readonly int CurrPage;
+        public readonly bool Descending;
+        public string ListSource;
+        public readonly bool NavArgs;
+        public readonly int Status;
+        public readonly int? StatusIndex;
+        public AnimeSeason CurrSeason;
+        public AnimeListDisplayModes DisplayMode;
+        public SortOptions SortOption;
+        public AnimeListWorkModes WorkMode = AnimeListWorkModes.Anime;
+        public TopAnimeType TopWorkMode = TopAnimeType.General;
+
+        public AnimeListPageNavigationArgs(SortOptions sort, int status, bool desc, int page,
+            AnimeListWorkModes seasonal, string source, AnimeSeason season, AnimeListDisplayModes dispMode)
+        {
+            SortOption = sort;
+            Status = status;
+            Descending = desc;
+            CurrPage = page;
+            WorkMode = seasonal;
+            ListSource = source;
+            NavArgs = true;
+            CurrSeason = season;
+            DisplayMode = dispMode;
+        }
+
+        private AnimeListPageNavigationArgs()
+        {
+        }
+
+        public AnimeListPageNavigationArgs(int index, AnimeListWorkModes workMode)
+        {
+            WorkMode = workMode;
+            StatusIndex = index;
+        }
+
+        public static AnimeListPageNavigationArgs Seasonal
+            => new AnimeListPageNavigationArgs { WorkMode = AnimeListWorkModes.SeasonalAnime };
+
+        public static AnimeListPageNavigationArgs Manga
+            => new AnimeListPageNavigationArgs { WorkMode = AnimeListWorkModes.Manga };
+
+        public static AnimeListPageNavigationArgs TopAnime(TopAnimeType type) =>      
+             new AnimeListPageNavigationArgs { WorkMode = AnimeListWorkModes.TopAnime, TopWorkMode = type};
+        
+            
+        public static AnimeListPageNavigationArgs TopManga
+            => new AnimeListPageNavigationArgs { WorkMode = AnimeListWorkModes.TopManga };
+    }
+
+    public enum SortOptions
+    {
+        SortTitle,
+        SortScore,
+        SortWatched,
+        SortAirDay,
+        SortLastWatched,
+        SortNothing
+    }
+
     public class AnimeSeason
     {
         public string Url;
@@ -115,7 +187,6 @@ namespace MALClient.ViewModels
 
         public event AnimeItemListInitialized Initialized;
 
-
         public async void Init(AnimeListPageNavigationArgs args)
         {
             //base
@@ -137,6 +208,9 @@ namespace MALClient.ViewModels
             if (args != null) //Save current mode
             {
                 WorkMode = args.WorkMode;
+                if (WorkMode == AnimeListWorkModes.TopAnime)
+                    TopAnimeWorkMode = args.TopWorkMode; //we have to have it
+
                 if (!string.IsNullOrEmpty(args.ListSource))
                     ListSource = args.ListSource;
                 else
@@ -589,7 +663,7 @@ namespace MALClient.ViewModels
                     var topResponse = new List<TopAnimeData>();
                     await Task.Run(new Func<Task>(async () =>
                         topResponse =
-                            await new AnimeTopQuery(WorkMode == AnimeListWorkModes.TopAnime).GetTopAnimeData(force)));
+                            await new AnimeTopQuery(WorkMode == AnimeListWorkModes.TopAnime ? TopAnimeWorkMode : TopAnimeType.Manga).GetTopAnimeData(force)));
                     data.AddRange(topResponse);
                     break;
             }
@@ -1167,6 +1241,8 @@ namespace MALClient.ViewModels
             }
         }
 
+        public TopAnimeType TopAnimeWorkMode { get; set; }
+
         private AnimeListDisplayModes _displayMode;
 
         public AnimeListDisplayModes DisplayMode
@@ -1298,7 +1374,7 @@ namespace MALClient.ViewModels
                     if (WorkMode != AnimeListWorkModes.SeasonalAnime)
                         if (WorkMode == AnimeListWorkModes.TopAnime)
                             page.CurrentStatus =
-                                $"Top Anime - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
+                                $"Top {TopAnimeWorkMode} - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
                         else if (WorkMode == AnimeListWorkModes.TopManga)
                             page.CurrentStatus =
                                 $"Top Manga - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
@@ -1378,62 +1454,7 @@ namespace MALClient.ViewModels
 
             StatusSelectorSelectedIndex = (int) value;
         }
-
-        //private void UpdateStatusCounterBadges()
-        //{
-        //    Dictionary<int, int> counters = new Dictionary<int, int>();
-        //    for (var i = AnimeStatus.Watching; i <= AnimeStatus.PlanToWatch; i++)
-        //        counters[(int)i] = 0;
-        //    foreach (AnimeItemAbstraction animeItemAbstraction in _allLoadedAnimeItems)
-        //    {
-        //        if (animeItemAbstraction.MyStatus <= 6)
-        //            counters[animeItemAbstraction.MyStatus]++;
-        //    }
-        //    var j = AnimeStatus.Watching;
-        //    foreach (object item in StatusSelector.Items)
-        //    {
-        //        (item as ListViewItem).Content = counters[(int)j] + " - " + Utils.StatusToString((int)j);
-        //        j++;
-        //        if ((int)j == 5)
-        //            j++;
-        //        if (j == AnimeStatus.AllOrAiring)
-        //            return;
-        //    }
-        //}
-
-        //private string GetLastUpdatedStatus()
-        //{
-        //    if (WorkMode == AnimeListWorkModes.SeasonalAnime)
-        //        return "";
-        //    var output = "Updated ";
-        //    try
-        //    {
-        //        TimeSpan lastUpdateDiff = DateTime.Now.Subtract(_lastUpdate);
-        //        if (lastUpdateDiff.Days > 0)
-        //            output += lastUpdateDiff.Days + "day" + (lastUpdateDiff.Days > 1 ? "s" : "") + " ago.";
-        //        else if (lastUpdateDiff.Hours > 0)
-        //        {
-        //            output += lastUpdateDiff.Hours + "hour" + (lastUpdateDiff.Hours > 1 ? "s" : "") + " ago.";
-        //        }
-        //        else if (lastUpdateDiff.Minutes > 0)
-        //        {
-        //            output += $"{lastUpdateDiff.Minutes} minute" + (lastUpdateDiff.Minutes > 1 ? "s" : "") + " ago.";
-        //        }
-        //        else
-        //        {
-        //            output += "just now.";
-        //        }
-        //        if (lastUpdateDiff.Days < 20000) //Seems like reasonable workaround
-        //            UpdateNoticeVisibility = true;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        output = "";
-        //    }
-
-        //    return output;
-        //}
-
+    
         #endregion
 
         #region LogInOut

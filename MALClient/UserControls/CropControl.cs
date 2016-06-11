@@ -790,7 +790,6 @@ namespace XamlCropControl
                 }
 
                 // Apply X and Y translations, limiting minsize
-                // TODO: round to pixel amounts!
                 _cropLeft = Math.Max(0, _cropLeft + leftTranslation);
                 _cropTop = Math.Max(0, _cropTop + topTranslation);
                 _cropRight = Math.Min(_image.Width, _cropRight + rightTranslation);

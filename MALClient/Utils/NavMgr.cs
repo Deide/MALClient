@@ -4,6 +4,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using MALClient.Pages;
 using MALClient.ViewModels;
+using System;
 
 namespace MALClient
 {
@@ -14,15 +15,23 @@ namespace MALClient
     public static class NavMgr
     {
         #region BackNavigation
-        private static bool _oneTimeHandler;
         private static ICommand _currentOverride;
+        private static ICommand _currentOverrideMain;
         private static readonly Stack<AnimeDetailsPageNavigationArgs> _detailsNavStack =
             new Stack<AnimeDetailsPageNavigationArgs>(10);
+        private static readonly Stack<ProfilePageNavigationArgs> _profileNavigationStack =
+            new Stack<ProfilePageNavigationArgs>(10);
 
-        public static void RegisterBackNav(object args)
+        public static void RegisterBackNav(AnimeDetailsPageNavigationArgs args)
         {
-            _detailsNavStack.Push(args as AnimeDetailsPageNavigationArgs);
+            _detailsNavStack.Push(args);
             ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Visible;
+        }
+
+        public static void RegisterBackNav(ProfilePageNavigationArgs args)
+        {
+            _profileNavigationStack.Push(args);
+            ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Visible;
         }
 
         public static void CurrentViewOnBackRequested()
@@ -51,12 +60,47 @@ namespace MALClient
             ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Collapsed;
         }
 
+        public static void ResetMainBackNav()
+        {
+            _profileNavigationStack.Clear();
+            _currentOverrideMain = null;
+            ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
+        }
+
         public static void RegisterOneTimeOverride(ICommand command)
         {
             _currentOverride = command;
             ViewModelLocator.Main.NavigateBackButtonVisibility = Visibility.Visible;
         }
 
+        public static void RegisterOneTimeMainOverride(ICommand command)
+        {
+            _currentOverrideMain = command;
+            ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Visible;
+        }
+
+        internal static void CurrentMainViewOnBackRequested()
+        {
+            if (_currentOverrideMain != null)
+            {
+                _currentOverrideMain.Execute(null);
+                _currentOverrideMain = null;
+                if (_profileNavigationStack.Count == 0)
+                    ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
+                return;
+            }
+
+
+            if (_profileNavigationStack.Count == 0) //when we are called from mouse back button
+                return;
+
+            ViewModelLocator.Main.Navigate(PageIndex.PageProfile, _profileNavigationStack.Pop());
+            if (_profileNavigationStack.Count == 0)
+                ViewModelLocator.Main.NavigateMainBackButtonVisibility = Visibility.Collapsed;
+        }
+
         #endregion
+
+
     }
 }

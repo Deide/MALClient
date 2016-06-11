@@ -25,13 +25,10 @@ namespace MALClient.ViewModels
         private Visibility _adLoadingSpinnerVisibility = Visibility.Collapsed;
 
 
-        private bool _allowFilterNavigation = true;
+        private Thickness _bottomStackPanelMargin = new Thickness(0);
+        public bool HamburgerExpanded { get; set; }
+      
 
-        public Thickness _bottomStackPanelMargin = new Thickness(0);
-
-
-        private ICommand _buttonAdCommand;
-        private ICommand _buttonNavigationCommand;
 
         private bool? _prevState;
 
@@ -46,6 +43,7 @@ namespace MALClient.ViewModels
         public HamburgerControlViewModel()
         {
             ResetActiveButton();
+            ResetTopCategoryButtons();
             SetActiveButton(Credentials.Authenticated
                 ? (Settings.DefaultMenuTab == "anime" ? HamburgerButtons.AnimeList : HamburgerButtons.MangaList)
                 : HamburgerButtons.LogIn);
@@ -55,11 +53,31 @@ namespace MALClient.ViewModels
             => Application.Current.RequestedTheme == ApplicationTheme.Dark ? Colors.FloralWhite : Colors.Black;
 
         public Dictionary<string, Brush> TxtForegroundBrushes { get; } = new Dictionary<string, Brush>();
+        public Dictionary<string, Brush> TopCategoriesForegorundBrushes { get; } = new Dictionary<string, Brush>();
 
         public Dictionary<string, Thickness> TxtBorderBrushThicknesses { get; } = new Dictionary<string, Thickness>();
 
         public ObservableCollection<Tuple<AnimeStatus, string>> AnimeListFilters { get; set; } =
-            new ObservableCollection<Tuple<AnimeStatus, string>>();
+            new ObservableCollection<Tuple<AnimeStatus, string>>
+            {
+                new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Watching"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to watch"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
+            };
+
+        public ObservableCollection<Tuple<AnimeStatus, string>> MangaListFilters { get; set; }
+            = new ObservableCollection<Tuple<AnimeStatus, string>>
+            {
+                new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Reading"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to read"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
+            };
 
         public int CurrentAnimeFiltersSelectedIndex
         {
@@ -72,8 +90,6 @@ namespace MALClient.ViewModels
             }
             set
             {
-                if (!_allowFilterNavigation) //when hamburger gets collapsed we don't want to trigger this thing
-                    return;
                 if (ViewModelLocator.Main.CurrentMainPage != PageIndex.PageAnimeList ||
                     ViewModelLocator.AnimeList.WorkMode != AnimeListWorkModes.Anime)
                     ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList,
@@ -84,8 +100,7 @@ namespace MALClient.ViewModels
             }
         }
 
-        public ObservableCollection<Tuple<AnimeStatus, string>> MangaListFilters { get; set; } =
-            new ObservableCollection<Tuple<AnimeStatus, string>>();
+
 
         public int CurrentMangaFiltersSelectedIndex
         {
@@ -130,64 +145,22 @@ namespace MALClient.ViewModels
             }
         }
 
+        private ICommand _buttonNavigationCommand;
+        private ICommand _buttonNavigationTopAnimeCommand;
+        private ICommand _animeFiltersFlyoutCommand;
+        private ICommand _topCategoriesFiltersFlyoutCommand;
+
         public ICommand ButtonNavigationCommand
-        {
-            get
-            {
-                return _buttonNavigationCommand ?? (_buttonNavigationCommand = new RelayCommand<object>(ButtonClick));
-            }
-        }
+            => _buttonNavigationCommand ?? (_buttonNavigationCommand = new RelayCommand<object>(ButtonClick));
 
-       
-        //public ICommand ButtonAdCommand
-        //{
-        //    get
-        //    {
-        //        return _buttonAdCommand ?? (_buttonAdCommand = new RelayCommand(() =>
-        //        {
-        //            AdLoadingSpinnerVisibility = Visibility.Visible;
-        //            if (VungleAdInstance == null)
-        //            {
-        //                VungleAdInstance = AdFactory.GetInstance("5735f9ae0b3973633c00004b");
+        public ICommand ButtonNavigationTopAnimeCommand
+            => _buttonNavigationTopAnimeCommand ?? (_buttonNavigationTopAnimeCommand = new RelayCommand<object>(ButtonClickTopCategory));
 
-        //                VungleAdInstance.OnAdPlayableChanged += VungleAdInstanceOnOnAdPlayableChanged;
-        //            }
+        public ICommand AnimeFiltersFlyoutCommand
+            => _animeFiltersFlyoutCommand ?? (_animeFiltersFlyoutCommand = new RelayCommand<string>((o) => CurrentAnimeFiltersSelectedIndex = int.Parse(o)));
 
-        //            //var ad = new InterstitialAd();
-        //            //AdLoadingSpinnerVisibility = Visibility.Visible;
-        //            //ad.AdReady += (sender, o1) =>
-        //            //{
-        //            //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
-        //            //    ad.Show();
-        //            //};
-        //            //ad.ErrorOccurred += async (sender, args) =>
-        //            //{
-        //            //    var msg =
-        //            //        new MessageDialog(
-        //            //            "Microsoft has no ads for you :(\nYou can still donate if you want to...",
-        //            //            "Thanks for trying!");
-        //            //    await msg.ShowAsync();
-        //            //    AdLoadingSpinnerVisibility = Visibility.Collapsed;
-        //            //};
-        //            //ad.Completed += (sender, o) => Utils.GiveStatusBarFeedback("Thank you so much :D");
-
-        //            //ad.RequestAd(AdType.Video, "0b4d3120-9383-4469-9e80-812a15f124e3", "294830");
-        //        }
-        //            ));
-        //    }
-        //}
-
-        //private async void VungleAdInstanceOnOnAdPlayableChanged(object sender, AdPlayableEventArgs adPlayableEventArgs)
-        //{
-        //    AdLoadingSpinnerVisibility = Visibility.Visible;
-        //    await
-        //        VungleAdInstance.PlayAdAsync(new AdConfig
-        //        {
-        //            Incentivized = true,
-        //            SoundEnabled = true
-        //        });
-        //}
-
+        public ICommand TopCategoriesFiltersFlyoutCommand
+            => _topCategoriesFiltersFlyoutCommand ?? (_topCategoriesFiltersFlyoutCommand = new RelayCommand<object>(ButtonClickTopCategory));
 
         public Visibility UsrImgPlaceholderVisibility
         {
@@ -235,6 +208,17 @@ namespace MALClient.ViewModels
             }
         }
 
+        private void ButtonClickTopCategory(object o)
+        {
+            if (o == null)
+                return;
+            TopAnimeType type = (TopAnimeType)int.Parse(o as string);
+            ViewModelLocator.Main.Navigate(PageIndex.PageTopAnime, AnimeListPageNavigationArgs.TopAnime(type));
+            SetActiveButton(type);
+            SetActiveButton(HamburgerButtons.TopAnime);
+            
+        }
+
         private object GetAppropriateArgsForPage(PageIndex page)
         {
             switch (page)
@@ -248,9 +232,15 @@ namespace MALClient.ViewModels
                 case PageIndex.PageSearch:
                     return new SearchPageNavigationArgs();
                 case PageIndex.PageTopAnime:
-                    return AnimeListPageNavigationArgs.TopAnime;
+                    return AnimeListPageNavigationArgs.TopAnime(TopAnimeType.General);
                 case PageIndex.PageTopManga:
                     return AnimeListPageNavigationArgs.TopManga;
+                case PageIndex.PageProfile:
+                    return new ProfilePageNavigationArgs(Credentials.UserName);
+                case PageIndex.PageArticles:
+                    return MalArticlesPageNavigationArgs.Articles;
+                case PageIndex.PageNews:
+                    return MalArticlesPageNavigationArgs.News;
                 default:
                     return null;
             }
@@ -324,6 +314,8 @@ namespace MALClient.ViewModels
             TxtForegroundBrushes["TopAnime"] = new SolidColorBrush(color);
             TxtForegroundBrushes["TopManga"] = new SolidColorBrush(color);
             TxtForegroundBrushes["Calendar"] = new SolidColorBrush(color);
+            TxtForegroundBrushes["Articles"] = new SolidColorBrush(color);
+            TxtForegroundBrushes["News"] = new SolidColorBrush(color);
 
             TxtBorderBrushThicknesses["AnimeList"] = new Thickness(0);
             TxtBorderBrushThicknesses["MangaList"] = new Thickness(0);
@@ -338,11 +330,39 @@ namespace MALClient.ViewModels
             TxtBorderBrushThicknesses["TopAnime"] = new Thickness(0);
             TxtBorderBrushThicknesses["TopManga"] = new Thickness(0);
             TxtBorderBrushThicknesses["Calendar"] = new Thickness(0);
+            TxtBorderBrushThicknesses["Articles"] = new Thickness(0);
+            TxtBorderBrushThicknesses["News"] = new Thickness(0);
+        }
+
+        private void ResetTopCategoryButtons()
+        {
+            var color = RequestedFontColor;
+            TopCategoriesForegorundBrushes["General"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Airing"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Upcoming"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Tv"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Movies"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Ovas"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Popular"] = new SolidColorBrush(color);
+            TopCategoriesForegorundBrushes["Favourited"] = new SolidColorBrush(color);
+        }
+
+        public void SetActiveButton(TopAnimeType val)
+        {
+            ResetTopCategoryButtons();
+            TopCategoriesForegorundBrushes[val.ToString()] =
+                Application.Current.Resources["SystemControlBackgroundAccentBrush"] as Brush;
+            RaisePropertyChanged(() => TopCategoriesForegorundBrushes);
         }
 
         public void SetActiveButton(HamburgerButtons val)
         {
             ResetActiveButton();
+            if (val != HamburgerButtons.TopAnime)
+            {
+                ResetTopCategoryButtons();
+                RaisePropertyChanged(() => TopCategoriesForegorundBrushes);
+            }
             TxtForegroundBrushes[val.ToString()] =
                 Application.Current.Resources["SystemControlBackgroundAccentBrush"] as Brush;
             TxtBorderBrushThicknesses[val.ToString()] = new Thickness(4, 0, 0, 0);
@@ -352,54 +372,7 @@ namespace MALClient.ViewModels
 
         public void HamburgerWidthChanged(bool wide)
         {
-            if (wide)
-            {
-                AnimeListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Watching"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to watch"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-                MangaListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Reading"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to read"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-            }
-            else //award winning text trimming
-            {
-                AnimeListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Wat..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Com..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On H..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dro..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Pla..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-                MangaListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Rea..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Com..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On H..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dro..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-            }
-            _allowFilterNavigation = false;
-            RaisePropertyChanged(() => AnimeListFilters);
-            RaisePropertyChanged(() => MangaListFilters);
-            RaisePropertyChanged(() => CurrentAnimeFiltersSelectedIndex);
-            RaisePropertyChanged(() => CurrentMangaFiltersSelectedIndex);
-            _allowFilterNavigation = true;
+            HamburgerExpanded = wide;
         }
 
         public void UpdateLogInLabel()

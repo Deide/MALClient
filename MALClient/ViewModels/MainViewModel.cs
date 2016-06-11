@@ -19,6 +19,8 @@ using XamlCropControl;
 
 namespace MALClient.ViewModels
 {
+    public delegate void OffContentPaneStateChanged();
+
     public interface IMainViewInteractions
     {
         HamburgerControl Hamburger { get; }
@@ -44,6 +46,8 @@ namespace MALClient.ViewModels
         public PageIndex? CurrentMainPage { get; set; }
         public PageIndex? CurrentMainPageKind { get; set; }
         public PageIndex? CurrentOffPage { get; set; }
+
+        public event OffContentPaneStateChanged OffContentPaneStateChanged;
 
         internal async void Navigate(PageIndex index, object args = null)
         {
@@ -110,7 +114,9 @@ namespace MALClient.ViewModels
                      index == PageIndex.PageProfile ||
                      index == PageIndex.PageLogIn ||
                      index == PageIndex.PageMangaSearch ||
-                     index == PageIndex.PageCalendar)
+                     index == PageIndex.PageCalendar ||
+                     index == PageIndex.PageArticles ||
+                     index == PageIndex.PageNews)
             {
                 ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(false);
                 currPage = index;
@@ -186,20 +192,20 @@ namespace MALClient.ViewModels
                     break;
                 case PageIndex.PageProfile:
                     HideSearchStuff();
-                    RefreshButtonVisibility = Visibility.Collapsed;
-                    //if (Settings.SelectedApiType == ApiType.Mal)
-                    //    RefreshDataCommand =
-                    //        new RelayCommand(() => ViewModelLocator.ProfilePage.LoadProfileData(null, true));
-                    //else
-                    //    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.HumProfilePage.Init(true));
+                    RefreshButtonVisibility = Visibility.Visible;
+                    if (Settings.SelectedApiType == ApiType.Mal)
+                        RefreshDataCommand =
+                            new RelayCommand(() => ViewModelLocator.ProfilePage.LoadProfileData(null, true));
+                    else
+                        RefreshDataCommand = new RelayCommand(() => ViewModelLocator.HumProfilePage.Init(true));
                     if (Settings.SelectedApiType == ApiType.Mal)
                     {
-                        if(CurrentMainPage == PageIndex.PageProfile)
-                            ViewModelLocator.ProfilePage.LoadProfileData(args as ProfilePageNavigationArgs );
-                            else
-                        View.Navigate(typeof(ProfilePage), args);
+                        if (CurrentMainPage == PageIndex.PageProfile)
+                            ViewModelLocator.ProfilePage.LoadProfileData(args as ProfilePageNavigationArgs);
+                        else
+                            View.Navigate(typeof(ProfilePage), args);
                     }
-                        
+
                     else
                         View.Navigate(typeof(HummingbirdProfilePage), args);
                     break;
@@ -216,6 +222,13 @@ namespace MALClient.ViewModels
                     //RefreshDataCommand = new RelayCommand(() => ViewModelLocator.CalendarPage.Init(true));
                     CurrentStatus = "Calendar";
                     View.Navigate(typeof(CalendarPage), args);
+                    break;
+                case PageIndex.PageArticles:
+                case PageIndex.PageNews:
+                    HideSearchStuff();
+                    RefreshButtonVisibility = Visibility.Visible;
+                    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.MalArticles.Init(args as MalArticlesPageNavigationArgs,true));
+                    View.Navigate(typeof(MalArticlesPage), args);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);
@@ -455,16 +468,15 @@ namespace MALClient.ViewModels
             }
         }
 
-        public ICommand _navigateBackCommand;
+        private ICommand _navigateBackCommand;
 
-        public ICommand NavigateBackCommand
-        {
-            get
-            {
-                return _navigateBackCommand ??
-                       (_navigateBackCommand = new RelayCommand(NavMgr.CurrentViewOnBackRequested));
-            }
-        }
+        public ICommand NavigateBackCommand => _navigateBackCommand ??
+                                               (_navigateBackCommand = new RelayCommand(NavMgr.CurrentViewOnBackRequested));
+
+        private ICommand _navigateMainBackCommand;
+
+        public ICommand NavigateMainBackCommand => _navigateMainBackCommand ??
+                                                   (_navigateMainBackCommand = new RelayCommand(NavMgr.CurrentMainViewOnBackRequested));
 
 
         private ICommand _hideOffContentCommand;
@@ -508,7 +520,7 @@ namespace MALClient.ViewModels
         }
 
 
-        public Visibility _navigateBackButtonVisibility = Visibility.Collapsed;
+        private Visibility _navigateBackButtonVisibility = Visibility.Collapsed;
 
         public Visibility NavigateBackButtonVisibility
         {
@@ -517,6 +529,18 @@ namespace MALClient.ViewModels
             {
                 _navigateBackButtonVisibility = value;
                 RaisePropertyChanged(() => NavigateBackButtonVisibility);
+            }
+        }
+
+        private Visibility _navigateMainBackButtonVisibility = Visibility.Collapsed;
+
+        public Visibility NavigateMainBackButtonVisibility
+        {
+            get { return _navigateMainBackButtonVisibility; }
+            set
+            {
+                _navigateMainBackButtonVisibility = value;
+                RaisePropertyChanged(() => NavigateMainBackButtonVisibility);
             }
         }
 
@@ -562,6 +586,7 @@ namespace MALClient.ViewModels
                 }
                 else
                 {
+                    OffContentPaneStateChanged?.Invoke();
                     MainContentColumnSpan = 3;
                 }
                 View.GridRootContent.UpdateLayout();
