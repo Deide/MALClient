@@ -172,11 +172,20 @@ namespace MALClient
 
         public static bool HamburgerAnimeFiltersExpanded
         {
-            get
-            {
-                return (bool) (ApplicationData.Current.LocalSettings.Values["HamburgerAnimeFiltersExpanded"] ?? false);
-            }
+            get { return (bool)(ApplicationData.Current.LocalSettings.Values["HamburgerAnimeFiltersExpanded"] ?? false); }                                   
             set { ApplicationData.Current.LocalSettings.Values["HamburgerAnimeFiltersExpanded"] = value; }
+        }
+
+        public static bool HamburgerTopCategoriesExpanded
+        {
+            get { return (bool)(ApplicationData.Current.LocalSettings.Values["HamburgerTopCategoriesExpanded"] ?? true); }                                   
+            set { ApplicationData.Current.LocalSettings.Values["HamburgerTopCategoriesExpanded"] = value; }
+        }
+
+        public static bool AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse
+        {
+            get { return (bool)(ApplicationData.Current.LocalSettings.Values["AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse"] ?? false); }                                   
+            set { ApplicationData.Current.LocalSettings.Values["AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse"] = value; }
         }
 
         public static bool HamburgerMangaFiltersExpanded

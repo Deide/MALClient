@@ -168,6 +168,13 @@ namespace MALClient.Pages
             {
                 ViewModel.UpdateGridItemWidth();
             };
+            ViewModelLocator.Main.OffContentPaneStateChanged += MainOnOffContentPaneStateChanged;
+        }
+
+        private void MainOnOffContentPaneStateChanged()
+        {
+            if(Settings.AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse && AnimesGridIndefinite.SelectedItem != null)
+                AnimesGridIndefinite.ScrollIntoView(AnimesGridIndefinite.SelectedItem);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

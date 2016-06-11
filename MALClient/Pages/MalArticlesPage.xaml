@@ -28,6 +28,14 @@
                     <ItemsWrapGrid ItemWidth="500" ItemHeight="270" Orientation="Horizontal" Margin="0,0,10,0"/>
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
+            <GridView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <PopupThemeTransition FromVerticalOffset="100"/>
+                    <AddDeleteThemeTransition/>
+                    <ReorderThemeTransition/>
+                    <RepositionThemeTransition/>
+                </TransitionCollection>
+            </GridView.ItemContainerTransitions>
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <Grid MaxWidth="600" MaxHeight="270">

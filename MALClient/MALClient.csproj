@@ -143,6 +143,15 @@
     <Compile Include="Comm\NewsQuery.cs" />
     <Compile Include="Comm\Query.cs" />
     <Compile Include="Comm\Anime\AnimeRelatedQuery.cs" />
+    <Compile Include="Flyouts\HamburgerFlyouts\HamburgerTopCategoriesFlyout.xaml.cs">
+      <DependentUpon>HamburgerTopCategoriesFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Flyouts\HamburgerFlyouts\HamburgerMangaFiltersFlyout .xaml.cs">
+      <DependentUpon>HamburgerMangaFiltersFlyout .xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Flyouts\HamburgerFlyouts\HamburgerAnimeFiltersFlyout.xaml.cs">
+      <DependentUpon>HamburgerAnimeFiltersFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Flyouts\ListItemFlyout.xaml.cs">
       <DependentUpon>ListItemFlyout.xaml</DependentUpon>
     </Compile>
@@ -218,6 +227,7 @@
     <Compile Include="Pages\SettingsPages\SettingsArticlesPage.xaml.cs">
       <DependentUpon>SettingsArticlesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\HamburgerFlyoutService.cs" />
     <Compile Include="Utils\PageIndex.cs" />
     <Compile Include="Utils\IDetailsPageArgs.cs" />
     <Compile Include="Pages\LogInPage.xaml.cs">
@@ -339,6 +349,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Flyouts\HamburgerFlyouts\HamburgerTopCategoriesFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Flyouts\HamburgerFlyouts\HamburgerMangaFiltersFlyout .xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Flyouts\HamburgerFlyouts\HamburgerAnimeFiltersFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Flyouts\ListItemFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

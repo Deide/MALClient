@@ -187,7 +187,6 @@ namespace MALClient.ViewModels
 
         public event AnimeItemListInitialized Initialized;
 
-
         public async void Init(AnimeListPageNavigationArgs args)
         {
             //base
@@ -1455,62 +1454,7 @@ namespace MALClient.ViewModels
 
             StatusSelectorSelectedIndex = (int) value;
         }
-
-        //private void UpdateStatusCounterBadges()
-        //{
-        //    Dictionary<int, int> counters = new Dictionary<int, int>();
-        //    for (var i = AnimeStatus.Watching; i <= AnimeStatus.PlanToWatch; i++)
-        //        counters[(int)i] = 0;
-        //    foreach (AnimeItemAbstraction animeItemAbstraction in _allLoadedAnimeItems)
-        //    {
-        //        if (animeItemAbstraction.MyStatus <= 6)
-        //            counters[animeItemAbstraction.MyStatus]++;
-        //    }
-        //    var j = AnimeStatus.Watching;
-        //    foreach (object item in StatusSelector.Items)
-        //    {
-        //        (item as ListViewItem).Content = counters[(int)j] + " - " + Utils.StatusToString((int)j);
-        //        j++;
-        //        if ((int)j == 5)
-        //            j++;
-        //        if (j == AnimeStatus.AllOrAiring)
-        //            return;
-        //    }
-        //}
-
-        //private string GetLastUpdatedStatus()
-        //{
-        //    if (WorkMode == AnimeListWorkModes.SeasonalAnime)
-        //        return "";
-        //    var output = "Updated ";
-        //    try
-        //    {
-        //        TimeSpan lastUpdateDiff = DateTime.Now.Subtract(_lastUpdate);
-        //        if (lastUpdateDiff.Days > 0)
-        //            output += lastUpdateDiff.Days + "day" + (lastUpdateDiff.Days > 1 ? "s" : "") + " ago.";
-        //        else if (lastUpdateDiff.Hours > 0)
-        //        {
-        //            output += lastUpdateDiff.Hours + "hour" + (lastUpdateDiff.Hours > 1 ? "s" : "") + " ago.";
-        //        }
-        //        else if (lastUpdateDiff.Minutes > 0)
-        //        {
-        //            output += $"{lastUpdateDiff.Minutes} minute" + (lastUpdateDiff.Minutes > 1 ? "s" : "") + " ago.";
-        //        }
-        //        else
-        //        {
-        //            output += "just now.";
-        //        }
-        //        if (lastUpdateDiff.Days < 20000) //Seems like reasonable workaround
-        //            UpdateNoticeVisibility = true;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        output = "";
-        //    }
-
-        //    return output;
-        //}
-
+    
         #endregion
 
         #region LogInOut

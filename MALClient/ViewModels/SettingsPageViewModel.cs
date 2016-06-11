@@ -147,6 +147,18 @@ namespace MALClient.ViewModels
             set { Settings.HamburgerMangaFiltersExpanded = value; }
         }
 
+        public bool HamburgerTopCategoriesExpanded
+        {
+            get { return Settings.HamburgerTopCategoriesExpanded; }
+            set { Settings.HamburgerTopCategoriesExpanded = value; }
+        }
+
+        public bool AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse
+        {
+            get { return Settings.AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse; }
+            set { Settings.AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse = value; }
+        }
+
         public bool RatePopUpEnable
         {
             get { return Settings.RatePopUpEnable; }

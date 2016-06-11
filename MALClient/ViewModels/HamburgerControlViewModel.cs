@@ -25,14 +25,10 @@ namespace MALClient.ViewModels
         private Visibility _adLoadingSpinnerVisibility = Visibility.Collapsed;
 
 
-        private bool _allowFilterNavigation = true;
+        private Thickness _bottomStackPanelMargin = new Thickness(0);
+        public bool HamburgerExpanded { get; set; }
+      
 
-        public Thickness _bottomStackPanelMargin = new Thickness(0);
-
-
-        private ICommand _buttonAdCommand;
-        private ICommand _buttonNavigationCommand;
-        private ICommand _buttonNavigationTopAnimeCommand;
 
         private bool? _prevState;
 
@@ -62,7 +58,26 @@ namespace MALClient.ViewModels
         public Dictionary<string, Thickness> TxtBorderBrushThicknesses { get; } = new Dictionary<string, Thickness>();
 
         public ObservableCollection<Tuple<AnimeStatus, string>> AnimeListFilters { get; set; } =
-            new ObservableCollection<Tuple<AnimeStatus, string>>();
+            new ObservableCollection<Tuple<AnimeStatus, string>>
+            {
+                new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Watching"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to watch"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
+            };
+
+        public ObservableCollection<Tuple<AnimeStatus, string>> MangaListFilters { get; set; }
+            = new ObservableCollection<Tuple<AnimeStatus, string>>
+            {
+                new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Reading"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to read"),
+                new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
+            };
 
         public int CurrentAnimeFiltersSelectedIndex
         {
@@ -75,8 +90,6 @@ namespace MALClient.ViewModels
             }
             set
             {
-                if (!_allowFilterNavigation) //when hamburger gets collapsed we don't want to trigger this thing
-                    return;
                 if (ViewModelLocator.Main.CurrentMainPage != PageIndex.PageAnimeList ||
                     ViewModelLocator.AnimeList.WorkMode != AnimeListWorkModes.Anime)
                     ViewModelLocator.Main.Navigate(PageIndex.PageAnimeList,
@@ -87,8 +100,7 @@ namespace MALClient.ViewModels
             }
         }
 
-        public ObservableCollection<Tuple<AnimeStatus, string>> MangaListFilters { get; set; } =
-            new ObservableCollection<Tuple<AnimeStatus, string>>();
+
 
         public int CurrentMangaFiltersSelectedIndex
         {
@@ -133,11 +145,22 @@ namespace MALClient.ViewModels
             }
         }
 
+        private ICommand _buttonNavigationCommand;
+        private ICommand _buttonNavigationTopAnimeCommand;
+        private ICommand _animeFiltersFlyoutCommand;
+        private ICommand _topCategoriesFiltersFlyoutCommand;
+
         public ICommand ButtonNavigationCommand
             => _buttonNavigationCommand ?? (_buttonNavigationCommand = new RelayCommand<object>(ButtonClick));
 
         public ICommand ButtonNavigationTopAnimeCommand
             => _buttonNavigationTopAnimeCommand ?? (_buttonNavigationTopAnimeCommand = new RelayCommand<object>(ButtonClickTopCategory));
+
+        public ICommand AnimeFiltersFlyoutCommand
+            => _animeFiltersFlyoutCommand ?? (_animeFiltersFlyoutCommand = new RelayCommand<string>((o) => CurrentAnimeFiltersSelectedIndex = int.Parse(o)));
+
+        public ICommand TopCategoriesFiltersFlyoutCommand
+            => _topCategoriesFiltersFlyoutCommand ?? (_topCategoriesFiltersFlyoutCommand = new RelayCommand<object>(ButtonClickTopCategory));
 
         public Visibility UsrImgPlaceholderVisibility
         {
@@ -349,54 +372,7 @@ namespace MALClient.ViewModels
 
         public void HamburgerWidthChanged(bool wide)
         {
-            if (wide)
-            {
-                AnimeListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Watching"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to watch"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-                MangaListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Reading"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Completed"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On Hold"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dropped"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan to read"),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-            }
-            else //award winning text trimming
-            {
-                AnimeListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Wat..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Com..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On H..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dro..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Pla..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-                MangaListFilters = new ObservableCollection<Tuple<AnimeStatus, string>>
-                {
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Watching, "Rea..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Completed, "Com..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.OnHold, "On H..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.Dropped, "Dro..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.PlanToWatch, "Plan..."),
-                    new Tuple<AnimeStatus, string>(AnimeStatus.AllOrAiring, "All")
-                };
-            }
-            _allowFilterNavigation = false;
-            RaisePropertyChanged(() => AnimeListFilters);
-            RaisePropertyChanged(() => MangaListFilters);
-            RaisePropertyChanged(() => CurrentAnimeFiltersSelectedIndex);
-            RaisePropertyChanged(() => CurrentMangaFiltersSelectedIndex);
-            _allowFilterNavigation = true;
+            HamburgerExpanded = wide;
         }
 
         public void UpdateLogInLabel()

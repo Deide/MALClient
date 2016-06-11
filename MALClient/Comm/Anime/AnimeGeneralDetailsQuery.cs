@@ -63,7 +63,7 @@ namespace MALClient.Comm.Anime
                             Id = Convert.ToInt32(jsonObj.id.ToString()),
                             MalId = Convert.ToInt32(jsonObj.mal_id.ToString()),
                             AllEpisodes = allEps,
-                            StartDate = jsonObj.started_airing.ToString(), //TODO : Do sth
+                            StartDate = jsonObj.started_airing.ToString(),
                             EndDate = jsonObj.finished_airing.ToString(),
                             Status = jsonObj.status,
                             Synopsis = jsonObj.synopsis,

@@ -94,6 +94,15 @@
                         <ToggleSwitch
                                             IsOn="{Binding EnableSwipeToIncDec,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                             OnContent="Enabled" OffContent="Disabled" HorizontalAlignment="Center" />
+                    </Grid>                    
+                    <TextBlock Text="Ensure that currently selected item is visible after closing details pane."
+                                               FontWeight="Medium"
+                                               HorizontalAlignment="Center" Margin="0,5"
+                                               TextWrapping="WrapWholeWords" TextAlignment="Center" />
+                    <Grid HorizontalAlignment="Stretch">
+                        <ToggleSwitch
+                                            IsOn="{Binding AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                            OnContent="Ensure visible" OffContent="Do nothing" HorizontalAlignment="Center" />
                     </Grid>
                 </StackPanel>
             </Grid>
@@ -463,7 +472,10 @@
                                               IsOn="{Binding HamburgerAnimeFiltersExpanded,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
                 <ToggleSwitch HorizontalAlignment="Center" Header="Manga filters" OnContent="Expanded"
                                               OffContent="Collapsed"
-                                              IsOn="{Binding HamburgerMangaFiltersExpanded,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                                              IsOn="{Binding HamburgerMangaFiltersExpanded,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />                
+                <ToggleSwitch HorizontalAlignment="Center" Header="Top categories" OnContent="Expanded"
+                                              OffContent="Collapsed"
+                                              IsOn="{Binding HamburgerTopCategoriesExpanded,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

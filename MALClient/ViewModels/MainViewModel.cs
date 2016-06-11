@@ -19,6 +19,8 @@ using XamlCropControl;
 
 namespace MALClient.ViewModels
 {
+    public delegate void OffContentPaneStateChanged();
+
     public interface IMainViewInteractions
     {
         HamburgerControl Hamburger { get; }
@@ -44,6 +46,8 @@ namespace MALClient.ViewModels
         public PageIndex? CurrentMainPage { get; set; }
         public PageIndex? CurrentMainPageKind { get; set; }
         public PageIndex? CurrentOffPage { get; set; }
+
+        public event OffContentPaneStateChanged OffContentPaneStateChanged;
 
         internal async void Navigate(PageIndex index, object args = null)
         {
@@ -582,6 +586,7 @@ namespace MALClient.ViewModels
                 }
                 else
                 {
+                    OffContentPaneStateChanged?.Invoke();
                     MainContentColumnSpan = 3;
                 }
                 View.GridRootContent.UpdateLayout();
