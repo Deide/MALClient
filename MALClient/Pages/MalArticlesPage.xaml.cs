@@ -226,7 +226,6 @@ namespace MALClient.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             NavMgr.ResetMainBackNav();
-            ArticleWebView.NavigateToString("");
             base.OnNavigatedFrom(e);
         }
 

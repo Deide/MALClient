@@ -20,6 +20,16 @@ using MALClient.ViewModels;
 
 namespace MALClient
 {
+    public enum TelemetryTrackedEvents
+    {
+        FetchedNews,
+        DonatePopUpAppeared,
+        LoggedInHummingbird,
+        LoggedInMyAnimeList,
+        PinnedTile,
+        LaunchedFeedback
+    }
+
     public static class Utils
     {
         private static readonly string[] SizeSuffixes = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
@@ -95,7 +105,7 @@ namespace MALClient
             }
         }
 
-        public static string DayToString(DayOfWeek day,bool ignoreOffset = false)
+        public static string DayToString(DayOfWeek day, bool ignoreOffset = false)
         {
             if (day < 0)
                 return "";
@@ -130,7 +140,7 @@ namespace MALClient
             }
         }
 
-        
+
 
         public static MainViewModel GetMainPageInstance()
         {
@@ -405,29 +415,29 @@ namespace MALClient
         }
 
         public static string ShortDayToFullDay(string sub)
-          {
-              switch (sub)
-              {
-                  case "Fri":
-                      return "Friday";
-                  case "Mon":
-                      return "Monday";
-                  case "Sat":
-                      return "Saturday";
-                  case "Sun":
-                      return "Sunday";
-                  case "Thu":
-                      return "Thursday";
-                  case "Tue":
-                      return "Tuesday";
-                  case "Wed":
-                      return "Wednesday";
-                  default:
-                      return "";
-              }
-          }
+        {
+            switch (sub)
+            {
+                case "Fri":
+                    return "Friday";
+                case "Mon":
+                    return "Monday";
+                case "Sat":
+                    return "Saturday";
+                case "Sun":
+                    return "Sunday";
+                case "Thu":
+                    return "Thursday";
+                case "Tue":
+                    return "Tuesday";
+                case "Wed":
+                    return "Wednesday";
+                default:
+                    return "";
+            }
+        }
 
-        public static HtmlNode FirstWithClass(this IEnumerable<HtmlNode> doc,string targettedClass)
+        public static HtmlNode FirstWithClass(this IEnumerable<HtmlNode> doc, string targettedClass)
         {
             return doc.First(
                 node =>
@@ -436,7 +446,8 @@ namespace MALClient
                     targettedClass);
         }
 
-        public static HtmlNode FirstOfDescendantsWithClass(this HtmlDocument doc,string descendants, string targettedClass)
+        public static HtmlNode FirstOfDescendantsWithClass(this HtmlDocument doc, string descendants,
+            string targettedClass)
         {
             return doc.DocumentNode.Descendants(descendants)
                 .First(
@@ -446,7 +457,7 @@ namespace MALClient
                         targettedClass);
         }
 
-        public static HtmlNode FirstOfDescendantsWithClass(this HtmlNode doc,string descendants, string targettedClass)
+        public static HtmlNode FirstOfDescendantsWithClass(this HtmlNode doc, string descendants, string targettedClass)
         {
             return doc.Descendants(descendants)
                 .First(
@@ -456,7 +467,8 @@ namespace MALClient
                         targettedClass);
         }
 
-        public static IEnumerable<HtmlNode> WhereOfDescendantsWithClass(this HtmlDocument doc,string descendants,string targettedClass)
+        public static IEnumerable<HtmlNode> WhereOfDescendantsWithClass(this HtmlDocument doc, string descendants,
+            string targettedClass)
         {
             return doc.DocumentNode.Descendants(descendants)
                 .Where(
@@ -466,7 +478,8 @@ namespace MALClient
                         targettedClass);
         }
 
-        public static IEnumerable<HtmlNode> WhereOfDescendantsWithClass(this HtmlNode doc, string descendants, string targettedClass)
+        public static IEnumerable<HtmlNode> WhereOfDescendantsWithClass(this HtmlNode doc, string descendants,
+            string targettedClass)
         {
             return doc.Descendants(descendants).Where(
                 node =>
@@ -475,5 +488,12 @@ namespace MALClient
                     targettedClass);
         }
 
-}
+        public static void TelemetryTrackEvent(TelemetryTrackedEvents @event)
+        {
+#if !DEBUG
+             HockeyClient.Current.TrackEvent(@event.ToString());
+#endif
+        }
+
+    }
 }

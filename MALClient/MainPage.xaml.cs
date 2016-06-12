@@ -155,7 +155,5 @@ namespace MALClient
             if((e.OriginalSource as FrameworkElement).Name == "PinDialog")
                 ViewModelLocator.Main.PinDialogViewModel.CloseDialogCommand.Execute(null);
         }
-
-
     }
 }

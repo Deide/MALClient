@@ -608,14 +608,12 @@ namespace MALClient.ViewModels
                     AnimeItems.AddRange(_animeItemsSet.Take(30).Select(abstraction => abstraction.ViewModel));
                     _animeItemsSet = _animeItemsSet.Skip(30).ToList();
                     View.GetIndefiniteScrollViewer().Result.UpdateLayout();
-                    View.GetIndefiniteScrollViewer().Result.ScrollToVerticalOffset(CurrentPosition);
                     break;
                 case AnimeListDisplayModes.IndefiniteGrid:
                     AnimeItems.AddRange(_animeItemsSet.Take(40)
                         .Select(abstraction => abstraction.ViewModel));
                     _animeItemsSet = _animeItemsSet.Skip(40).ToList();
                     View.GetIndefiniteScrollViewer().Result.UpdateLayout();
-                    ScrollToWithDelay(500);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

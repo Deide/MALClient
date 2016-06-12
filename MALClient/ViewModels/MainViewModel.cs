@@ -69,11 +69,8 @@ namespace MALClient.ViewModels
 
 
             ScrollToTopButtonVisibility = Visibility.Collapsed;
-            RefreshButtonVisibility = Visibility.Collapsed;
-            OffRefreshButtonVisibility = Visibility.Collapsed;
-
+                       
             ViewModelLocator.Hamburger.UpdateAnimeFiltersSelectedIndex();
-
 
             //prepare for some index mess
             if (index == PageIndex.PageMangaList && args == null) // navigating from startup
@@ -84,6 +81,7 @@ namespace MALClient.ViewModels
                 index == PageIndex.PageAbout ||
                 index == PageIndex.PageAnimeDetails)
             {
+                OffRefreshButtonVisibility = Visibility.Collapsed;
                 mainPage = false;
                 currOffPage = index;
                 if (index != PageIndex.PageAnimeDetails)
@@ -91,6 +89,7 @@ namespace MALClient.ViewModels
             }
             else
             {
+                RefreshButtonVisibility = Visibility.Collapsed;
                 ResetSearchFilter();
                 SearchToggleLock = false;
             }
@@ -226,8 +225,11 @@ namespace MALClient.ViewModels
                 case PageIndex.PageArticles:
                 case PageIndex.PageNews:
                     HideSearchStuff();
-                    RefreshButtonVisibility = Visibility.Visible;
-                    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.MalArticles.Init(args as MalArticlesPageNavigationArgs,true));
+                    RefreshButtonVisibility = Visibility.Visible;                 
+                    RefreshDataCommand = new RelayCommand(() =>
+                    {
+                        ViewModelLocator.MalArticles.Init(null);
+                    });
                     View.Navigate(typeof(MalArticlesPage), args);
                     break;
                 default:

@@ -113,6 +113,7 @@ namespace MALClient
             LiveTilesManager.LoadTileCache();
             Window.Current.Activate();
             RateReminderPopUp.ProcessRatePopUp();
+            RateReminderPopUp.ProcessDonatePopUp();
             var tb = ApplicationView.GetForCurrentView().TitleBar;
             tb.BackgroundColor =
                 tb.ButtonBackgroundColor =
