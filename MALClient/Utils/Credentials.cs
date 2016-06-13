@@ -16,7 +16,7 @@ namespace MALClient
 
         public static string UserName { get; private set; }
 
-        private static string Password { get; set; }
+        internal static string Password { get; set; }
 
         public static int Id { get; private set; } =
             (int) (ApplicationData.Current.LocalSettings.Values["UserId"] ?? 0);

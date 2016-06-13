@@ -131,6 +131,10 @@
     <Compile Include="Comm\Anime\AnimeDirectRecommendationsQuery.cs" />
     <Compile Include="Comm\CommUtils\IParameters.cs" />
     <Compile Include="Comm\Articles\MalArticlesIndexQuery.cs" />
+    <Compile Include="Comm\MagicalRawQueries\CsrfLoginQuery.cs" />
+    <Compile Include="Comm\MagicalRawQueries\CsrfTokenQuery.cs" />
+    <Compile Include="Comm\MagicalRawQueries\CsrfTokenManager.cs" />
+    <Compile Include="Comm\MagicalRawQueries\Messages\SendMessageQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
     <Compile Include="Comm\Manga\MangaRemoveQuery.cs" />
     <Compile Include="Comm\Manga\MangaAddQuery.cs" />

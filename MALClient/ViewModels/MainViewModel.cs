@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Media.Animation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MALClient.Comm;
+using MALClient.Comm.MagicalRawQueries;
+using MALClient.Comm.MagicalRawQueries.Messages;
 using MALClient.Pages;
 using MALClient.UserControls;
 using XamlCropControl;
@@ -50,15 +52,15 @@ namespace MALClient.ViewModels
         public event OffContentPaneStateChanged OffContentPaneStateChanged;
 
         internal async void Navigate(PageIndex index, object args = null)
-        {
-            //if(Settings.SelectedApiType == ApiType.Hummingbird && index == PageIndex.PageProfile)
-            //   return;
+        {           
             PageIndex? currPage = null;
             PageIndex? currOffPage = null;
             bool mainPage = true;
             PageIndex originalIndex = index;
             var wasOnSearchPage = SearchToggleLock;
 
+            var token = await CsrfTokenManager.GetToken();
+            bool sent = await new SendMessageQuery().SendMessage("Test msg", "msg sent from app");
             await Task.Delay(1);
             if (!Credentials.Authenticated && PageUtils.PageRequiresAuth(index))
             {
