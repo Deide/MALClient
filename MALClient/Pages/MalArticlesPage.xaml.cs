@@ -164,7 +164,7 @@ namespace MALClient.Pages
 	        width: 100%;
 	        border-style: solid;
             border-width: 0px 0px 2px 0px;
-            border-color: AccentColourDark;
+            border-color: rgba(0, 0, 0, 0);
         }
 
         .information

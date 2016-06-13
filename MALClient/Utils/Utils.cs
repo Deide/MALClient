@@ -17,6 +17,7 @@ using MALClient.Comm;
 using MALClient.Pages;
 using MALClient.UserControls;
 using MALClient.ViewModels;
+using Microsoft.HockeyApp;
 
 namespace MALClient
 {
