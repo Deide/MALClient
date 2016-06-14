@@ -106,6 +106,11 @@
                                     <Setter Property="TextAlignment" Value="Left" />
                                 </Style>
                             </StackPanel.Resources>
+                            <TextBlock Text="15.06.2016 - v4.3.118.0" />
+                            <TextBlock Text="Manga expandable filters will now trigger manga list..." />
+                            <TextBlock Text="Fixed margins in article/news view." />
+                            <TextBlock Text="From now on desktop builds will be versioned a little bit differently." />
+                            <MenuFlyoutSeparator />
                             <TextBlock Text="14.06.2016 - v4.3.18.0" />
                             <TextBlock Text="Added News page." />
                             <TextBlock Text="Added Articles page." />
