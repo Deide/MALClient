@@ -471,7 +471,7 @@
                                     </Grid.Background>
                                     <GridView
                                         ItemsSource="{Binding MangaListFilters}"
-                                        SelectedIndex="{Binding CurrentAnimeFiltersSelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                        SelectedIndex="{Binding CurrentMangaFiltersSelectedIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                         <GridView.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Item2}"
