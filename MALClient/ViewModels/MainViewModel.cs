@@ -59,8 +59,6 @@ namespace MALClient.ViewModels
             PageIndex originalIndex = index;
             var wasOnSearchPage = SearchToggleLock;
 
-            var token = await CsrfTokenManager.GetToken();
-            bool sent = await new SendMessageQuery().SendMessage("Test msg", "msg sent from app");
             await Task.Delay(1);
             if (!Credentials.Authenticated && PageUtils.PageRequiresAuth(index))
             {
