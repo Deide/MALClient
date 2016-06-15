@@ -67,6 +67,7 @@ namespace MALClient.ViewModels
                 return;
             }
 
+            var msgs = await new MessagesQuery().GetMessages();
 
             ScrollToTopButtonVisibility = Visibility.Collapsed;
                        

@@ -134,6 +134,7 @@
     <Compile Include="Comm\MagicalRawQueries\CsrfLoginQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\CsrfTokenQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\CsrfTokenManager.cs" />
+    <Compile Include="Comm\MagicalRawQueries\Messages\MessagesQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\SendMessageQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
     <Compile Include="Comm\Manga\MangaRemoveQuery.cs" />
