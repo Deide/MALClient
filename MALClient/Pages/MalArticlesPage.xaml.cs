@@ -74,8 +74,9 @@ namespace MALClient.Pages
             left: 0;
             right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
             overflow-y: scroll;
-            padding-right: 20px;
+            padding-right: 30px;
             padding-left: 5px;
+            margin-bottom: 15px;
         }
         h1 {
 	        font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
