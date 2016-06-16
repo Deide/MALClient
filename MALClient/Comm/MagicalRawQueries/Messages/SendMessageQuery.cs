@@ -9,21 +9,24 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
 {
     public class SendMessageQuery
     {
-        public async Task<bool> SendMessage(string subject, string message)
+        public async Task<bool> SendMessage(string subject, string message, string targetUser)
         {
-            var client = new HttpClient();
-            var contentPairs = new List<KeyValuePair<string, string>>
+            using (var client = await MalHttpContextProvider.GetHttpContextAsync())
             {
-                new KeyValuePair<string, string>("subject",subject),
-                new KeyValuePair<string, string>("message",message),
-                new KeyValuePair<string, string>("csrf_token",await CsrfTokenManager.GetToken()),
-                new KeyValuePair<string, string>("sendmessage","Send Message")
-            };
-            var content = new FormUrlEncodedContent(contentPairs);
+                var contentPairs = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("subject", subject),
+                    new KeyValuePair<string, string>("message", message),
+                    new KeyValuePair<string, string>("csrf_token", client.Token),
+                    new KeyValuePair<string, string>("sendmessage", "Send Message")
+                };
+                var content = new FormUrlEncodedContent(contentPairs);
 
-            var response = await client.PostAsync("http://myanimelist.net/mymessages.php?go=send&toname=zero_omar", content);
+                var response =
+                    await client.PostAsync($"http://myanimelist.net/mymessages.php?go=send&toname={targetUser}", content);
 
-            return response.IsSuccessStatusCode;
+                return response.IsSuccessStatusCode;
+            }           
         }
     }
 }

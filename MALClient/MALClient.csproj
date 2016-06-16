@@ -131,9 +131,9 @@
     <Compile Include="Comm\Anime\AnimeDirectRecommendationsQuery.cs" />
     <Compile Include="Comm\CommUtils\IParameters.cs" />
     <Compile Include="Comm\Articles\MalArticlesIndexQuery.cs" />
-    <Compile Include="Comm\MagicalRawQueries\CsrfLoginQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\CsrfTokenQuery.cs" />
-    <Compile Include="Comm\MagicalRawQueries\CsrfTokenManager.cs" />
+    <Compile Include="Comm\MagicalRawQueries\MalFavouriteQuery.cs" />
+    <Compile Include="Comm\MagicalRawQueries\MalHttpContextProvider.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\MessagesQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\SendMessageQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
@@ -189,6 +189,7 @@
     <Compile Include="Models\Favourites\FavPerson.cs" />
     <Compile Include="Models\ILibraryData.cs" />
     <Compile Include="Models\ISeasonalAnimeBaseData.cs" />
+    <Compile Include="Models\MalMessageModel.cs" />
     <Compile Include="Models\MalNewsUnitModel.cs" />
     <Compile Include="Models\MangaLibraryItemData.cs" />
     <Compile Include="Models\NewsData.cs" />
