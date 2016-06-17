@@ -67,8 +67,6 @@ namespace MALClient.ViewModels
                 return;
             }
 
-            var msgs = await new MessagesQuery().GetMessages();
-
             ScrollToTopButtonVisibility = Visibility.Collapsed;
                        
             ViewModelLocator.Hamburger.UpdateAnimeFiltersSelectedIndex();
@@ -123,7 +121,9 @@ namespace MALClient.ViewModels
             }
 
 
-            //ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(index == PageIndex.PageAnimeList);
+            var msgs = await AccountMessagesManager.GetMessagesAsync(1);
+            var msgs1 = await AccountMessagesManager.GetMessagesAsync(2);
+            
 
             if (index == PageIndex.PageAnimeList && _searchStateBeforeNavigatingToSearch != null)
             {

@@ -43,16 +43,15 @@ namespace MALClient.Comm.MagicalRawQueries
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
 
-            using (var client = await MalHttpContextProvider.GetHttpContextAsync())
+            var client = await MalHttpContextProvider.GetHttpContextAsync();
+            
+            var charCont = new List<KeyValuePair<string, string>>
             {
-                var charCont = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>(idFieldName, id.ToString()),
-                    new KeyValuePair<string, string>("csrf_token", client.Token)
-                };
-                var contentchar = new FormUrlEncodedContent(charCont);
-                await client.PostAsync($"/includes/ajax.inc.php?s=1&t={actionId}", contentchar);
-            }
+                new KeyValuePair<string, string>(idFieldName, id.ToString()),
+                new KeyValuePair<string, string>("csrf_token", client.Token)
+            };
+            var contentchar = new FormUrlEncodedContent(charCont);
+            await client.PostAsync($"/includes/ajax.inc.php?s=1&t={actionId}", contentchar);                 
 
         }
     }

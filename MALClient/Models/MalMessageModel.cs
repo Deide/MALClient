@@ -12,6 +12,6 @@ namespace MALClient.Models
         public string Content { get; set; }
         public string Date { get; set; }
         public string Id { get; set; }
-        public string Topic { get; set; }
+        public string Subject { get; set; }
     }
 }
