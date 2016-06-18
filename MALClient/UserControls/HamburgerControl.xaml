@@ -700,6 +700,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="60" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="40" />
                                 </Grid.ColumnDefinitions>
                                 <Border Grid.Column="0"
                                         BorderThickness="{Binding TxtBorderBrushThicknesses[Profile]}"
@@ -710,9 +711,16 @@
                                        Visibility="{Binding UsrImgPlaceholderVisibility,Converter={StaticResource VisiblityInverterConverter}}" />
                                 <SymbolIcon Margin="0,0,2,0" Grid.Column="0" Width="33" Height="33" Symbol="WebCam"
                                             Visibility="{Binding UsrImgPlaceholderVisibility}" />
-                                <TextBlock Text="Profile" HorizontalAlignment="Left"
+                                <TextBlock Text="Profile" HorizontalAlignment="Left" Margin="0,0,-40,0"
                                            Foreground="{Binding Path=TxtForegroundBrushes[Profile]}"
                                            Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
+                                <Button Grid.Column="2" Command="{Binding ButtonNavigationCommand}" CommandParameter="16"
+                                        Width="40" Height="35" VerticalAlignment="Center" HorizontalAlignment="Center"> 
+                                    <Button.Background>
+                                        <SolidColorBrush Color="Black" Opacity=".25"/>
+                                    </Button.Background>
+                                    <SymbolIcon HorizontalAlignment="Center" VerticalAlignment="Center" Symbol="Mail"/>
+                                </Button>
                             </Grid>
                         </Button>
                         <Button HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"

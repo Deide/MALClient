@@ -28,6 +28,7 @@ namespace MALClient.ViewModels
             SimpleIoc.Default.Register<HummingbirdProfilePageViewModel>();
             SimpleIoc.Default.Register<CalendarPageViewModel>();
             SimpleIoc.Default.Register<MalArticlesViewModel>();
+            SimpleIoc.Default.Register<MalMessagingViewModel>();
 
             _initialized = true;
         }
@@ -58,5 +59,10 @@ namespace MALClient.ViewModels
 
         public static MalArticlesViewModel MalArticles
             => ServiceLocator.Current.GetInstance<MalArticlesViewModel>();
+
+        public static MalMessagingViewModel MalMessaging
+            => ServiceLocator.Current.GetInstance<MalMessagingViewModel>();
+
+
     }
 }

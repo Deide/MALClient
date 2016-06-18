@@ -32,7 +32,8 @@ namespace MALClient.UserControls
         TopManga,
         Calendar,
         Articles,
-        News
+        News,
+        Messanging
     }
 
     public sealed partial class HamburgerControl : UserControl

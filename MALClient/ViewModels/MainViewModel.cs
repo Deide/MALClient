@@ -114,15 +114,13 @@ namespace MALClient.ViewModels
                      index == PageIndex.PageMangaSearch ||
                      index == PageIndex.PageCalendar ||
                      index == PageIndex.PageArticles ||
-                     index == PageIndex.PageNews)
+                     index == PageIndex.PageNews ||
+                     index == PageIndex.PageMessanging)
             {
                 ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(false);
                 currPage = index;
             }
 
-
-            var msgs = await AccountMessagesManager.GetMessagesAsync(1);
-            var msgs1 = await AccountMessagesManager.GetMessagesAsync(2);
             
 
             if (index == PageIndex.PageAnimeList && _searchStateBeforeNavigatingToSearch != null)
@@ -226,12 +224,21 @@ namespace MALClient.ViewModels
                 case PageIndex.PageArticles:
                 case PageIndex.PageNews:
                     HideSearchStuff();
-                    RefreshButtonVisibility = Visibility.Visible;                 
+                    RefreshButtonVisibility = Visibility.Visible;
                     RefreshDataCommand = new RelayCommand(() =>
                     {
                         ViewModelLocator.MalArticles.Init(null);
                     });
                     View.Navigate(typeof(MalArticlesPage), args);
+                    break;
+                case PageIndex.PageMessanging:
+                    HideSearchStuff();
+                    RefreshButtonVisibility = Visibility.Visible;
+                    RefreshDataCommand = new RelayCommand(() =>
+                    {
+                        ViewModelLocator.MalMessaging.Init();
+                    });
+                    View.Navigate(typeof(MalMessagingPage), args);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);

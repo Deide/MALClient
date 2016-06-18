@@ -31,11 +31,12 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
                 var current = new MalMessageModel();
                 current.Sender = msgNode.FirstOfDescendantsWithClass("div", "mym mym_user").InnerText.Trim();
                 var contentNode = msgNode.FirstOfDescendantsWithClass("div", "mym mym_subject");
-                current.Subject = contentNode.Descendants("a").First().InnerText.Trim();
-                current.Content = contentNode.Descendants("span").First().InnerText.Trim();
+                current.Subject = WebUtility.HtmlDecode(contentNode.Descendants("a").First().ChildNodes[0].InnerText.Trim().Trim('-'));
+                current.Content = WebUtility.HtmlDecode(contentNode.Descendants("span").First().InnerText.Trim());
                 current.Id =
                     contentNode.FirstOfDescendantsWithClass("a", "subject-link").Attributes["href"].Value.Split('=')
                         .Last();
+                current.Date = msgNode.FirstOfDescendantsWithClass("span", "mym_date").InnerText.Trim();
                 output.Add(current);
             }
 

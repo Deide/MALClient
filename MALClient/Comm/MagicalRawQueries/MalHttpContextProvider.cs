@@ -20,7 +20,7 @@ namespace MALClient.Comm.MagicalRawQueries
             
         }
 
-        protected override void Dispose(bool disposing)
+        protected new void Dispose(bool disposing)
         {
             //it's not disposable
         }
@@ -56,7 +56,7 @@ namespace MALClient.Comm.MagicalRawQueries
             {
                 _httpClient?.ExpiredDispose();
 
-                var httpHandler = new HttpClientHandler {CookieContainer = new CookieContainer(), UseCookies = true};
+                var httpHandler = new HttpClientHandler {CookieContainer = new CookieContainer(), UseCookies = true,AllowAutoRedirect = false};
                 var tempToken = await new CsrfTokenQuery().GetToken();
                 var loginPostInfo = new List<KeyValuePair<string, string>>
                 {
@@ -70,7 +70,7 @@ namespace MALClient.Comm.MagicalRawQueries
                 //we won't dispose it here because this instance gonna be passed further down to other queries
                 _httpClient = new CsrfHttpClient(httpHandler) {BaseAddress = new Uri(MalBaseUrl)};               
                 var response = await _httpClient.PostAsync("/login.php", content);
-                if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.Found)
                 {
                     _token = tempToken;
                     _httpClient.Token = tempToken;
@@ -83,6 +83,13 @@ namespace MALClient.Comm.MagicalRawQueries
                 throw new WebException("Unable to authorize");
             }
             return _httpClient;
+        }
+
+        public static async Task<string> GetCsrfToken()
+        {
+            if (_contextExpirationTime == null || DateTime.Now.CompareTo(_contextExpirationTime.Value) > 0)
+                await GetHttpContextAsync(true);
+            return _token;
         }
     }
 }

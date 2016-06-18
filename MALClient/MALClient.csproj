@@ -227,6 +227,9 @@
     <Compile Include="Pages\MalArticlesPage.xaml.cs">
       <DependentUpon>MalArticlesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\MalMessagingPage.xaml.cs">
+      <DependentUpon>MalMessagingPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SettingsPages\SettingsArticlesPage.xaml.cs">
       <DependentUpon>SettingsArticlesPage.xaml</DependentUpon>
     </Compile>
@@ -304,6 +307,7 @@
     <Compile Include="ViewModels\HummingbirdProfilePageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MalArticlesViewModel.cs" />
+    <Compile Include="ViewModels\MalMessagingViewModel.cs" />
     <Compile Include="ViewModels\PinTileDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfilePageViewModel.cs" />
     <Compile Include="ViewModels\RecommendationsViewModel.cs" />
@@ -429,6 +433,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\MalArticlesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\MalMessagingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

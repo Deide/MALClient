@@ -379,6 +379,8 @@ namespace MALClient
                     return HamburgerButtons.Articles;
                 case PageIndex.PageNews:
                     return HamburgerButtons.News;
+                case PageIndex.PageMessanging:
+                    return HamburgerButtons.Messanging;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(page), page, null);
             }
