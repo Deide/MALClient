@@ -13,5 +13,6 @@ namespace MALClient.Models
         public string Date { get; set; }
         public string Id { get; set; }
         public string Subject { get; set; }
+        public string ThreadId { get; set; }
     }
 }

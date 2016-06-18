@@ -135,6 +135,7 @@
     <Compile Include="Comm\MagicalRawQueries\MalFavouriteQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\MalHttpContextProvider.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\AccountMessagesMangaer.cs" />
+    <Compile Include="Comm\MagicalRawQueries\Messages\MalMessageDetailsQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\MessagesQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\SendMessageQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
@@ -227,7 +228,10 @@
     <Compile Include="Pages\MalArticlesPage.xaml.cs">
       <DependentUpon>MalArticlesPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\MalMessagingPage.xaml.cs">
+    <Compile Include="Pages\Messages\MalMessageDetailsPage.xaml.cs">
+      <DependentUpon>MalMessageDetailsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Messages\MalMessagingPage.xaml.cs">
       <DependentUpon>MalMessagingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SettingsPages\SettingsArticlesPage.xaml.cs">
@@ -307,7 +311,8 @@
     <Compile Include="ViewModels\HummingbirdProfilePageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MalArticlesViewModel.cs" />
-    <Compile Include="ViewModels\MalMessagingViewModel.cs" />
+    <Compile Include="ViewModels\Messages\MalMessageDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Messages\MalMessagingViewModel.cs" />
     <Compile Include="ViewModels\PinTileDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfilePageViewModel.cs" />
     <Compile Include="ViewModels\RecommendationsViewModel.cs" />
@@ -436,7 +441,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MalMessagingPage.xaml">
+    <Page Include="Pages\Messages\MalMessageDetailsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Messages\MalMessagingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

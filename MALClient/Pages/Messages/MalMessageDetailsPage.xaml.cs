@@ -12,23 +12,31 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using MALClient.ViewModels;
+using MALClient.Models;
+using MALClient.ViewModels.Messages;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace MALClient.Pages
+namespace MALClient.Pages.Messages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MalMessagingPage : Page
+    public sealed partial class MalMessageDetailsPage : Page
     {
-        private MalMessagingViewModel ViewModel => DataContext as MalMessagingViewModel;
+        private MalMessageDetailsViewModel ViewModel => DataContext as MalMessageDetailsViewModel;
+        private MalMessageModel _lastArgs;
 
-        public MalMessagingPage()
+        public MalMessageDetailsPage()
         {
             this.InitializeComponent();
-            Loaded += (sender, args) => ViewModel.Init();
+            Loaded += (sender, args) => ViewModel.Init(_lastArgs);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            _lastArgs = e.Parameter as MalMessageModel;
+            base.OnNavigatedTo(e);
         }
     }
 }
