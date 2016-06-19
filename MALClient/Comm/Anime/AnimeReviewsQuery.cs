@@ -8,7 +8,7 @@ using MALClient.Models;
 
 namespace MALClient.Comm
 {
-    internal class AnimeReviewsQuery : Query
+    public class AnimeReviewsQuery : Query
     {
         private readonly bool _anime;
         private readonly int _targetId;
@@ -34,7 +34,15 @@ namespace MALClient.Comm
             var raw = await GetRequestResponse(false);
             if (string.IsNullOrEmpty(raw))
                 return null;
-
+            int toPull;
+            try
+            {
+                toPull = Settings.ReviewsToPull;
+            }
+            catch (Exception) //test scenario
+            {
+                toPull = 45;
+            }
             try
             {
                 var doc = new HtmlDocument();
@@ -44,7 +52,7 @@ namespace MALClient.Comm
                         node =>
                             node.Attributes.Contains("class") &&
                             node.Attributes["class"].Value ==
-                            HtmlClassMgr.ClassDefs["#Reviews:reviewNode:class"]).Take(Settings.ReviewsToPull);
+                            HtmlClassMgr.ClassDefs["#Reviews:reviewNode:class"]).Take(toPull);
 
                 foreach (var reviewNode in reviewNodes)
                 {

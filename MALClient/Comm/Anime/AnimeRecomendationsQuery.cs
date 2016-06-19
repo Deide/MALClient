@@ -8,7 +8,7 @@ using MALClient.Items;
 
 namespace MALClient.Comm
 {
-    internal class AnimeRecomendationsQuery : Query
+    public class AnimeRecomendationsQuery : Query
     {
         public AnimeRecomendationsQuery()
         {

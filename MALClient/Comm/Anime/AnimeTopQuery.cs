@@ -22,7 +22,7 @@ namespace MALClient.Comm
     }
 
 
-    internal class AnimeTopQuery : Query
+    public class AnimeTopQuery : Query
     {
         private static Dictionary<TopAnimeType,List<TopAnimeData>> _prevQueriesCache = new Dictionary<TopAnimeType, List<TopAnimeData>>();
 

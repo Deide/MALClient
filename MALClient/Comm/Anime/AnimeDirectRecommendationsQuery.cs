@@ -8,7 +8,7 @@ using MALClient.Models;
 
 namespace MALClient.Comm
 {
-    internal class AnimeDirectRecommendationsQuery : Query
+    public class AnimeDirectRecommendationsQuery : Query
     {
         private readonly int _animeId;
         private readonly bool _animeMode;
@@ -38,6 +38,16 @@ namespace MALClient.Comm
 
             var doc = new HtmlDocument();
             doc.LoadHtml(raw);
+            int toPull;
+            try
+            {
+                toPull = Settings.RecommsToPull;
+            }
+            catch (Exception) //test scenario
+            {
+                toPull = 45;
+            }
+
             try
             {
                 var recommNodes = doc.DocumentNode.Descendants("div")
@@ -45,7 +55,7 @@ namespace MALClient.Comm
                         node =>
                             node.Attributes.Contains("class") &&
                             node.Attributes["class"].Value ==
-                            HtmlClassMgr.ClassDefs["#DirectRecomm:recommNode:class"]).Take(Settings.RecommsToPull);
+                            HtmlClassMgr.ClassDefs["#DirectRecomm:recommNode:class"]).Take(toPull);
 
                 foreach (var recommNode in recommNodes)
                 {

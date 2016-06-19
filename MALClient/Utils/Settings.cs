@@ -1,4 +1,5 @@
-﻿using Windows.Storage;
+﻿using System;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using MALClient.Comm;
 using MALClient.Models;
@@ -11,7 +12,17 @@ namespace MALClient
     {
         public static ApiType SelectedApiType
         {
-            get { return (ApiType) (ApplicationData.Current.LocalSettings.Values["SelectedApiType"] ?? ApiType.Mal); }
+            get
+            {
+                try
+                {
+                    return (ApiType) (ApplicationData.Current.LocalSettings.Values["SelectedApiType"] ?? ApiType.Mal);
+                }
+                catch (Exception) //in case of testing
+                {
+                    return ApiType.Mal;
+                }
+            }
             set
             {
                 if (SelectedApiType == value)

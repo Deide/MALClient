@@ -10,7 +10,7 @@ using MALClient.ViewModels;
 
 namespace MALClient.Comm
 {
-    class MalArticlesIndexQuery : Query
+    public class MalArticlesIndexQuery : Query
     {
         private ArticlePageWorkMode _mode;
 

@@ -9,7 +9,7 @@ using MALClient.ViewModels;
 
 namespace MALClient.Comm
 {
-    internal class AnimeSeasonalQuery : Query
+    public class AnimeSeasonalQuery : Query
     {
         private readonly bool _overriden;
         private readonly AnimeSeason _season;
@@ -78,8 +78,18 @@ namespace MALClient.Comm
                     DataCache.SaveSeasonalUrls(seasonData);
                 }
 
+                int toPull;
+                try
+                {
+                    toPull = Settings.SeasonalToPull;
+                }
+                catch (Exception) //test scenario
+                {
+                    toPull = 45;
+                }
+
                 //Get anime data
-                var nodes = mainNode.ChildNodes.Where(node => node.Name == "div").Take(Settings.SeasonalToPull);
+                var nodes = mainNode.ChildNodes.Where(node => node.Name == "div").Take(toPull);
 
                 var i = 0;
                 foreach (var htmlNode in nodes)
