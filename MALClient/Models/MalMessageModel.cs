@@ -14,5 +14,6 @@ namespace MALClient.Models
         public string Id { get; set; }
         public string Subject { get; set; }
         public string ThreadId { get; set; }
+        public string ReplyId { get; set; }
     }
 }

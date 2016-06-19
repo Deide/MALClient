@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using MALClient.ViewModels.Messages;
 using Microsoft.Practices.ServiceLocation;
 
 namespace MALClient.ViewModels
@@ -29,6 +30,7 @@ namespace MALClient.ViewModels
             SimpleIoc.Default.Register<CalendarPageViewModel>();
             SimpleIoc.Default.Register<MalArticlesViewModel>();
             SimpleIoc.Default.Register<MalMessagingViewModel>();
+            SimpleIoc.Default.Register<MalMessageDetailsViewModel>();
 
             _initialized = true;
         }
@@ -62,6 +64,9 @@ namespace MALClient.ViewModels
 
         public static MalMessagingViewModel MalMessaging
             => ServiceLocator.Current.GetInstance<MalMessagingViewModel>();
+
+        public static MalMessageDetailsViewModel MalMessageDetails
+            => ServiceLocator.Current.GetInstance<MalMessageDetailsViewModel>();
 
 
     }

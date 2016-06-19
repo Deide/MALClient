@@ -15,7 +15,9 @@ using GalaSoft.MvvmLight.Command;
 using MALClient.Comm;
 using MALClient.Comm.MagicalRawQueries;
 using MALClient.Comm.MagicalRawQueries.Messages;
+using MALClient.Models;
 using MALClient.Pages;
+using MALClient.Pages.Messages;
 using MALClient.UserControls;
 using XamlCropControl;
 
@@ -78,7 +80,8 @@ namespace MALClient.ViewModels
             if (index == PageIndex.PageAbout ||
                 index == PageIndex.PageSettings ||
                 index == PageIndex.PageAbout ||
-                index == PageIndex.PageAnimeDetails)
+                index == PageIndex.PageAnimeDetails ||
+                index == PageIndex.PageMessageDetails)
             {
                 OffRefreshButtonVisibility = Visibility.Collapsed;
                 mainPage = false;
@@ -233,12 +236,19 @@ namespace MALClient.ViewModels
                     break;
                 case PageIndex.PageMessanging:
                     HideSearchStuff();
+                    CurrentStatus = $"{Credentials.UserName} - Messages";
                     RefreshButtonVisibility = Visibility.Visible;
                     RefreshDataCommand = new RelayCommand(() =>
                     {
                         ViewModelLocator.MalMessaging.Init();
                     });
                     View.Navigate(typeof(MalMessagingPage), args);
+                    break;
+                    case PageIndex.PageMessageDetails:
+                    var msgModel = args as MalMessageModel;
+                    CurrentOffStatus = $"{msgModel.Sender} - {msgModel.Subject}";
+                    OffContentVisibility = Visibility.Visible;
+                    View.NavigateOff(typeof(MalMessageDetailsPage),args);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);

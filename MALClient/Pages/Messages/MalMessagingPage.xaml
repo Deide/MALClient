@@ -8,7 +8,7 @@
     mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator} , Path=MalMessaging}">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ListView Margin="10,10,0,10" ItemsSource="{Binding MessageIndex}">
+        <ListView Margin="10,10,0,10" ItemsSource="{Binding MessageIndex}" SelectedIndex="{Binding SelectedMessageIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -46,5 +46,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource BrushLoading}" Visibility="{Binding LoadingVisibility}">
+            <ProgressRing IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Height="75" Width="75"/>
+        </Grid>
     </Grid>
 </Page>

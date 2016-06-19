@@ -11,6 +11,7 @@
                 case PageIndex.PageProfile:
                 case PageIndex.PageRecomendations:
                 case PageIndex.PageMangaSearch:
+                case PageIndex.PageMessanging:
                     return true;
                 default:
                     return false;

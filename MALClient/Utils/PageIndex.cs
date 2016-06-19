@@ -18,6 +18,7 @@
         PageCalendar,
         PageArticles,
         PageNews,
-        PageMessanging
+        PageMessanging,
+        PageMessageDetails
     }
 }

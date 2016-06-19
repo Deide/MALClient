@@ -21,13 +21,13 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
             doc.LoadHtml(raw);
 
             var msgNode = doc.FirstOfDescendantsWithClass("td", "dialog-text");
-            foreach (var descendant in msgNode.Descendants("div"))
-                msgNode.RemoveChild(descendant);
+            string msgContent = msgNode.ChildNodes.Skip(3).Where(node => node.NodeType == HtmlNodeType.Text).Aggregate("", (current, textNode) => current + textNode.InnerText);
 
-            msg.Content = WebUtility.HtmlDecode(msgNode.InnerText.Trim());
+            msg.Content = WebUtility.HtmlDecode(msgContent.Trim());
 
-            msg.ThreadId = doc.FirstOfDescendantsWithClass("div", "ac mt8 mb8").Descendants("a").First().Attributes["href"].Value.Split
-                ('=').Last();
+            var ids = doc.FirstOfDescendantsWithClass("input", "inputButton btn-middle flat").Attributes["onclick"].Value.Split('=');
+            msg.ThreadId = ids[4].Substring(0,ids[3].IndexOf('&'));
+            msg.ReplyId = ids[3].Substring(0, ids[3].IndexOf('&'));
 
             return msg;
         }
