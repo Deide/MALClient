@@ -42,14 +42,15 @@ namespace MALClient.ViewModels.Messages
                     Margin = new Thickness(0, 0, 20, 0);
                     CornerRadius = new CornerRadius(10, 10, 10, 0);
                     Background = Application.Current.Resources["SystemControlHighlightListAccentLowBrush"] as Brush;
+                    Background.Opacity = .5;
                 }
             }
         }
 
         private ICommand _fetchHistoryCommand;
 
-        public ICommand FetchHistoryCommand
-            => _fetchHistoryCommand ?? (_fetchHistoryCommand = new RelayCommand(FetchHistory));
+        //public ICommand FetchHistoryCommand
+        //    => _fetchHistoryCommand ?? (_fetchHistoryCommand = new RelayCommand(FetchHistory));
 
         private Visibility _fetchHistoryVisibility;
 
@@ -90,40 +91,37 @@ namespace MALClient.ViewModels.Messages
         {
             if(_prevMsg?.Id == args.Id)
                 return;
-       
-            MessageSet.Clear();
-            LoadingVisibility = Visibility.Visible;
-            args = await new MalMessageDetailsQuery().GetMessageDetails(args);
             _prevMsg = args;
+            MessageSet.Clear();
+            LoadingVisibility = Visibility.Visible;           
             if (_messageThreads.ContainsKey(args.ThreadId))
             {
-                FetchHistoryVisibility = Visibility.Collapsed;
                 MessageSet.AddRange(_messageThreads[args.ThreadId].Select(model => new MessageEntry(model)));
             }
             else
             {
-                MessageSet.AddRange(new MessageEntry[] {new MessageEntry(args)});
-                FetchHistoryVisibility = Visibility.Visible;
+                var msgs = await new MalMessageDetailsQuery().GetMessagesInThread(args);
+                msgs.Reverse();
+                MessageSet.AddRange(msgs.Select(model => new MessageEntry(model)));
             }
             LoadingVisibility = Visibility.Collapsed;
         }
 
-        private async void FetchHistory()
-        {
-            LoadingVisibility = Visibility.Visible;
-            FetchHistoryVisibility = Visibility.Collapsed;
-            MessageSet.Clear();
-            var result = await new MalMessageDetailsQuery().GetMessagesInThread(_prevMsg);
-            result.Reverse(); //newest first
-            _messageThreads[_prevMsg.ThreadId] = result;
-            MessageSet.AddRange(result.Select(model => new MessageEntry(model)));
-            LoadingVisibility = Visibility.Collapsed;
-        }
+        //private async void FetchHistory()
+        //{
+        //    LoadingVisibility = Visibility.Visible;
+        //    FetchHistoryVisibility = Visibility.Collapsed;
+        //    MessageSet.Clear();
+        //    var result = await new MalMessageDetailsQuery().GetMessagesInThread(_prevMsg);
+        //    result.Reverse(); //newest first
+        //    _messageThreads[_prevMsg.ThreadId] = result;
+        //    MessageSet.AddRange(result.Select(model => new MessageEntry(model)));
+        //    LoadingVisibility = Visibility.Collapsed;
+        //}
 
         private async void SendMessage()
         {
-            bool sent = await new SendMessageQuery().SendMessage(_prevMsg.Subject, MessageText, _prevMsg.Sender, _prevMsg.ThreadId, _prevMsg.ReplyId);
-            if (sent)
+            if (await new SendMessageQuery().SendMessage(_prevMsg.Subject, MessageText, _prevMsg.Sender, _prevMsg.ThreadId, _prevMsg.ReplyId))
             {
                 var message = new MalMessageModel
                 {

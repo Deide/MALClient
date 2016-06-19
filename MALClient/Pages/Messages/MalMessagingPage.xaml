@@ -5,14 +5,20 @@
     xmlns:local="using:MALClient.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xamlConverters="using:MALClient.XamlConverters"
     mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator} , Path=MalMessaging}">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ListView Margin="10,10,0,10" ItemsSource="{Binding MessageIndex}" SelectedIndex="{Binding SelectedMessageIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+    <Page.Resources>
+        <xamlConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <xamlConverters:VisiblityInverterConverter x:Key="VisiblityInverterConverter"/>
+    </Page.Resources>
+    
+    <Grid>
+        <ListView Margin="10,10,0,10" ItemsSource="{Binding MessageIndex}" SelectionChanged="Selector_OnSelectionChanged" SelectedIndex="{Binding SelectedMessageIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Margin" Value="0,6,5,0"/>
+                    <Setter Property="Margin" Value="0,6,8,0"/>
                     <Setter Property="Padding" Value="5"/>
                     <Setter Property="Background" Value="{ThemeResource BrushAnimeItemBackground}"/>
                 </Style>
@@ -29,22 +35,28 @@
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="110"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Sender}" FontSize="18" TextTrimming="CharacterEllipsis" FontWeight="Medium" Margin="10,5" Foreground="{StaticResource SystemControlForegroundAccentBrush}"/>
+                        <TextBlock Text="{Binding Sender}" FontSize="18" TextWrapping="WrapWholeWords" MaxLines="2" TextTrimming="CharacterEllipsis" FontWeight="Medium" Margin="10,5"/>
+                        <SymbolIcon x:Name="ReadIcon" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Symbol="Read" Visibility="{Binding IsRead,Converter={StaticResource BoolToVisibilityConverter}}"/> 
+                        <SymbolIcon Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="{StaticResource SystemControlBackgroundAccentBrush}" Symbol="Mail" Visibility="{Binding ElementName=ReadIcon, Path=Visibility,Converter={StaticResource VisiblityInverterConverter}}"/> 
                         <StackPanel Grid.Column="1" Margin="10,0">
-                            <TextBlock Text="{Binding Subject}" Margin="2,5,0,5" MaxLines="2" TextWrapping="WrapWholeWords" FontWeight="Medium" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+                            <TextBlock Text="{Binding Subject}" Foreground="{StaticResource SystemControlBackgroundAccentBrush}" Margin="2,5,0,5" MaxLines="2" TextWrapping="WrapWholeWords" FontWeight="Medium" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
                             <MenuFlyoutSeparator Margin="-15,0,0,0" HorizontalAlignment="Stretch"/>
                             <TextBlock Text="{Binding Content}" Margin="2,0,0,5" TextWrapping="WrapWholeWords" TextAlignment="Left" HorizontalAlignment="Stretch"/>
                         </StackPanel>
-                        <TextBlock Grid.Column="2" Text="{Binding Date}" FontWeight="SemiLight" FontSize="14" FontStyle="Italic" Margin="0,-5,-5,0" HorizontalAlignment="Right" Foreground="{ThemeResource BrushSettingsSubtitle}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Date}" FontWeight="SemiLight" FontSize="15" FontStyle="Italic" Margin="0,-5,0,0" HorizontalAlignment="Right" Foreground="{ThemeResource BrushSettingsSubtitle}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <ListView.Footer>
+                <Grid HorizontalAlignment="Center">
+                    <Button Margin="0,5" Content="Load more messages" Style="{StaticResource TextBlockButtonStyle}" Visibility="{Binding LoadMorePagesVisibility}" Command="{Binding LoadMoreCommand}"/>
+                </Grid>
+            </ListView.Footer>
         </ListView>
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource BrushLoading}" Visibility="{Binding LoadingVisibility}">
             <ProgressRing IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Height="75" Width="75"/>

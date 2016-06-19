@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using MALClient.Models;
 using MALClient.ViewModels;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -29,6 +30,12 @@ namespace MALClient.Pages.Messages
         {
             this.InitializeComponent();
             Loaded += (sender, args) => ViewModel.Init();
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var msg = e.AddedItems.First() as MalMessageModel;
+            msg.IsRead = true;
         }
     }
 }

@@ -25,10 +25,6 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
 
             msg.Content = WebUtility.HtmlDecode(msgContent.Trim());
 
-            var ids = doc.FirstOfDescendantsWithClass("input", "inputButton btn-middle flat").Attributes["onclick"].Value.Split('=');
-            msg.ThreadId = ids[4].Substring(0,ids[3].IndexOf('&'));
-            msg.ReplyId = ids[3].Substring(0, ids[3].IndexOf('&'));
-
             return msg;
         }
 
@@ -47,10 +43,14 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
             {
                 var current = new MalMessageModel();
                 var tds = msgHistoryNode.Descendants("td").ToList();
+                current.Content = WebUtility.HtmlDecode(tds[2].InnerText.Trim());
+                if (string.IsNullOrEmpty(current.Content))
+                    continue;
+
+
+                current.Subject = msg.Subject;
                 current.Date = tds[0].InnerText.Trim();
                 current.Sender = tds[1].InnerText.Trim();
-                current.Content = WebUtility.HtmlDecode(tds[2].InnerText.Trim());
-                current.Subject = msg.Subject;
                 output.Add(current);
             }
 

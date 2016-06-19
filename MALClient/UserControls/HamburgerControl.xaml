@@ -719,7 +719,7 @@
                                     <Button.Background>
                                         <SolidColorBrush Color="Black" Opacity=".25"/>
                                     </Button.Background>
-                                    <SymbolIcon HorizontalAlignment="Center" VerticalAlignment="Center" Symbol="Mail" Margin="0,0,5,0"/>
+                                    <SymbolIcon HorizontalAlignment="Center" VerticalAlignment="Center" Symbol="Mail" Margin="0,0,2.5,0"/>
                                 </Button>
                             </Grid>
                         </Button>

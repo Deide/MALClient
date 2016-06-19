@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.UI.Xaml;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using MALClient.Comm.MagicalRawQueries.Messages;
 using MALClient.Models;
 using MALClient.Pages;
@@ -15,9 +17,7 @@ namespace MALClient.ViewModels
     {
         public SmartObservableCollection<MalMessageModel> MessageIndex { get; } = new SmartObservableCollection<MalMessageModel>();
 
-        private int _loadedPages = 0;
-        private bool _allPagesLoaded;
-
+        private int _loadedPages = 1;
         private int _selectedMessageIndex;
 
         public int SelectedMessageIndex
@@ -43,11 +43,40 @@ namespace MALClient.ViewModels
             }
         }
 
-        public async void Init()
+        private Visibility _loadMorePagesVisibility = Visibility.Collapsed;
+
+        public Visibility LoadMorePagesVisibility
+        {
+            get { return _loadMorePagesVisibility; }
+            set
+            {
+                _loadMorePagesVisibility = value;
+                RaisePropertyChanged(() => LoadMorePagesVisibility);
+            }
+        }
+
+        private ICommand _loadMoreCommand;
+
+        public ICommand LoadMoreCommand => _loadMoreCommand ?? (_loadMoreCommand = new RelayCommand(LoadMore));
+
+        public void Init()
+        {
+            LoadMore();
+        }
+
+        private async void LoadMore()
         {
             LoadingVisibility = Visibility.Visible;
-            if (_loadedPages == 0)
-                MessageIndex.AddRange(await AccountMessagesManager.GetMessagesAsync(1));
+            try
+            {
+                MessageIndex.AddRange(await AccountMessagesManager.GetMessagesAsync(_loadedPages++));
+                LoadMorePagesVisibility = Visibility.Visible;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                LoadMorePagesVisibility = Visibility.Collapsed;
+            }
+
             LoadingVisibility = Visibility.Collapsed;
         }
 
