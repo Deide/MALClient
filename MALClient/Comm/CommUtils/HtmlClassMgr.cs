@@ -11,11 +11,7 @@ namespace MALClient.Comm
     /// </summary>
     public static class HtmlClassMgr
     {
-        /// <summary>
-        /// For tests purposes
-        /// </summary>
-        private const string LocalDefs = @"
-{
+        private const string ClassDefsJson = @"{
   ""#DirectRecomm:recommNode:class"": ""borderClass"",
   ""#DirectRecomm:recommNode:descClass"": ""borderClass bgColor1"",
   ""#Related:relationsNode:class"": ""anime_detail_related_anime"",
@@ -46,7 +42,6 @@ namespace MALClient.Comm
   ""#Recommendations:recommNode:class"": ""spaceit borderClass"",
   ""#Recommendations:recommNodeDesc:class"": ""spaceit""
 }";
-
         /// <summary>
         ///     Container for all http class definitions. You guessed right xd
         /// </summary>
@@ -56,35 +51,29 @@ namespace MALClient.Comm
         ///     Fetches newest definitions or loads default ones.
         ///     Called on the very beggining even before window is loaded.
         /// </summary>
-        public static async void Init(bool forceDefaults = false)
+        public static void Init()
         {
-            if (!forceDefaults)
-                try
-                {
-                    var json = await new HtmlClassDefinitionsQuery().GetRequestResponse(false);
-                    ClassDefs = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                }
-                catch (Exception)
-                {
-                    //we have to load defaults for this compilation
-                    LoadDefaults(forceDefaults);
-                }
-            else
-                LoadDefaults(forceDefaults);
+            ClassDefs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ClassDefsJson);
+
+
+            //try
+            //{
+            //    var json = await new HtmlClassDefinitionsQuery().GetRequestResponse(false);
+            //    ClassDefs = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            //}
+            //catch (Exception)
+            //{
+            //    //we have to load defaults for this compilation
+            //    LoadDefaults();
+            //}
         }
 
-        private static async void LoadDefaults(bool force)
-        {
-            string json;
-            if (force)
-                json = LocalDefs;
-            else
-            {
-                var appUri = new Uri("ms-appx:///Comm/HtmlClassesDefinitions.json");
-                var file = await StorageFile.GetFileFromApplicationUriAsync(appUri);
-                json = await FileIO.ReadTextAsync(file);
-            }
-            ClassDefs = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-        }
+        //private static async void LoadDefaults()
+        //{
+        //    //var appUri = new Uri("ms-appx:///Comm/HtmlClassesDefinitions.json");
+        //    //var file = await StorageFile.GetFileFromApplicationUriAsync(appUri);
+        //    //var json = await FileIO.ReadTextAsync(file);
+        //    //ClassDefs = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+        //}
     }
 }

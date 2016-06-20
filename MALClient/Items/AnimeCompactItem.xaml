@@ -109,7 +109,9 @@
                                 <MenuFlyoutItem Text="2 - Horrible" Command="{Binding ChangeScoreCommand}"
                                                 CommandParameter="2" />
                                 <MenuFlyoutItem Text="1 - Appaling" Command="{Binding ChangeScoreCommand}"
-                                                CommandParameter="1" />
+                                                CommandParameter="1" />                                
+                                <MenuFlyoutItem Text="Unranked" Command="{Binding ChangeScoreCommand}"
+                                                CommandParameter="0" />
                             </MenuFlyout.Items>
                         </MenuFlyout>
                     </Button.Flyout>

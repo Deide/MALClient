@@ -106,6 +106,12 @@
                                     <Setter Property="TextAlignment" Value="Left" />
                                 </Style>
                             </StackPanel.Resources>
+                            <TextBlock Text="21.06.2016 - v4.3.21.0" />
+                            <TextBlock Text="Html parsing fixes - recommendations&amp;articles"/>
+                            <TextBlock Text="Scaled down live tile images." />
+                            <TextBlock Text="You can now remove anime rating." />
+                            <TextBlock Text="Changing versioning again - desktop will have odd minor numbers." />
+                            <MenuFlyoutSeparator />
                             <TextBlock Text="16.06.2016 - v4.3.120.0" />
                             <TextBlock Text="Adjusted html parsing once again." />
                             <TextBlock Text="Multiple bugfixes." />
@@ -113,16 +119,6 @@
                             <TextBlock Text="Manga expandable filters will now trigger manga list..." />
                             <TextBlock Text="Fixed margins in article/news view." />
                             <TextBlock Text="From now on desktop builds will be versioned a little bit differently." />
-                            <MenuFlyoutSeparator />
-                            <TextBlock Text="14.06.2016 - v4.3.18.0" />
-                            <TextBlock Text="Added News page." />
-                            <TextBlock Text="Added Articles page." />
-                            <TextBlock Text="Added new 7 top anime categories." />
-                            <TextBlock Text="Calendar should no longer crash." />
-                            <TextBlock Text="Proper back navigation for profile." />
-                            <TextBlock Text="New setting that will perform scroll to selected item when closing details pane." />
-                            <TextBlock Text="Hamburger menu expandable buttons got visual upgrade." />
-                            <TextBlock Text="Collapsed hamburger will now look a bit more sensible with expandable sections hidden and replaced with flyouts(right click to show)." />
                         </StackPanel>
                     </StackPanel>
                 </Grid>
