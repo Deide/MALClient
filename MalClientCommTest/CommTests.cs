@@ -14,7 +14,7 @@ namespace MalClientCommTest
 
         protected TestResources()
         {
-            HtmlClassMgr.Init(true);
+            HtmlClassMgr.Init();
         }
     }
 
@@ -104,7 +104,7 @@ namespace MalClientCommTest
     {
         public AnimeSeasonalTest()
         {
-            HtmlClassMgr.Init(true);
+            HtmlClassMgr.Init();
         }
 
         [Theory]
