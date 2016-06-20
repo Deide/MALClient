@@ -79,7 +79,7 @@ namespace MALClient.Comm
             if (string.IsNullOrEmpty(raw))
                 return new List<TopAnimeData>();
 
-
+            string imgUrlType = _type == TopAnimeType.Manga ? "manga/" : "anime/";
             var doc = new HtmlDocument();
             doc.LoadHtml(raw);
             var topNodes = doc.DocumentNode.Descendants("table").First(node => node.Attributes.Contains("class") && node.Attributes["class"].Value == HtmlClassMgr.ClassDefs["#Top:mainNode:class"]);
@@ -99,7 +99,7 @@ namespace MALClient.Comm
                     var pos = imgurl.IndexOf('?');
                     if (pos != -1)
                         imgurl = imgurl.Substring(0, pos);
-                    current.ImgUrl = "http://cdn.myanimelist.net/images/anime/" + imgurl;
+                    current.ImgUrl = "http://cdn.myanimelist.net/images/" + imgUrlType + imgurl;
                     var titleNode = item.Descendants("a").First(node => node.Attributes.Contains("class") && node.Attributes["class"].Value == HtmlClassMgr.ClassDefs[_type != TopAnimeType.Manga  ? "#Top:topNode:titleNode:class" : "#Top:topMangaNode:titleNode:class"]);
                     current.Title = WebUtility.HtmlDecode(titleNode.InnerText).Trim();
                     current.Id = Convert.ToInt32(titleNode.Attributes["href"].Value.Substring(7).Split('/')[2]);
