@@ -630,7 +630,7 @@
                                 </Grid>
                                 <Grid Visibility="{Binding LoadingDetails}" VerticalAlignment="Stretch"
                                       HorizontalAlignment="Stretch" Background="{ThemeResource BrushLoadingNonOpaque}">
-                                    <ProgressRing HorizontalAlignment="Stretch" Width="150" Height="150"
+                                    <ProgressRing HorizontalAlignment="Stretch" Width="75" Height="75"
                                                   Margin="0,50,0,0" VerticalAlignment="Top" IsActive="True" />
                                 </Grid>
                             </Grid>
@@ -653,7 +653,7 @@
                                     </Grid>
                                     <Grid Visibility="{Binding LoadingReviews}" VerticalAlignment="Stretch"
                                           HorizontalAlignment="Stretch" Background="{ThemeResource BrushLoading}">
-                                        <ProgressRing HorizontalAlignment="Stretch" Width="100" Height="100"
+                                        <ProgressRing HorizontalAlignment="Stretch" Width="75" Height="75"
                                                       Margin="0,50,0,0" VerticalAlignment="Top" IsActive="True" />
                                     </Grid>
                                 <ListView ItemsSource="{Binding Reviews}" SelectionMode="None">
@@ -726,7 +726,7 @@
                                 </Grid>
                                 <Grid Visibility="{Binding LoadingReviews}" VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch" Background="{ThemeResource BrushLoading}">
-                                    <ProgressRing HorizontalAlignment="Stretch" Width="150" Height="150"
+                                    <ProgressRing HorizontalAlignment="Stretch" Width="75" Height="75"
                                               Margin="0,50,0,0" VerticalAlignment="Top" IsActive="True" />
                                 </Grid>
                                 <Pivot ItemsSource="{Binding Reviews}">
@@ -787,7 +787,7 @@
                                 </Grid>
                                 <Grid Visibility="{Binding LoadingRecommendations}" VerticalAlignment="Stretch"
                                           HorizontalAlignment="Stretch" Background="{ThemeResource BrushLoading}">
-                                    <ProgressRing HorizontalAlignment="Stretch" Width="100" Height="100"
+                                    <ProgressRing HorizontalAlignment="Stretch" Width="75" Height="75"
                                                       Margin="0,50,0,0" VerticalAlignment="Top" IsActive="True" />
                                 </Grid>
                                 <ListView SelectionMode="None" ItemsSource="{Binding Recommendations}"
@@ -874,7 +874,7 @@
                                 </Grid>
                                 <Grid Visibility="{Binding LoadingRecommendations}" VerticalAlignment="Stretch"
                                       HorizontalAlignment="Stretch" Background="{ThemeResource BrushLoading}">
-                                    <ProgressRing HorizontalAlignment="Stretch" Width="150" Height="150"
+                                    <ProgressRing HorizontalAlignment="Stretch" Width="75" Height="75"
                                                   Margin="0,50,0,0" VerticalAlignment="Top" IsActive="True" />
                                 </Grid>
                                 <Pivot ItemsSource="{Binding Recommendations}"
@@ -955,7 +955,7 @@
                                 </Grid>
                                 <Grid Visibility="{Binding LoadingRelated}" VerticalAlignment="Stretch"
                                       HorizontalAlignment="Stretch" Background="{ThemeResource BrushLoading}">
-                                    <ProgressRing HorizontalAlignment="Stretch" Width="150" Height="150"
+                                    <ProgressRing HorizontalAlignment="Stretch" Width="75" Height="75"
                                                   Margin="0,50,0,0" VerticalAlignment="Top" IsActive="True" />
                                 </Grid>
                                 <ListView ItemsSource="{Binding RelatedAnime}" SelectionMode="None">
@@ -998,7 +998,7 @@
 
         <Grid Grid.Row="0" Grid.RowSpan="2" Visibility="{Binding LoadingGlobal}"
               Background="{ThemeResource BrushLoading}">
-            <ProgressRing HorizontalAlignment="Stretch" Width="150" Height="150" VerticalAlignment="Stretch"
+            <ProgressRing HorizontalAlignment="Stretch" Width="75" Height="75" VerticalAlignment="Stretch"
                           IsActive="True" />
         </Grid>
 

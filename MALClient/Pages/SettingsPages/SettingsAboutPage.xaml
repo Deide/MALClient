@@ -106,7 +106,7 @@
                                     <Setter Property="TextAlignment" Value="Left" />
                                 </Style>
                             </StackPanel.Resources>
-                            <TextBlock Text="21.06.2016 - v4.3.21.0" />
+                            <TextBlock Text="21.06.2016 - v4.3.121.0" />
                             <TextBlock Text="Html parsing fixes - recommendations&amp;articles"/>
                             <TextBlock Text="Scaled down live tile images." />
                             <TextBlock Text="You can now remove anime rating." />

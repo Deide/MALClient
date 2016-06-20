@@ -645,7 +645,7 @@
                                                          Color="{StaticResource SystemAccentColor}" />
                                     </TextBlock.Foreground>
                                 </TextBlock>
-                                <TextBlock Text="Support me!" HorizontalAlignment="Left"
+                                <TextBlock Text="Help me buy Japanese textbook!" HorizontalAlignment="Left"
                                            TextWrapping="WrapWholeWords"
                                            Grid.Column="1" VerticalAlignment="Center" TextAlignment="Center" />
                             </Grid>
