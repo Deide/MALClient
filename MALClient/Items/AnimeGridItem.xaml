@@ -89,10 +89,17 @@
                     <Grid.Background>
                         <SolidColorBrush Color="Black" Opacity=".75" />
                     </Grid.Background>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                 <TextBlock Text="{x:Bind ViewModel.AirDayBind,Mode=OneWay}" FontWeight="SemiLight" VerticalAlignment="Center"
-                       HorizontalAlignment="Center" Margin="1" TextAlignment="Center"
+                       HorizontalAlignment="Center" Margin="1,1,1,0" TextAlignment="Center"
                        Foreground="{x:Bind ViewModel.AirDayBrush,Mode=OneWay}" FontSize="20" />
-                </Grid>
+                <TextBlock Grid.Row="1" Margin="0,-2,0,0" Text="{x:Bind ViewModel.AirDayTillBind,Mode=OneWay}" Visibility="{x:Bind ViewModel.AirDayTillBind,Converter={StaticResource AnyTextToVisibilityConverter}}" FontWeight="SemiLight" VerticalAlignment="Center"
+                       HorizontalAlignment="Center" TextAlignment="Center"
+                       Foreground="LightGray" FontSize="14" FontStyle="Italic" />
+            </Grid>
                 <Grid Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
               Visibility="{x:Bind ViewModel.Type,Mode=OneWay,Converter={StaticResource AnyTextToVisibilityConverter}}">
                     <Grid.Background>

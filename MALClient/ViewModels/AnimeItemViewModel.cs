@@ -261,19 +261,35 @@ namespace MALClient.ViewModels
                     ? ParentAbstraction?.Index.ToString()
                     : Utils.DayToString((DayOfWeek) (ParentAbstraction.AirDay - 1));
 
+        private Brush _airDayBrush;
         public Brush AirDayBrush
         {
             get
             {
+                if (_airDayBrush != null)
+                    return _airDayBrush;
                 if (ParentAbstraction.AirStartDate != null)
                 {
-                    if (DateTimeOffset.Parse(ParentAbstraction.AirStartDate).Subtract(DateTimeOffset.Now).TotalSeconds >
-                        0)
-                        return new SolidColorBrush(Colors.Gray);
+                    var diff = DateTimeOffset.Parse(ParentAbstraction.AirStartDate).Subtract(DateTimeOffset.Now);
+                    if (diff.TotalSeconds > 0)
+                    {
+                        _airDayBrush = new SolidColorBrush(Colors.Gray);
+                        _airDayTillBind = diff.TotalDays < 0 ? _airDayTillBind = diff.TotalHours.ToString("N0") + "h" : diff.TotalDays.ToString("N0") + "d";
+                        RaisePropertyChanged(() => AirDayTillBind);
+                    }
+                    else
+                        _airDayBrush = new SolidColorBrush(Colors.White);
                 }
-                return new SolidColorBrush(Colors.White);
+                else
+                    _airDayBrush = new SolidColorBrush(Colors.White);
+               
+                return _airDayBrush;
             }
         }
+
+        private string _airDayTillBind;
+
+        public string AirDayTillBind => _airDayTillBind;
 
 
         private bool _airing;
