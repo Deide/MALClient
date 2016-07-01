@@ -120,11 +120,10 @@ namespace MALClient.ViewModels
                      index == PageIndex.PageNews ||
                      index == PageIndex.PageMessanging)
             {
-                ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(false);
+                ViewModelLocator.Hamburger.ChangeBottomStackPanelMargin(index == PageIndex.PageMessanging);
                 currPage = index;
             }
 
-            
 
             if (index == PageIndex.PageAnimeList && _searchStateBeforeNavigatingToSearch != null)
             {
@@ -244,11 +243,11 @@ namespace MALClient.ViewModels
                     });
                     View.Navigate(typeof(MalMessagingPage), args);
                     break;
-                    case PageIndex.PageMessageDetails:
+                case PageIndex.PageMessageDetails:
                     var msgModel = args as MalMessageModel;
-                    CurrentOffStatus = $"{msgModel.Sender} - {msgModel.Subject}";
+                    CurrentOffStatus = msgModel != null ? $"{msgModel.Sender} - {msgModel.Subject}" : "New Message";
                     OffContentVisibility = Visibility.Visible;
-                    View.NavigateOff(typeof(MalMessageDetailsPage),args);
+                    View.NavigateOff(typeof(MalMessageDetailsPage), args);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);

@@ -10,7 +10,9 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
     public static class AccountMessagesManager
     {
         private static readonly Dictionary<int,List<MalMessageModel>> AllMessagesPaginated = new Dictionary<int, List<MalMessageModel>>();
+        //private static readonly Dictionary<int,List<MalMessageModel>> AllSentMessagesPaginated = new Dictionary<int, List<MalMessageModel>>();
         private static int MaxPage { get; set; } = 9999;
+        //private static int MaxSentPage { get; set; } = 9999;
         public static async Task<List<MalMessageModel>> GetMessagesAsync(int page)
         {
             if(page >= MaxPage)
@@ -27,5 +29,22 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
             MaxPage = page;
             throw new ArgumentOutOfRangeException();
         }
+
+        //public static async Task<List<MalMessageModel>> GetSentMessagesAsync(int page)
+        //{
+        //    if(page >= MaxSentPage)
+        //        throw new ArgumentOutOfRangeException();
+
+        //    if (AllSentMessagesPaginated.ContainsKey(page))
+        //        return AllSentMessagesPaginated[page];
+
+        //    AllSentMessagesPaginated[page] = await new MessagesQuery().GetSentMessages(page);
+
+        //    if (AllSentMessagesPaginated[page].Count != 0)
+        //        return AllSentMessagesPaginated[page];
+
+        //    MaxSentPage = page;
+        //    throw new ArgumentOutOfRangeException();
+        //}
     }
 }

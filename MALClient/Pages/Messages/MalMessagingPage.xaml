@@ -13,6 +13,12 @@
         <xamlConverters:VisiblityInverterConverter x:Key="VisiblityInverterConverter"/>
     </Page.Resources>
     
+    <Page.BottomAppBar>
+        <CommandBar Background="{ThemeResource BrushAppBars}">
+            <AppBarButton Icon="Message" Label="New message" Command="{Binding ComposeNewCommand}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+    
     <Grid>
         <ListView Margin="10,10,0,10" ItemsSource="{Binding MessageIndex}" SelectionChanged="Selector_OnSelectionChanged" SelectedIndex="{Binding SelectedMessageIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemContainerStyle>

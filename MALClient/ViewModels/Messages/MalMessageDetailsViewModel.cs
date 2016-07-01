@@ -29,7 +29,7 @@ namespace MALClient.ViewModels.Messages
             public MessageEntry(MalMessageModel msg)
             {
                 Msg = msg;
-                if (Msg.Sender.Equals(Credentials.UserName, StringComparison.CurrentCultureIgnoreCase))
+                if (Msg.IsMine || Msg.Sender.Equals(Credentials.UserName, StringComparison.CurrentCultureIgnoreCase))
                 {
                     HorizontalAlignment = HorizontalAlignment.Right;
                     Margin = new Thickness(20,0,0,0);
@@ -64,7 +64,7 @@ namespace MALClient.ViewModels.Messages
             }
         }
 
-        private Visibility _loadingVisibility;
+        private Visibility _loadingVisibility = Visibility.Collapsed;
 
         public Visibility LoadingVisibility
         {
@@ -76,19 +76,43 @@ namespace MALClient.ViewModels.Messages
             }
         }
 
-        private ICommand _sendMessageCommand { get; set; }
+        private Visibility _newMessageFieldsVisibility;
+
+        public Visibility NewMessageFieldsVisibility
+        {
+            get { return _newMessageFieldsVisibility; }
+            set
+            {
+                _newMessageFieldsVisibility = value;
+                RaisePropertyChanged(() => NewMessageFieldsVisibility);
+            }
+        }
+
+        private ICommand _sendMessageCommand;
 
         public ICommand SendMessageCommand
             => _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(SendMessage));
-        public string MessageText { get; set; }
+
+        public string MessageText { get; set; } //body from text box
+        public string MessageTarget { get; set; } //targetted user
+        public string MessageSubject { get; set; }
 
         public SmartObservableCollection<MessageEntry> MessageSet { get; } =
             new SmartObservableCollection<MessageEntry>();
 
         private MalMessageModel _prevMsg;
-
+        private bool _newMessage;
         public async void Init(MalMessageModel args)
         {
+            if (args == null) //compose new
+            {
+                _newMessage = true;
+                NewMessageFieldsVisibility = Visibility.Visible;
+                return;
+            }
+            NewMessageFieldsVisibility = Visibility.Collapsed;
+            _newMessage = false;
+
             if(_prevMsg?.Id == args.Id)
                 return;
             _prevMsg = args;
@@ -121,16 +145,47 @@ namespace MALClient.ViewModels.Messages
 
         private async void SendMessage()
         {
-            if (await new SendMessageQuery().SendMessage(_prevMsg.Subject, MessageText, _prevMsg.Sender, _prevMsg.ThreadId, _prevMsg.ReplyId))
+            if (_newMessage)
+            {
+                if (await new SendMessageQuery().SendMessage(MessageSubject, MessageText, MessageTarget))
+                {
+                    var message = new MalMessageModel();
+                    var id = await new MessagesQuery().GetFirstSentMessageId();
+                    message.Id = id;
+                    message = await new MalMessageDetailsQuery().GetMessageDetails(message);
+                    message.Sender = MessageTarget;
+                    message.IsMine = true;
+                    message.IsRead = true;
+                    message.Date = DateTime.Now.ToString("d");
+                    message.Subject = MessageSubject;
+                    _messageThreads[message.ThreadId] = new List<MalMessageModel> { message };
+                    _prevMsg = message;
+                    _newMessage = false;
+                    NewMessageFieldsVisibility = Visibility.Collapsed;
+                    ViewModelLocator.Main.CurrentOffStatus = $"{message.Sender} - {message.Subject}";
+                    MessageSet.Clear();
+                    MessageSet.AddRange(new MessageEntry[]
+                    {
+                        new MessageEntry(message)
+                    });
+                }
+                return;
+            }
+
+            if (
+                await
+                    new SendMessageQuery().SendMessage(_prevMsg.Subject, MessageText, _prevMsg.Sender, _prevMsg.ThreadId,
+                        _prevMsg.ReplyId))
             {
                 var message = new MalMessageModel
                 {
                     Subject = _prevMsg.Subject,
                     Content = MessageText,
-                    Date = "-",
+                    Date = DateTime.Now.ToString("d"),
                     Id = "0",
-                    Sender = _prevMsg.Sender,
+                    Sender = Credentials.UserName,
                     ThreadId = _prevMsg.ThreadId,
+                    ReplyId = _prevMsg.ReplyId
 
                 };
                 if (_messageThreads.ContainsKey(_prevMsg.ThreadId))
@@ -139,7 +194,7 @@ namespace MALClient.ViewModels.Messages
                 }
                 else
                 {
-                    _messageThreads[_prevMsg.ThreadId] = new List<MalMessageModel> {_prevMsg,message};
+                    _messageThreads[_prevMsg.ThreadId] = new List<MalMessageModel> {_prevMsg, message};
                 }
                 MessageSet.AddRange(new MessageEntry[]
                 {

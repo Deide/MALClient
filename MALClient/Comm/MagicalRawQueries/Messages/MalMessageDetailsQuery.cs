@@ -24,7 +24,9 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
             string msgContent = msgNode.ChildNodes.Skip(3).Where(node => node.NodeType == HtmlNodeType.Text).Aggregate("", (current, textNode) => current + textNode.InnerText);
 
             msg.Content = WebUtility.HtmlDecode(msgContent.Trim());
-
+            var ids = doc.FirstOfDescendantsWithClass("input", "inputButton btn-middle flat").Attributes["onclick"].Value.Split('=');
+            msg.ThreadId = ids[4].Substring(0, ids[3].IndexOf('&'));
+            msg.ReplyId = ids[3].Substring(0, ids[3].IndexOf('&'));
             return msg;
         }
 

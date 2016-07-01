@@ -10,7 +10,7 @@ using MALClient.Models;
 
 namespace MALClient.Comm.MagicalRawQueries.Messages
 {
-    class MessagesQuery
+    public class MessagesQuery
     {
         public async Task<List<MalMessageModel>> GetMessages(int page = 1)
         {
@@ -31,6 +31,57 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
 
 
             return output;
+        }
+
+        //public async Task<List<MalMessageModel>> GetSentMessages(int page = 1)
+        //{
+        //    var client = await MalHttpContextProvider.GetHttpContextAsync();
+        //    string path = $"/mymessages.php?go=sent&show={page*20 - 20}";
+        //    var res = await client.GetAsync(path);
+        //    var body = await res.Content.ReadAsStringAsync();
+
+
+        //    var output = new List<MalMessageModel>();
+        //    if (body.Contains("You have 0 messages"))
+        //        return output;
+
+        //    var doc = new HtmlDocument();
+        //    doc.LoadHtml(body);
+        //    output.AddRange(doc.WhereOfDescendantsWithClass("div", "message read spot2 clearfix").Select(msgNode => ParseHtmlToMalMessage(msgNode, true)));          
+
+
+        //    return output;
+        //}        
+
+        /// <summary>
+        /// When we send new message we don't really know its id so we have to pull it.
+        /// Once we have that we will be able to pull thread id.
+        /// </summary>
+        public async Task<string> GetFirstSentMessageId()
+        {
+            var client = await MalHttpContextProvider.GetHttpContextAsync();
+            var res = await client.GetAsync("/mymessages.php?go=sent");
+            var body = await res.Content.ReadAsStringAsync();
+
+            try
+            {
+                var doc = new HtmlDocument();
+                doc.LoadHtml(body);
+                //?go=read&id=8473147&f=1
+                var id =
+                    doc.FirstOfDescendantsWithClass("div", "message read spot2 clearfix")
+                        .Descendants("a")
+                        .Skip(1)
+                        .First()
+                        .Attributes["href"].Value.Split('=')[2];
+                return id.Substring(0, id.Length - 2);
+            }
+            catch (Exception)
+            {
+                return "0";
+            }
+
+
         }
 
         private MalMessageModel ParseHtmlToMalMessage(HtmlNode msgNode,bool read)

@@ -16,6 +16,7 @@ namespace MALClient.Models
         public string Subject { get; set; }
         public string ThreadId { get; set; }
         public string ReplyId { get; set; }
+        public bool IsMine { get; set; }
         private bool _isRead { get; set; }
 
         public bool IsRead

@@ -59,6 +59,10 @@ namespace MALClient.ViewModels
 
         public ICommand LoadMoreCommand => _loadMoreCommand ?? (_loadMoreCommand = new RelayCommand(LoadMore));
 
+        private ICommand _composeNewCommand;
+
+        public ICommand ComposeNewCommand => _composeNewCommand ?? (_composeNewCommand = new RelayCommand(ComposeNew));
+
         public void Init()
         {
             LoadMore();
@@ -78,6 +82,11 @@ namespace MALClient.ViewModels
             }
 
             LoadingVisibility = Visibility.Collapsed;
+        }
+
+        private void ComposeNew()
+        {
+            ViewModelLocator.Main.Navigate(PageIndex.PageMessageDetails, null); // null for new message
         }
 
     }
