@@ -24,43 +24,42 @@ namespace MALClient.Comm
 
     public class AnimeTopQuery : Query
     {
-        private static Dictionary<TopAnimeType,List<TopAnimeData>> _prevQueriesCache = new Dictionary<TopAnimeType, List<TopAnimeData>>();
-
-        private readonly bool _animeMode;
+        private static Dictionary<TopAnimeType, List<TopAnimeData>> _prevQueriesCache = new Dictionary<TopAnimeType, List<TopAnimeData>>();
         private TopAnimeType _type;
-
-        public AnimeTopQuery(TopAnimeType topType)
+        private int _page;
+        public AnimeTopQuery(TopAnimeType topType, int page = 0)
         {
             Request =
                 WebRequest.Create(
-                    Uri.EscapeUriString($"http://myanimelist.net/{GetEndpoint(topType)}"));
+                    Uri.EscapeUriString($"http://myanimelist.net/{GetEndpoint(topType, page)}"));
             Request.ContentType = "application/x-www-form-urlencoded";
             Request.Method = "GET";
+            _page = page;
             _type = topType;
         }
 
-        private string GetEndpoint(TopAnimeType type)
-        { 
+        private string GetEndpoint(TopAnimeType type, int page)
+        {
             switch (type)
             {
                 case TopAnimeType.General:
-                    return "topanime.php";
+                    return $"topanime.php?limit={page * 50}";
                 case TopAnimeType.Airing:
-                    return "topanime.php?type=airing";
+                    return $"topanime.php?type=airing&limit={page * 50}";
                 case TopAnimeType.Upcoming:
-                    return "topanime.php?type=upcoming";
+                    return $"topanime.php?type=upcoming&limit={page * 50}";
                 case TopAnimeType.Tv:
-                    return "topanime.php?type=tv";
+                    return $"topanime.php?type=tv&limit={page * 50}";
                 case TopAnimeType.Movies:
-                    return "topanime.php?type=movie";
+                    return $"topanime.php?type=movie&limit={page * 50}";
                 case TopAnimeType.Ovas:
-                    return "topanime.php?type=ova";
+                    return $"topanime.php?type=ova&limit={page * 50}";
                 case TopAnimeType.Popular:
-                    return "topanime.php?type=bypopularity";
+                    return $"topanime.php?type=bypopularity&limit={page * 50}";
                 case TopAnimeType.Favourited:
-                    return "topanime.php?type=favorite";
+                    return $"topanime.php?type=favorite&limit={page * 50}";
                 case TopAnimeType.Manga:
-                    return "topmanga.php";
+                    return $"topmanga.php?limit={page * 50}";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -74,16 +73,20 @@ namespace MALClient.Comm
 
             var output = force ? new List<TopAnimeData>() : (await DataCache.RetrieveTopAnimeData(_type) ?? new List<TopAnimeData>());
             if (output.Count > 0)
+            {
+                _prevQueriesCache[_type] = output;
                 return output;
+            }
             var raw = await GetRequestResponse();
             if (string.IsNullOrEmpty(raw))
                 return new List<TopAnimeData>();
 
-            string imgUrlType = _type == TopAnimeType.Manga ? "manga/" : "anime/";
+
             var doc = new HtmlDocument();
             doc.LoadHtml(raw);
             var topNodes = doc.DocumentNode.Descendants("table").First(node => node.Attributes.Contains("class") && node.Attributes["class"].Value == HtmlClassMgr.ClassDefs["#Top:mainNode:class"]);
-            var i = 0;
+            var i = 50 * _page;
+            string imgUrlType = _type == TopAnimeType.Manga ? "manga/" : "anime/";
             foreach (var item in topNodes.Descendants("tr").Where(node => node.Attributes.Contains("class") && node.Attributes["class"].Value == HtmlClassMgr.ClassDefs["#Top:topNode:class"]))
             {
                 try
@@ -100,7 +103,7 @@ namespace MALClient.Comm
                     if (pos != -1)
                         imgurl = imgurl.Substring(0, pos);
                     current.ImgUrl = "http://cdn.myanimelist.net/images/" + imgUrlType + imgurl;
-                    var titleNode = item.Descendants("a").First(node => node.Attributes.Contains("class") && node.Attributes["class"].Value == HtmlClassMgr.ClassDefs[_type != TopAnimeType.Manga  ? "#Top:topNode:titleNode:class" : "#Top:topMangaNode:titleNode:class"]);
+                    var titleNode = item.Descendants("a").First(node => node.Attributes.Contains("class") && node.Attributes["class"].Value == HtmlClassMgr.ClassDefs[_type != TopAnimeType.Manga ? "#Top:topNode:titleNode:class" : "#Top:topMangaNode:titleNode:class"]);
                     current.Title = WebUtility.HtmlDecode(titleNode.InnerText).Trim();
                     current.Id = Convert.ToInt32(titleNode.Attributes["href"].Value.Substring(7).Split('/')[2]);
                     try
@@ -111,7 +114,7 @@ namespace MALClient.Comm
                     {
                         current.Score = 0; //sometimes score in unavailable -> upcoming for example
                     }
-                    
+
                     current.Index = ++i;
 
 
@@ -122,6 +125,9 @@ namespace MALClient.Comm
                     //
                 }
             }
+            if (_page != 0) //merge data
+                output = _prevQueriesCache[_type].Union(output).Distinct().ToList();
+
             DataCache.SaveTopAnimeData(output, _type);
             _prevQueriesCache[_type] = output;
             return output;

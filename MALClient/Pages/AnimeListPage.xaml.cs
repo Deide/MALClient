@@ -44,7 +44,7 @@ namespace MALClient.Pages
         {
             if (!_loaded)
             {
-                var retries = 5;
+                var retries = 15;
                 while (retries-- > 0 && !_loaded)
                 {
                     await Task.Delay(50);
@@ -128,6 +128,32 @@ namespace MALClient.Pages
             }
         }
 
+        private void ViewModelOnScrollRequest(AnimeItemViewModel item)
+        {
+            try
+            {
+                switch (ViewModel.DisplayMode)
+                {
+                    case AnimeListDisplayModes.IndefiniteCompactList:
+                        AnimeCompactItemsIndefinite.ScrollIntoView(item);
+                        break;
+                    case AnimeListDisplayModes.IndefiniteList:
+                        AnimesItemsIndefinite.ScrollIntoView(item);
+                        break;
+                    case AnimeListDisplayModes.IndefiniteGrid:
+                        AnimesGridIndefinite.ScrollIntoView(item);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+        }
+
         private void AnimeCompactItemsIndefinite_OnItemClick(object sender, ItemClickEventArgs e)
         {
             ViewModel.TemporarilySelectedAnimeItem = e.ClickedItem as AnimeItemViewModel;
@@ -160,7 +186,8 @@ namespace MALClient.Pages
             {
                 ViewModel.View = this;
                 ViewModel.CanAddScrollHandler = true;
-                ViewModel.Init(navArgs);
+                ViewModel.ScrollIntoViewRequested += ViewModelOnScrollRequest;
+                ViewModel.Init(navArgs);          
                 _loaded = true;
             };
             
@@ -211,11 +238,6 @@ namespace MALClient.Pages
             FlyoutListSource.ShowAt(sender as FrameworkElement);
         }
 
-        private void SetListSource(object sender, RoutedEventArgs e)
-        {
-            ListSource_OnKeyDown(null, null);
-        }
-
         private void FlyoutListSource_OnOpened(object sender, object e)
         {
             TxtListSource.SelectAll();
@@ -239,6 +261,9 @@ namespace MALClient.Pages
                     break;
                 case SortOptions.SortNothing:
                     SortNone.IsChecked = true;
+                    break;
+                case SortOptions.SortLastWatched:
+                    SortLastWatched.IsChecked = true;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(option), option, null);
