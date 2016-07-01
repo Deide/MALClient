@@ -124,6 +124,7 @@ namespace MALClient.ViewModels
         }
 
         public string LogInLabel => Credentials.Authenticated ? "Account" : "Log In";
+        public Visibility LogInButtonVisibility => Credentials.Authenticated ? Visibility.Collapsed : Visibility.Visible;
 
         public BitmapImage UserImage
         {
@@ -378,6 +379,7 @@ namespace MALClient.ViewModels
         public void UpdateLogInLabel()
         {
             RaisePropertyChanged(() => LogInLabel);
+            RaisePropertyChanged(() => LogInButtonVisibility);
         }
 
         public void UpdateApiDependentButtons()

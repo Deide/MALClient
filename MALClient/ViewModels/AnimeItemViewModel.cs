@@ -282,7 +282,7 @@ namespace MALClient.ViewModels
                 }
                 else
                     _airDayBrush = new SolidColorBrush(Colors.White);
-               
+
                 return _airDayBrush;
             }
         }
@@ -290,10 +290,7 @@ namespace MALClient.ViewModels
         private string _airDayTillBind;
 
         public string AirDayTillBind => _airDayTillBind;
-
-
         private bool _airing;
-
         public bool Airing
         {
             get { return _airing; }
@@ -302,7 +299,7 @@ namespace MALClient.ViewModels
                 if (ParentAbstraction.TryRetrieveVolatileData())
                 {
                     RaisePropertyChanged(() => AirDayBind);
-                    TitleMargin = new Thickness(5, 3, 50, 0);
+                    TitleMargin = new Thickness(5, 3, 70, 0);
                 }
                 _airing = value;
                 RaisePropertyChanged(() => Airing);

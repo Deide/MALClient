@@ -131,6 +131,7 @@
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
+            <AppBarButton Icon="Shuffle" Label="Select one at random" Command="{Binding SelectAtRandomCommand}"/>
         </CommandBar>
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource BrushDeepBackground}">
@@ -259,6 +260,15 @@
                     <item:AnimeCompactItem DataContext="{Binding}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <ListView.Footer>
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding LoadMoreFooterVisibility}">
+                    <Button Background="Transparent" HorizontalAlignment="Center" Command="{Binding LoadMoreCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Symbol="More"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </ListView.Footer>
         </controls:AlternatingListView>
         <GridView x:Name="AnimesItemsIndefinite" Grid.Row="1" ItemsSource="{Binding AnimeListItems}" MinWidth="400"
                   RightTapped="AnimesItemsIndefinite_OnRightTapped" SelectionMode="Single"
@@ -296,6 +306,15 @@
                     <item:AnimeItem DataContext="{Binding}" />
                 </DataTemplate>
             </GridView.ItemTemplate>
+            <GridView.Footer>
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding LoadMoreFooterVisibility}">
+                    <Button Background="Transparent" HorizontalAlignment="Center" Command="{Binding LoadMoreCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Symbol="More"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </GridView.Footer>
         </GridView>
         <GridView x:Name="AnimesGridIndefinite" Grid.Row="1" Margin="1,1,-5,0" ItemsSource="{Binding AnimeGridItems}"
                   MinWidth="200"
@@ -329,6 +348,15 @@
                     <item:AnimeGridItem DataContext="{x:Bind}" />
                 </DataTemplate>
             </GridView.ItemTemplate>
+            <GridView.Footer>
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding LoadMoreFooterVisibility}">
+                    <Button Background="Transparent" HorizontalAlignment="Center" Command="{Binding LoadMoreCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Symbol="More"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </GridView.Footer>
         </GridView>
         <StackPanel Margin="{Binding ElementName=AnimesPivot, Path=Margin}" Grid.Row="1" HorizontalAlignment="Center"
                     VerticalAlignment="Center">
