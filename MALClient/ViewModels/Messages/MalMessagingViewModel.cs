@@ -16,18 +16,36 @@ namespace MALClient.ViewModels
     public class MalMessagingViewModel : ViewModelBase
     {
         public SmartObservableCollection<MalMessageModel> MessageIndex { get; } = new SmartObservableCollection<MalMessageModel>();
+        public List<MalMessageModel> Outbox { get; set; } = new List<MalMessageModel>();
+        public List<MalMessageModel> Inbox { get; set; } = new List<MalMessageModel>();
 
+        private bool _skipLoading;
         private int _loadedPages = 1;
-        private int _selectedMessageIndex;
+        private int _selectedMessageIndex = -1;
 
         public int SelectedMessageIndex
         {
             get { return _selectedMessageIndex; }
             set
             {
+                if(MessageIndex[value].IsMine)
+                    return;
                 _selectedMessageIndex = value;
                 ViewModelLocator.Main.Navigate(PageIndex.PageMessageDetails,MessageIndex[value]);
                 RaisePropertyChanged(() => SelectedMessageIndex);
+            }
+        }
+
+        private bool _displaySentMessages;
+        public bool DisplaySentMessages
+        {
+            get { return _displaySentMessages; }
+            set
+            {
+                _displaySentMessages = value;
+                _skipLoading = true;
+                LoadMore();
+                RaisePropertyChanged(() => DisplaySentMessages);
             }
         }
 
@@ -57,30 +75,62 @@ namespace MALClient.ViewModels
 
         private ICommand _loadMoreCommand;
 
-        public ICommand LoadMoreCommand => _loadMoreCommand ?? (_loadMoreCommand = new RelayCommand(LoadMore));
+        public ICommand LoadMoreCommand => _loadMoreCommand ?? (_loadMoreCommand = new RelayCommand( () => LoadMore()));
 
         private ICommand _composeNewCommand;
 
         public ICommand ComposeNewCommand => _composeNewCommand ?? (_composeNewCommand = new RelayCommand(ComposeNew));
 
-        public void Init()
+
+        public void Init(bool force = false)
         {
-            LoadMore();
+            LoadMore(force);
         }
 
-        private async void LoadMore()
+        private async void LoadMore(bool force = false)
         {
             LoadingVisibility = Visibility.Visible;
-            try
+            if (force)
             {
-                MessageIndex.AddRange(await AccountMessagesManager.GetMessagesAsync(_loadedPages++));
-                LoadMorePagesVisibility = Visibility.Visible;
+                if (DisplaySentMessages)
+                {
+                    Outbox = new List<MalMessageModel>();
+                }
+                else
+                {
+                    _loadedPages = 1;
+                    Inbox = new List<MalMessageModel>();
+                }
             }
-            catch (ArgumentOutOfRangeException)
-            {
-                LoadMorePagesVisibility = Visibility.Collapsed;
-            }
-
+            if (!DisplaySentMessages)
+                try
+                {
+                    if(!_skipLoading)
+                        Inbox.AddRange(await AccountMessagesManager.GetMessagesAsync(_loadedPages++));
+                    _skipLoading = false;
+                    MessageIndex.Clear();
+                    MessageIndex.AddRange(Inbox);
+                    LoadMorePagesVisibility = Visibility.Visible;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    LoadMorePagesVisibility = Visibility.Collapsed;
+                }
+            else
+                try
+                {
+                    if(Outbox.Count == 0)
+                        Outbox = await AccountMessagesManager.GetSentMessagesAsync();
+                    MessageIndex.Clear();
+                    MessageIndex.AddRange(Outbox);
+                    LoadMorePagesVisibility = Visibility.Collapsed;
+                }
+                catch (Exception)
+                {
+                    
+                    throw;
+                }
+ 
             LoadingVisibility = Visibility.Collapsed;
         }
 

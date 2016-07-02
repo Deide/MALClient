@@ -136,7 +136,7 @@
     <Compile Include="Comm\MagicalRawQueries\MalHttpContextProvider.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\AccountMessagesMangaer.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\MalMessageDetailsQuery.cs" />
-    <Compile Include="Comm\MagicalRawQueries\Messages\MessagesQuery.cs" />
+    <Compile Include="Comm\MagicalRawQueries\Messages\MalMessagesQuery.cs" />
     <Compile Include="Comm\MagicalRawQueries\Messages\SendMessageQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
     <Compile Include="Comm\Manga\MangaRemoveQuery.cs" />
@@ -321,6 +321,7 @@
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="XamlConverters\AreItemsSelectedInListViewConverter.cs" />
     <Compile Include="XamlConverters\BoolToVisibilityConverter.cs" />
+    <Compile Include="XamlConverters\MailIconToBrushConverter.cs" />
     <Compile Include="XamlConverters\MinutesToFormattedTimeLostConverter.cs" />
     <Compile Include="XamlConverters\WorkModeToPivotFilterVisibility.cs" />
     <Compile Include="XamlConverters\DisplayModeToPresenterControlVisibility.cs" />

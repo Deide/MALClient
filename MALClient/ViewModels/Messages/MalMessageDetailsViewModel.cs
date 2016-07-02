@@ -29,7 +29,7 @@ namespace MALClient.ViewModels.Messages
             public MessageEntry(MalMessageModel msg)
             {
                 Msg = msg;
-                if (Msg.IsMine || Msg.Sender.Equals(Credentials.UserName, StringComparison.CurrentCultureIgnoreCase))
+                if (Msg.Sender.Equals(Credentials.UserName, StringComparison.CurrentCultureIgnoreCase))
                 {
                     HorizontalAlignment = HorizontalAlignment.Right;
                     Margin = new Thickness(20,0,0,0);
@@ -44,23 +44,6 @@ namespace MALClient.ViewModels.Messages
                     Background = Application.Current.Resources["SystemControlHighlightListAccentLowBrush"] as Brush;
                     Background.Opacity = .5;
                 }
-            }
-        }
-
-        private ICommand _fetchHistoryCommand;
-
-        //public ICommand FetchHistoryCommand
-        //    => _fetchHistoryCommand ?? (_fetchHistoryCommand = new RelayCommand(FetchHistory));
-
-        private Visibility _fetchHistoryVisibility;
-
-        public Visibility FetchHistoryVisibility
-        {
-            get { return _fetchHistoryVisibility; }
-            set
-            {
-                _fetchHistoryVisibility = value;
-                RaisePropertyChanged(() => FetchHistoryVisibility);
             }
         }
 
@@ -150,11 +133,11 @@ namespace MALClient.ViewModels.Messages
                 if (await new SendMessageQuery().SendMessage(MessageSubject, MessageText, MessageTarget))
                 {
                     var message = new MalMessageModel();
-                    var id = await new MessagesQuery().GetFirstSentMessageId();
+                    var id = await new MalMessagesQuery().GetFirstSentMessageId();
                     message.Id = id;
                     message = await new MalMessageDetailsQuery().GetMessageDetails(message);
-                    message.Sender = MessageTarget;
-                    message.IsMine = true;
+                    message.Target = MessageTarget;
+                    message.Sender = Credentials.UserName;
                     message.IsRead = true;
                     message.Date = DateTime.Now.ToString("d");
                     message.Subject = MessageSubject;
@@ -174,7 +157,7 @@ namespace MALClient.ViewModels.Messages
 
             if (
                 await
-                    new SendMessageQuery().SendMessage(_prevMsg.Subject, MessageText, _prevMsg.Sender, _prevMsg.ThreadId,
+                    new SendMessageQuery().SendMessage(_prevMsg.Subject, MessageText, _prevMsg.Target, _prevMsg.ThreadId,
                         _prevMsg.ReplyId))
             {
                 var message = new MalMessageModel
@@ -184,6 +167,7 @@ namespace MALClient.ViewModels.Messages
                     Date = DateTime.Now.ToString("d"),
                     Id = "0",
                     Sender = Credentials.UserName,
+                    Target = _prevMsg.Target,
                     ThreadId = _prevMsg.ThreadId,
                     ReplyId = _prevMsg.ReplyId
 

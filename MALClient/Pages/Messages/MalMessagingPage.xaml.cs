@@ -34,8 +34,11 @@ namespace MALClient.Pages.Messages
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var msg = e.AddedItems.First() as MalMessageModel;
-            msg.IsRead = true;
+            if (e.AddedItems.Count > 0)
+            {
+                var msg = e.AddedItems.First() as MalMessageModel;
+                msg.IsRead = true;
+            }
         }
     }
 }

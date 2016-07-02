@@ -10,7 +10,7 @@ using MALClient.Models;
 
 namespace MALClient.Comm.MagicalRawQueries.Messages
 {
-    public class MessagesQuery
+    public class MalMessagesQuery
     {
         public async Task<List<MalMessageModel>> GetMessages(int page = 1)
         {
@@ -26,32 +26,30 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
 
             var doc = new HtmlDocument();
             doc.LoadHtml(body);
-            output.AddRange(doc.WhereOfDescendantsWithClass("div", "message unread spot1 clearfix").Select(msgNode => ParseHtmlToMalMessage(msgNode, false)));
-            output.AddRange(doc.WhereOfDescendantsWithClass("div", "message read spot1 clearfix").Select(msgNode => ParseHtmlToMalMessage(msgNode, true)));
+            output.AddRange(doc.WhereOfDescendantsWithClass("div", "message unread spot1 clearfix").Select(msgNode => ParseInboxHtmlToMalMessage(msgNode, false)));
+            output.AddRange(doc.WhereOfDescendantsWithClass("div", "message read spot1 clearfix").Select(msgNode => ParseInboxHtmlToMalMessage(msgNode, true)));
 
 
             return output;
         }
 
-        //public async Task<List<MalMessageModel>> GetSentMessages(int page = 1)
-        //{
-        //    var client = await MalHttpContextProvider.GetHttpContextAsync();
-        //    string path = $"/mymessages.php?go=sent&show={page*20 - 20}";
-        //    var res = await client.GetAsync(path);
-        //    var body = await res.Content.ReadAsStringAsync();
+        public async Task<List<MalMessageModel>> GetSentMessages(int page = 1)
+        {
+            var client = await MalHttpContextProvider.GetHttpContextAsync();
+            string path = $"/mymessages.php?go=sent";
+            var res = await client.GetAsync(path);
+            var body = await res.Content.ReadAsStringAsync();
 
 
-        //    var output = new List<MalMessageModel>();
-        //    if (body.Contains("You have 0 messages"))
-        //        return output;
+            var output = new List<MalMessageModel>();
 
-        //    var doc = new HtmlDocument();
-        //    doc.LoadHtml(body);
-        //    output.AddRange(doc.WhereOfDescendantsWithClass("div", "message read spot2 clearfix").Select(msgNode => ParseHtmlToMalMessage(msgNode, true)));          
+            var doc = new HtmlDocument();
+            doc.LoadHtml(body);
+            output.AddRange(doc.WhereOfDescendantsWithClass("div", "message read spot2 clearfix").Select(ParseOutboxHtmlToMalMessage));
 
 
-        //    return output;
-        //}        
+            return output;
+        }
 
         /// <summary>
         /// When we send new message we don't really know its id so we have to pull it.
@@ -84,10 +82,24 @@ namespace MALClient.Comm.MagicalRawQueries.Messages
 
         }
 
-        private MalMessageModel ParseHtmlToMalMessage(HtmlNode msgNode,bool read)
+        private MalMessageModel ParseOutboxHtmlToMalMessage(HtmlNode msgNode)
+        {
+            var current = new MalMessageModel();
+            current.Target = msgNode.FirstOfDescendantsWithClass("div", "mym mym_user").InnerText.Trim();
+            current.Sender = Credentials.UserName;
+            var contentNode = msgNode.FirstOfDescendantsWithClass("div", "mym mym_subject");
+            current.Subject = WebUtility.HtmlDecode(contentNode.Descendants("a").First().ChildNodes[0].InnerText.Trim().Trim('-'));
+            current.Content = WebUtility.HtmlDecode(contentNode.Descendants("span").First().InnerText.Trim());
+            current.Date = msgNode.FirstOfDescendantsWithClass("span", "mym_date").InnerText.Trim();
+            current.IsMine = true;
+            return current;
+        }
+
+        private MalMessageModel ParseInboxHtmlToMalMessage(HtmlNode msgNode,bool read)
         {
             var current = new MalMessageModel();
             current.Sender = msgNode.FirstOfDescendantsWithClass("div", "mym mym_user").InnerText.Trim();
+            current.Target = Credentials.UserName;
             var contentNode = msgNode.FirstOfDescendantsWithClass("div", "mym mym_subject");
             current.Subject = WebUtility.HtmlDecode(contentNode.Descendants("a").First().ChildNodes[0].InnerText.Trim().Trim('-'));
             current.Content = WebUtility.HtmlDecode(contentNode.Descendants("span").First().InnerText.Trim());

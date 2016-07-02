@@ -9,13 +9,13 @@
     mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator} , Path=MalMessaging}">
 
     <Page.Resources>
-        <xamlConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <xamlConverters:VisiblityInverterConverter x:Key="VisiblityInverterConverter"/>
+        <xamlConverters:MailIconToBrushConverter x:Key="MailIconToBrushConverter"/>
     </Page.Resources>
     
     <Page.BottomAppBar>
         <CommandBar Background="{ThemeResource BrushAppBars}">
             <AppBarButton Icon="Message" Label="New message" Command="{Binding ComposeNewCommand}"/>
+            <AppBarToggleButton Icon="MailForward" Label="Sent messages" IsChecked="{Binding DisplaySentMessages,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></AppBarToggleButton>
         </CommandBar>
     </Page.BottomAppBar>
     
@@ -46,9 +46,8 @@
                             <ColumnDefinition Width="110"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Sender}" FontSize="18" TextWrapping="WrapWholeWords" MaxLines="2" TextTrimming="CharacterEllipsis" FontWeight="Medium" Margin="10,5"/>
-                        <SymbolIcon x:Name="ReadIcon" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Symbol="Read" Visibility="{Binding IsRead,Converter={StaticResource BoolToVisibilityConverter}}"/> 
-                        <SymbolIcon Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="{StaticResource SystemControlBackgroundAccentBrush}" Symbol="Mail" Visibility="{Binding ElementName=ReadIcon, Path=Visibility,Converter={StaticResource VisiblityInverterConverter}}"/> 
+                        <TextBlock Text="{Binding Target}" FontSize="18" TextWrapping="WrapWholeWords" MaxLines="2" TextTrimming="CharacterEllipsis" FontWeight="Medium" Margin="10,5"/>
+                        <SymbolIcon Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Symbol="{Binding Icon}" Foreground="{Binding Icon,Converter={StaticResource MailIconToBrushConverter}}"/>                      
                         <StackPanel Grid.Column="1" Margin="10,0">
                             <TextBlock Text="{Binding Subject}" Foreground="{StaticResource SystemControlBackgroundAccentBrush}" Margin="2,5,0,5" MaxLines="2" TextWrapping="WrapWholeWords" FontWeight="Medium" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
                             <MenuFlyoutSeparator Margin="-15,0,0,0" HorizontalAlignment="Stretch"/>

@@ -239,7 +239,7 @@ namespace MALClient.ViewModels
                     RefreshButtonVisibility = Visibility.Visible;
                     RefreshDataCommand = new RelayCommand(() =>
                     {
-                        ViewModelLocator.MalMessaging.Init();
+                        ViewModelLocator.MalMessaging.Init(true);
                     });
                     View.Navigate(typeof(MalMessagingPage), args);
                     break;
