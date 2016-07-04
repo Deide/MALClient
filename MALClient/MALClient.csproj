@@ -306,6 +306,7 @@
     <Compile Include="XamlConverters\AreItemsSelectedInListViewConverter.cs" />
     <Compile Include="XamlConverters\BoolToVisibilityConverter.cs" />
     <Compile Include="XamlConverters\MinutesToFormattedTimeLostConverter.cs" />
+    <Compile Include="XamlConverters\StringToFlatStringConverter.cs" />
     <Compile Include="XamlConverters\WorkModeToPivotFilterVisibility.cs" />
     <Compile Include="XamlConverters\DisplayModeToPresenterControlVisibility.cs" />
     <Compile Include="XamlConverters\DivideValueConverter.cs" />

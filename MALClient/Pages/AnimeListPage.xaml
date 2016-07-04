@@ -81,7 +81,7 @@
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-            <AppBarButton Icon="Sort" Label="Order by" Visibility="{Binding AppBtnSortingVisibility}">
+            <!--<AppBarButton Icon="Sort" Label="Order by" Visibility="{Binding AppBtnSortingVisibility}">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
                         <controls:RadioToggleMenuFlyoutItem IsChecked="{Binding ElementName=SortTitle,Path=IsChecked}"
@@ -112,7 +112,7 @@
                                               Text="Decsending" Click="ChangeSortOrder" />
                     </MenuFlyout>
                 </AppBarButton.Flyout>
-            </AppBarButton>
+            </AppBarButton>-->
             <AppBarButton Icon="Filter" Label="Filter">
                 <AppBarButton.Flyout>
                     <Flyout x:Name="FiltersFlyout">
@@ -174,9 +174,17 @@
                         <controls:RadioToggleMenuFlyoutItem x:Name="SortLastWatched" Text="Last watched"
                                                             Command="{Binding SetSortModeCommand}"
                                                             Visibility="{Binding HumApiSpecificControlsVisibility}"
-                                                            CommandParameter="4" GroupName="SortOptionsPivotUpperItems" />
+                                                            CommandParameter="4" GroupName="SortOptionsPivotUpperItems" />                        
+                        <controls:RadioToggleMenuFlyoutItem x:Name="SortStartDate" Text="Start date"
+                                                            Command="{Binding SetSortModeCommand}"
+                                                            Visibility="{Binding MalApiSpecificControlsVisibility}"
+                                                            CommandParameter="5" GroupName="SortOptionsPivotUpperItems" />                        
+                        <controls:RadioToggleMenuFlyoutItem x:Name="SortEndDate" Text="End date"
+                                                            Command="{Binding SetSortModeCommand}"
+                                                            Visibility="{Binding MalApiSpecificControlsVisibility}"
+                                                            CommandParameter="6" GroupName="SortOptionsPivotUpperItems" />
                         <controls:RadioToggleMenuFlyoutItem x:Name="SortNone" Text="None"
-                                                            Command="{Binding SetSortModeCommand}" CommandParameter="4"
+                                                            Command="{Binding SetSortModeCommand}" CommandParameter="7"
                                                             GroupName="SortOptionsPivotUpperItems" />
                         <MenuFlyoutSeparator />
                         <ToggleMenuFlyoutItem x:Name="BtnOrderDescending" Text="Decsending" Click="ChangeSortOrder" />
@@ -185,7 +193,7 @@
             </Button>
             <Pivot x:Name="UpperNavBarPivot" Style="{StaticResource PivotHamburgerStyle}"
                    Visibility="{Binding WorkMode,Converter={StaticResource WorkModeToPivotFilterVisibility},ConverterParameter={StaticResource WorkModeAnyOther}}"
-                   SelectionChanged="UpperNavBarPivotOnSelectionChanged">
+                   SelectionChanged="UpperNavBarPivotOnSelectionChanged" SelectedIndex="{x:Bind ViewModel.StatusSelectorSelectedIndex,Mode=OneWay}">
                 <Pivot.Resources>
                     <Style TargetType="PivotHeaderItem" BasedOn="{StaticResource PivotHeaderItemHamburgerStyle}" />
                 </Pivot.Resources>

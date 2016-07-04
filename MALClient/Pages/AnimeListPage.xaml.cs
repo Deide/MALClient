@@ -107,20 +107,9 @@ namespace MALClient.Pages
         {
             try
             {
-                switch (currMode)
-                {
-                    case AnimeListDisplayModes.IndefiniteList:
-                        AnimesItemsIndefinite.SelectedItem = null;
-                        break;
-                    case AnimeListDisplayModes.IndefiniteGrid:
-                        AnimesGridIndefinite.SelectedItem = null;
-                        break;
-                    case AnimeListDisplayModes.IndefiniteCompactList:
-                        AnimeCompactItemsIndefinite.SelectedItem = null;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(currMode), currMode, null);
-                }
+                AnimesItemsIndefinite.SelectedItem = null;
+                AnimesGridIndefinite.SelectedItem = null;
+                AnimeCompactItemsIndefinite.SelectedItem = null;
             }
             catch (Exception)
             {
@@ -185,10 +174,12 @@ namespace MALClient.Pages
             Loaded += (sender, args) =>
             {
                 ViewModel.View = this;
+                _loaded = true;
                 ViewModel.CanAddScrollHandler = true;
                 ViewModel.ScrollIntoViewRequested += ViewModelOnScrollRequest;
-                ViewModel.Init(navArgs);          
-                _loaded = true;
+                ViewModel.SortingSettingChanged += OnSortingSettingChanged;
+                ViewModel.SelectionResetRequested += ResetSelectionForMode;
+                ViewModel.Init(navArgs);             
             };
             
             SizeChanged += (sender, args) =>
@@ -211,7 +202,6 @@ namespace MALClient.Pages
 
         #endregion
 
-        #region ActionHandlersPin
 
         private void ChangeSortOrder(object sender, RoutedEventArgs e)
         {
@@ -243,7 +233,7 @@ namespace MALClient.Pages
             TxtListSource.SelectAll();
         }
 
-        internal void InitSortOptions(SortOptions option, bool descending)
+        private void OnSortingSettingChanged(SortOptions option, bool descending)
         {
             switch (option)
             {
@@ -265,13 +255,17 @@ namespace MALClient.Pages
                 case SortOptions.SortLastWatched:
                     SortLastWatched.IsChecked = true;
                     break;
+                case SortOptions.SortStartDate:
+                    SortStartDate.IsChecked = true;
+                    break;
+                case SortOptions.SortEndDate:
+                    SortEndDate.IsChecked = true;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(option), option, null);
             }
             BtnOrderDescending.IsChecked = descending;
         }
-
-        #endregion
 
         private void UpperNavBarPivotOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {

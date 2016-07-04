@@ -35,6 +35,12 @@
                              SpeedRatio="3" EnableDependentAnimation="True" From="0" To="1" />
             <PopInThemeAnimation Storyboard.TargetName="CurrentOffStatus" FromVerticalOffset="20"
                                  FromHorizontalOffset="0" />
+        </Storyboard>        
+        <Storyboard x:Name="FadeInCurrentSubStatus">
+            <DoubleAnimation Storyboard.TargetName="CurrentStatusSub" Storyboard.TargetProperty="Opacity"
+                             SpeedRatio="3" EnableDependentAnimation="True" From="0" To="1" />
+            <PopInThemeAnimation Storyboard.TargetName="CurrentStatusSub" FromVerticalOffset="20"
+                                 FromHorizontalOffset="0" />
         </Storyboard>
     </Page.Resources>
 
@@ -127,6 +133,10 @@
                 </Button>
                 <TextBlock x:Name="CurrentStatus" FontWeight="Bold" Text="{Binding CurrentStatus}"
                        TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,0,0"
+                       Visibility="{Binding Visibility, Converter={StaticResource VisiblityInverterConverter}, ElementName=SearchInput}" />
+                <TextBlock x:Name="CurrentStatusSub" FontWeight="Normal" Text="{Binding CurrentStatusSub}"
+                       TextTrimming="CharacterEllipsis" FontSize="14" Foreground="{ThemeResource BrushSettingsSubtitle}"
                        VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,0,0"
                        Visibility="{Binding Visibility, Converter={StaticResource VisiblityInverterConverter}, ElementName=SearchInput}" />
             </StackPanel>

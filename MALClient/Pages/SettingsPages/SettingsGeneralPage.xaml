@@ -86,7 +86,7 @@
                                             IsOn="{Binding IsPivotFilterBarVisible,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                             OnContent="Visible" OffContent="Collapsed" HorizontalAlignment="Center" />
                     </Grid>
-                    <TextBlock Text="Enable swipe to increment/decremnt on grid items."
+                    <TextBlock Text="Enable swipe to increment/decrement on grid items."
                                                FontWeight="Medium"
                                                HorizontalAlignment="Center" Margin="0,5"
                                                TextWrapping="WrapWholeWords" TextAlignment="Center" />
@@ -103,6 +103,15 @@
                         <ToggleSwitch
                                             IsOn="{Binding AnimeListEnsureSelectedItemVisibleAfterOffContentCollapse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                             OnContent="Ensure visible" OffContent="Do nothing" HorizontalAlignment="Center" />
+                    </Grid>                    
+                    <TextBlock Text="Make manga volumes more important than chapters."
+                                               FontWeight="Medium"
+                                               HorizontalAlignment="Center" Margin="0,5"
+                                               TextWrapping="WrapWholeWords" TextAlignment="Center" />
+                    <Grid HorizontalAlignment="Stretch">
+                        <ToggleSwitch
+                                            IsOn="{Binding MangaFocusVolumes,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                            OnContent="Focus volumes" OffContent="Focus chapters" HorizontalAlignment="Center" />
                     </Grid>
                 </StackPanel>
             </Grid>

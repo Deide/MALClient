@@ -72,7 +72,7 @@ namespace MALClient.Items
         public int Id => EntryData?.Id ?? _seasonalData.Id;
         public int MalId => EntryData?.MalId ?? _seasonalData.Id;
         public string ImgUrl => EntryData?.ImgUrl ?? _seasonalData.ImgUrl;
-        private int AllEpisodes => EntryData?.AllEpisodes ?? 0;
+        public int AllEpisodes => EntryData?.AllEpisodes ?? 0;
         public int AllVolumes => (EntryData as MangaLibraryItemData)?.AllVolumes ?? 0;
         public int Type => EntryData?.Type ?? 0;
 
@@ -148,15 +148,11 @@ namespace MALClient.Items
             LoadedModel = true;
             if (RepresentsAnime)
                 return _firstConstructor
-                    ? new AnimeItemViewModel(Auth, Title, ImgUrl, Id, MyStatus, MyEpisodes, AllEpisodes, MyScore,
-                        MyStartDate, MyEndDate, this,
-                        false)
+                    ? new AnimeItemViewModel(Auth, Title, ImgUrl, Id, AllEpisodes, this,false)
                     : new AnimeItemViewModel(_seasonalData, this);
             return
                 _firstConstructor
-                    ? new AnimeItemViewModel(Auth, Title, ImgUrl, Id, MyStatus, MyEpisodes, AllEpisodes, MyScore,
-                        MyStartDate, MyEndDate, this,
-                        false, MyVolumes, AllVolumes)
+                    ? new AnimeItemViewModel(Auth, Title, ImgUrl, Id, AllEpisodes, this,false, AllVolumes)
                     : new AnimeItemViewModel(_seasonalData, this);
         }
     }

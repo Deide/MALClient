@@ -79,11 +79,21 @@ namespace MALClient.ViewModels
 
     public enum SortOptions
     {
+        [Utils.Description("Title")]
         SortTitle,
+        [Utils.Description("Score")]
         SortScore,
+        [Utils.Description("Watched")]
         SortWatched,
+        [Utils.Description("Air day")]
         SortAirDay,
+        [Utils.Description("Last watched")]
         SortLastWatched,
+        [Utils.Description("Start date")]
+        SortStartDate,
+        [Utils.Description("End Date")]
+        SortEndDate,
+        [Utils.Description("")]
         SortNothing
     }
 
@@ -103,6 +113,10 @@ namespace MALClient.ViewModels
     public delegate void AnimeItemListInitialized();
 
     public delegate void ScrollIntoViewRequest(AnimeItemViewModel item);
+
+    public delegate void SelectionResetRequest(AnimeListDisplayModes mode);
+
+    public delegate void SortingSettingChange(SortOptions option,bool descencing);
 
     public class AnimeListViewModel : ViewModelBase
     {
@@ -147,7 +161,7 @@ namespace MALClient.ViewModels
         public List<AnimeItemAbstraction> AllLoadedAnimeItemAbstractions { get; private set; } =
             new List<AnimeItemAbstraction>();
 
-        public List<AnimeItemAbstraction> AllLoadedMangaItemAbstractions { get; private set; } =
+        public List<AnimeItemAbstraction>AllLoadedMangaItemAbstractions { get; private set; } =
             new List<AnimeItemAbstraction>();
 
         private SmartObservableCollection<AnimeItemViewModel> _animeItems = new SmartObservableCollection<AnimeItemViewModel>();
@@ -158,8 +172,6 @@ namespace MALClient.ViewModels
             set
             {
                 _animeItems = value;
-                if (value.Count + _animeItemsSet.Count > 150)
-                    LoadMoreFooterVisibility = Visibility.Collapsed;
                 RaisePropertyChanged(() => AnimeListItems);
                 RaisePropertyChanged(() => AnimeCompactItems);
                 RaisePropertyChanged(() => AnimeGridItems);
@@ -191,6 +203,8 @@ namespace MALClient.ViewModels
 
         public event AnimeItemListInitialized Initialized;
         public event ScrollIntoViewRequest ScrollIntoViewRequested;
+        public event SortingSettingChange SortingSettingChanged;
+        public event SelectionResetRequest SelectionResetRequested;
 
         public async void Init(AnimeListPageNavigationArgs args)
         {
@@ -310,7 +324,8 @@ namespace MALClient.ViewModels
                     if (WorkMode == AnimeListWorkModes.TopAnime || WorkMode == AnimeListWorkModes.TopManga)
                     {
                         AppbarBtnPinTileVisibility = AppBtnSortingVisibility = Visibility.Collapsed;
-                        LoadMoreFooterVisibility = Visibility.Visible;
+                        if (AnimeItems.Count + _animeItemsSet.Count <= 150)
+                            LoadMoreFooterVisibility = Visibility.Visible;
                     }
                     else
                         AppbarBtnPinTileVisibility = AppBtnSortingVisibility = Visibility.Visible;
@@ -319,7 +334,7 @@ namespace MALClient.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-            View.InitSortOptions(SortOption, SortDescending);
+            SortingSettingChanged?.Invoke(SortOption, SortDescending);
             Initializing = false;
             UpdateUpperStatus();
         }
@@ -422,10 +437,16 @@ namespace MALClient.ViewModels
                                                 .Concat(nonAiringItems));
 
                             break;
+                        case SortOptions.SortStartDate:
+                            items = items.OrderBy(abstraction => abstraction.MyStartDate);
+                            break;
+                        case SortOptions.SortEndDate:
+                            items = items.OrderBy(abstraction => abstraction.MyEndDate);
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(SortOption), SortOption, null);
                     }
-                //If we are descending then reverse order
+            //If we are descending then reverse order
                 if (SortDescending && SortOption != SortOptions.SortAirDay)
                     items = items.Reverse();
                 //Add all abstractions to current set (spread across pages)
@@ -474,7 +495,8 @@ namespace MALClient.ViewModels
             await FetchSeasonalData(true, page);
             if (page <= 3)
                 LoadMoreFooterVisibility = Visibility.Visible;
-            
+            else
+                LoadMoreFooterVisibility = Visibility.Collapsed;
         }
 
         public int CurrentIndexPosition { get; set; }
@@ -531,7 +553,6 @@ namespace MALClient.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private int unloadReoccurences;
 
         private void IndefiniteScrollViewerOnViewChanging(object sender, ScrollViewerViewChangingEventArgs args)
         {
@@ -593,18 +614,7 @@ namespace MALClient.ViewModels
                 AnimeItems.AddRange(_animeItemsSet.Select(abstraction => abstraction.ViewModel));
                 _animeItemsSet.Clear();
             }
-            View.GetIndefiniteScrollViewer().Result.ViewChanging += IndefiniteScrollViewerOnViewChanging;
-        }
-
-        /// <summary>
-        ///     To make it more probable that the list will scroll to right position wait a bit before srolling there.
-        ///     It works more or less...
-        /// </summary>
-        /// <param name="delay"></param>
-        private async void ScrollToWithDelay(int delay)
-        {
-            await Task.Delay(delay);
-            View.GetIndefiniteScrollViewer().Result.ScrollToVerticalOffset(CurrentPosition);
+            (await View.GetIndefiniteScrollViewer()).ViewChanging += IndefiniteScrollViewerOnViewChanging;
         }
 
         /// <summary>
@@ -1071,6 +1081,9 @@ namespace MALClient.ViewModels
         public Visibility HumApiSpecificControlsVisibility
             => Settings.SelectedApiType == ApiType.Mal ? Visibility.Collapsed : Visibility.Visible;
 
+        public Visibility MalApiSpecificControlsVisibility
+            => Settings.SelectedApiType == ApiType.Hummingbird ? Visibility.Collapsed : Visibility.Visible;
+
         private Visibility _appBtnGoBackToMyListVisibility = Visibility.Collapsed;
 
         public Visibility AppBtnGoBackToMyListVisibility
@@ -1149,7 +1162,6 @@ namespace MALClient.ViewModels
                 if (value == _statusSelectorSelectedIndex)
                     return;
                 _statusSelectorSelectedIndex = value;
-                View.SetUpperPivotIndex(value);
                 RaisePropertyChanged(() => StatusSelectorSelectedIndex);
                 ViewModelLocator.Hamburger.UpdateAnimeFiltersSelectedIndex();
                 if (GetDesiredStatus() != (int) AnimeStatus.AllOrAiring)
@@ -1158,6 +1170,8 @@ namespace MALClient.ViewModels
                 {
                     if (!Initializing && AnimeItems.Count + _animeItemsSet.Count <= 150)
                         LoadMoreFooterVisibility = Visibility.Visible;
+                    else
+                        LoadMoreFooterVisibility = Visibility.Collapsed;
                 }
                 if (!Initializing)
                 {
@@ -1191,7 +1205,7 @@ namespace MALClient.ViewModels
                 if (value != null && ViewModelLocator.AnimeDetails.Id != value.Id)
                     value.NavigateDetails();
                 RaisePropertyChanged(() => TemporarilySelectedAnimeItem);
-                View.ResetSelectionForMode(DisplayMode);
+                SelectionResetRequested?.Invoke(DisplayMode);
             }
         }
 
@@ -1306,6 +1320,9 @@ namespace MALClient.ViewModels
             }
         }
 
+        /// <summary>
+        /// I know that this is dirt and it shouldn't be here... I'll get rid of it someday
+        /// </summary>
         public AnimeListPage View { get; set; }
 
         public AnimeListWorkModes _workMode;
@@ -1367,18 +1384,7 @@ namespace MALClient.ViewModels
             new Tuple<AnimeListDisplayModes, string>(AnimeListDisplayModes.IndefiniteCompactList, "Compact list")
         };
 
-        private Visibility _animesPivotHeaderVisibility;
-
-        public Visibility AnimesPivotHeaderVisibility
-        {
-            get { return _animesPivotHeaderVisibility; }
-            set
-            {
-                _animesPivotHeaderVisibility = value;
-                PivotHeaerGridRowHeight = value == Visibility.Collapsed ? new GridLength(0) : new GridLength(40);
-                RaisePropertyChanged(() => AnimesPivotHeaderVisibility);
-            }
-        }
+ 
 
         private Visibility _sortAirDayVisibility;
 
@@ -1442,39 +1448,28 @@ namespace MALClient.ViewModels
 
         #region StatusRelatedStuff
 
-        private async void UpdateUpperStatus(int retries = 5)
+        private void UpdateUpperStatus()
         {
-            while (true)
-            {
-                var page = Utils.GetMainPageInstance();
+            var page = ViewModelLocator.Main;
 
-                if (page != null)
+            if (WorkMode != AnimeListWorkModes.SeasonalAnime)
+                if (WorkMode == AnimeListWorkModes.TopAnime)
+                    page.CurrentStatus =
+                        $"Top {TopAnimeWorkMode} - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
+                else if (WorkMode == AnimeListWorkModes.TopManga)
+                    page.CurrentStatus =
+                        $"Top Manga - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
+                else if (!string.IsNullOrWhiteSpace(ListSource))
+                    page.CurrentStatus =
+                        $"{ListSource} - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
+                else
+                    page.CurrentStatus =
+                        $"{(WorkMode == AnimeListWorkModes.Anime ? "Anime list" : "Manga list")}";
+            else
+                page.CurrentStatus =
+                    $"{CurrentSeason?.Name} - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
 
-                    if (WorkMode != AnimeListWorkModes.SeasonalAnime)
-                        if (WorkMode == AnimeListWorkModes.TopAnime)
-                            page.CurrentStatus =
-                                $"Top {TopAnimeWorkMode} - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
-                        else if (WorkMode == AnimeListWorkModes.TopManga)
-                            page.CurrentStatus =
-                                $"Top Manga - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
-                        else if (!string.IsNullOrWhiteSpace(ListSource))
-                            page.CurrentStatus =
-                                $"{ListSource} - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
-                        else
-                            page.CurrentStatus =
-                                $"{(WorkMode == AnimeListWorkModes.Anime ? "Anime list" : "Manga list")}";
-                    else
-                        page.CurrentStatus =
-                            $"{CurrentSeason?.Name} - {Utils.StatusToString(GetDesiredStatus(), WorkMode == AnimeListWorkModes.Manga)}";
-
-                else if (retries >= 0)
-                {
-                    await Task.Delay(1000);
-                    retries = retries - 1;
-                    continue;
-                }
-                break;
-            }
+            page.CurrentStatusSub = SortOption.GetDescription();
         }
 
         public int GetDesiredStatus()

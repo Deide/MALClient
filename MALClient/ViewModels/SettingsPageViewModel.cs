@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel;
@@ -326,6 +327,20 @@ namespace MALClient.ViewModels
         {
             get { return Settings.ArticlesLaunchExternalLinks; }
             set { Settings.ArticlesLaunchExternalLinks = value; }
+        }
+
+        public static bool MangaFocusVolumes
+        {
+            get { return Settings.MangaFocusVolumes; }
+            set
+            {
+                Settings.MangaFocusVolumes = value;
+                ViewModelLocator.AnimeList.AllLoadedMangaItemAbstractions.ForEach(abstraction =>
+                {
+                    if (abstraction.LoadedModel)
+                        abstraction.ViewModel.MangaFocusChanged(value);
+                });
+            }
         }
 
         private List<NewsData> _currentNews { get; set; } = new List<NewsData>();

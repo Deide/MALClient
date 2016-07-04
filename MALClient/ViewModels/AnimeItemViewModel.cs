@@ -186,29 +186,23 @@ namespace MALClient.ViewModels
             Id = id;
             if (!ParentAbstraction.RepresentsAnime)
             {
-                UpdateEpsUpperLabel = "Read chapters :";
+                UpdateEpsUpperLabel = Settings.MangaFocusVolumes ? "Read volumes" : "Read chapters";
                 Status1Label = "Reading";
                 Status5Label = "Plan to read";
             }
         }
 
-        public AnimeItemViewModel(bool auth, string name, string img, int id, int myStatus, int myEps, int allEps,
-            float myScore, string startDate, string endDate,
+        public AnimeItemViewModel(bool auth, string name, string img, int id, int allEps,
             AnimeItemAbstraction parent, bool setEpsAuth = false) : this(img, id, parent)
             //We are loading an item that IS on the list
         {
-            //Assign fields
+            //Assign fields          
             _allEpisodes = allEps;
             Auth = auth;
             ItemManipulationMode = auth ? ManipulationModes.All : ManipulationModes.None;
             //Assign properties
-            MyScore = myScore;
-            MyStatus = myStatus;
             Title = name;
-            MyEpisodes = myEps;
             ShowMoreVisibility = Visibility.Collapsed;
-            StartDate = startDate;
-            EndDate = endDate;
             //We are not seasonal so it's already on list            
             AddToListVisibility = Visibility.Collapsed;
             SetAuthStatus(auth, setEpsAuth);
@@ -219,12 +213,19 @@ namespace MALClient.ViewModels
         }
 
         //manga
-        public AnimeItemViewModel(bool auth, string name, string img, int id, int myStatus, int myEps, int allEps,
-            float myScore, string startDate, string endDate,
-            AnimeItemAbstraction parent, bool setEpsAuth, int myVolumes, int allVolumes)
-            : this(auth, name, img, id, myStatus, myEps, allEps, myScore, startDate, endDate, parent, setEpsAuth)
+        public AnimeItemViewModel(bool auth, string name, string img, int id, int allEps,
+            AnimeItemAbstraction parent, bool setEpsAuth, int allVolumes)
+            : this(auth, name, img, id, allEps, parent, setEpsAuth)
         {
-            AllVolumes = allVolumes;
+            if (Settings.MangaFocusVolumes)
+            {
+                _allEpisodes = allVolumes; //invert this
+                _allVolumes = allEps;
+            }
+            else
+            {
+                _allVolumes = allVolumes; //else standard
+            }           
         }
 
         public AnimeItemViewModel(SeasonalAnimeData data,
@@ -248,11 +249,24 @@ namespace MALClient.ViewModels
 
         #region PropertyPairs
 
-        private readonly int _allEpisodes;
-        public int AllEpisodes => _allEpisodes;
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
-        public int AllVolumes { get; }
+        private int _allEpisodes;
+        private int _allVolumes;
+        public int AllEpisodes => ParentAbstraction.AllEpisodes;
+        public int AllVolumes => ParentAbstraction.AllVolumes;
+        public int AllEpisodesFocused => _allEpisodes;
+        public int AllVolumesFocused => _allVolumes;
+
+        public string EndDate
+        {
+            get { return ParentAbstraction.MyEndDate; }
+            set { ParentAbstraction.MyEndDate = value; }
+        }
+
+        public string StartDate
+        {
+            get { return ParentAbstraction.MyStartDate; }
+            set { ParentAbstraction.MyStartDate = value; }
+        }
 
         public string AirDayBind
             =>
@@ -395,16 +409,16 @@ namespace MALClient.ViewModels
             get
             {
                 if (_seasonalState)
-                    return $"{(AllEpisodes == 0 ? "?" : AllEpisodes.ToString())} Episodes";
+                    return $"{(AllEpisodesFocused == 0 ? "?" : AllEpisodesFocused.ToString())} Episodes";
 
                 return Auth || MyEpisodes != 0
                     ? $"{(ParentAbstraction.RepresentsAnime ? "Watched" : "Read")} : " +
-                      $"{MyEpisodes}/{(AllEpisodes == 0 ? "?" : AllEpisodes.ToString())}"
-                    : $"{(AllEpisodes == 0 ? "?" : AllEpisodes.ToString())} Episodes";
+                      $"{MyEpisodesFocused}/{(AllEpisodesFocused == 0 ? "?" : AllEpisodesFocused.ToString())}"
+                    : $"{(AllEpisodesFocused == 0 ? "?" : AllEpisodesFocused.ToString())} Episodes";
             }
         }
 
-        public string MyEpisodesBindShort => $"{MyEpisodes}/{(AllEpisodes == 0 ? "?" : AllEpisodes.ToString())}";
+        public string MyEpisodesBindShort => $"{MyEpisodesFocused}/{(AllEpisodesFocused == 0 ? "?" : AllEpisodesFocused.ToString())}";
 
         public int MyEpisodes
         {
@@ -421,11 +435,38 @@ namespace MALClient.ViewModels
             }
         }
 
-        public string MyVolumesBind
-            =>
-                Auth || MyEpisodes != 0
-                    ? "Read : " + $"{MyVolumes}/{(AllVolumes == 0 ? "?" : AllVolumes.ToString())}"
-                    : $"{(AllVolumes == 0 ? "?" : AllVolumes.ToString())} Volumes";
+        /// <summary>
+        /// Features inverted values (chapter/vols) which reflects focus setting.
+        /// </summary>
+        public int MyEpisodesFocused
+        {
+            get { return !ParentAbstraction.RepresentsAnime && Settings.MangaFocusVolumes ? ParentAbstraction.MyVolumes : ParentAbstraction.MyEpisodes; }
+            set
+            {
+                if (!ParentAbstraction.RepresentsAnime && Settings.MangaFocusVolumes)
+                {
+                    if (ParentAbstraction.MyVolumes == value)
+                        return;
+                    ParentAbstraction.MyVolumes = value;
+                }
+                else
+                {
+                    if (ParentAbstraction.MyEpisodes == value)
+                        return;
+                    ParentAbstraction.MyEpisodes = value;
+                }
+                RaisePropertyChanged(() => MyEpisodesBind);
+                RaisePropertyChanged(() => MyEpisodesBindShort);
+                AdjustIncrementButtonsVisibility();
+                ViewModelLocator.AnimeDetails.UpdateAnimeReferenceUiBindings(Id);
+            }
+        }
+
+        //public string MyVolumesBind
+        //    =>
+        //        Auth || MyEpisodes != 0
+        //            ? "Read : " + $"{MyVolumes}/{(AllVolumes == 0 ? "?" : AllVolumes.ToString())}"
+        //            : $"{(AllVolumes == 0 ? "?" : AllVolumes.ToString())} Volumes";
 
         public int MyVolumes
         {
@@ -435,23 +476,10 @@ namespace MALClient.ViewModels
                 if (ParentAbstraction.MyVolumes == value)
                     return;
                 ParentAbstraction.MyVolumes = value;
-                RaisePropertyChanged(() => MyVolumesBind);
             }
         }
 
-        private string _watchedEpsLabel = "My watched\nepisodes :";
-
-        public string WatchedEpsLabel
-        {
-            get { return _watchedEpsLabel; }
-            set
-            {
-                _watchedEpsLabel = value;
-                RaisePropertyChanged(() => WatchedEpsLabel);
-            }
-        }
-
-        private string _updateEpsUpperLabel = "Watched eps :";
+        private string _updateEpsUpperLabel = "Watched episodes";
 
         public string UpdateEpsUpperLabel
         {
@@ -881,18 +909,18 @@ namespace MALClient.ViewModels
                 await PromptForStatusChange(AllEpisodes == 1 ? (int) AnimeStatus.Completed : (int) AnimeStatus.Watching);
             }
 
-            MyEpisodes++;
+            MyEpisodesFocused++;
             AdjustIncrementButtonsVisibility();
             var response = await GetAppropriateUpdateQuery().GetRequestResponse();
             if (response != "Updated" && Settings.SelectedApiType == ApiType.Mal)
             {
-                MyEpisodes--; // Shouldn't occur really , but hey shouldn't and MAL api goes along very well.
+                MyEpisodesFocused--; // Shouldn't occur really , but hey shouldn't and MAL api goes along very well.
                 AdjustIncrementButtonsVisibility();
             }
 
             ParentAbstraction.LastWatched = DateTime.Now;
 
-            if (trigCompleted && MyEpisodes == _allEpisodes && _allEpisodes != 0)
+            if (trigCompleted && MyEpisodesFocused == _allEpisodes && _allEpisodes != 0)
                 await PromptForStatusChange((int) AnimeStatus.Completed);
 
             LoadingUpdate = Visibility.Collapsed;
@@ -903,12 +931,12 @@ namespace MALClient.ViewModels
             if (DecrementEpsVisibility == Visibility.Collapsed)
                 return;
             LoadingUpdate = Visibility.Visible;
-            MyEpisodes--;
+            MyEpisodesFocused--;
             AdjustIncrementButtonsVisibility();
             var response = await GetAppropriateUpdateQuery().GetRequestResponse();
             if (response != "Updated" && Settings.SelectedApiType == ApiType.Mal)
             {
-                MyEpisodes++;
+                MyEpisodesFocused++;
                 AdjustIncrementButtonsVisibility();
             }
 
@@ -928,13 +956,13 @@ namespace MALClient.ViewModels
             {
                 LoadingUpdate = Visibility.Visible;
                 WatchedEpsInputNoticeVisibility = Visibility.Collapsed;
-                var prevWatched = MyEpisodes;
-                MyEpisodes = watched;
+                var prevWatched = MyEpisodesFocused;
+                MyEpisodesFocused = watched;
                 var response = await GetAppropriateUpdateQuery().GetRequestResponse();
                 if (response != "Updated" && Settings.SelectedApiType == ApiType.Mal)
-                    MyEpisodes = prevWatched;
+                    MyEpisodesFocused = prevWatched;
 
-                if (MyEpisodes == _allEpisodes && _allEpisodes != 0)
+                if (MyEpisodesFocused == _allEpisodes && _allEpisodes != 0)
                     await PromptForStatusChange((int) AnimeStatus.Completed);
 
                 ParentAbstraction.LastWatched = DateTime.Now;
@@ -998,6 +1026,23 @@ namespace MALClient.ViewModels
         }
 
         #endregion
+
+        public void MangaFocusChanged(bool focusManga)
+        {
+            if (focusManga)
+            {
+                _allEpisodes = ParentAbstraction.AllVolumes; //invert this
+                _allVolumes = ParentAbstraction.AllEpisodes;
+            }
+            else
+            {
+                _allEpisodes = ParentAbstraction.AllEpisodes; //else standard
+                _allVolumes = ParentAbstraction.AllVolumes; 
+            }
+            RaisePropertyChanged(() => MyEpisodesBind);
+            RaisePropertyChanged(() => MyEpisodesBindShort);
+            UpdateEpsUpperLabel = focusManga ? "Read volumes" : "Read chapters";
+        }
 
         #region Prompts
 

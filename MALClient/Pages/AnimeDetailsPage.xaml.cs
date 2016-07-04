@@ -10,20 +10,14 @@ using MALClient.ViewModels;
 
 namespace MALClient.Pages
 {
-    public sealed partial class AnimeDetailsPage : Page, IDetailsViewInteraction
+    public sealed partial class AnimeDetailsPage : Page
     {
         public AnimeDetailsPage()
         {
             InitializeComponent();
-            ViewModel.View = this;
         }
 
         private AnimeDetailsPageViewModel ViewModel => DataContext as AnimeDetailsPageViewModel;
-
-        public Flyout GetWatchedEpsFlyout()
-        {
-            return WatchedEpsFlyout;
-        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -46,7 +40,18 @@ namespace MALClient.Pages
         {
             if (e.Key == VirtualKey.Enter)
             {
-                ViewModel.ChangeWatchedEps();
+                ViewModel.ChangeWatchedCommand.Execute(null);
+                WatchedEpsFlyout.Hide();
+                e.Handled = true;
+            }
+        }
+
+        private void SubmitReadVolumes(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter)
+            {
+                ViewModel.ChangeVolumesCommand.Execute(null);
+                ReadVolumesFlyout.Hide();
                 e.Handled = true;
             }
         }
@@ -101,6 +106,17 @@ namespace MALClient.Pages
         private void UIElement_OnRightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             ImageSaveFlyout.ShowAt(sender as FrameworkElement);
+        }
+
+
+        private void ReadVolumesButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ReadVolumesFlyout.Hide();
+        }
+
+        private void WatchedEpsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            WatchedEpsFlyout.Hide();
         }
     }
 }

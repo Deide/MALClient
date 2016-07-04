@@ -35,6 +35,7 @@ namespace MALClient.ViewModels
         Storyboard CurrentStatusStoryboard { get; }
         Storyboard CurrentOffStatusStoryboard { get; }
         Storyboard HidePinDialogStoryboard { get; }
+        Storyboard CurrentOffSubStatusStoryboard { get; }
     }
 
     public class MainViewModel : ViewModelBase
@@ -58,8 +59,6 @@ namespace MALClient.ViewModels
             bool mainPage = true;
             PageIndex originalIndex = index;
             var wasOnSearchPage = SearchToggleLock;
-
-            await Task.Delay(1);
             if (!Credentials.Authenticated && PageUtils.PageRequiresAuth(index))
             {
                 var msg = new MessageDialog("Log in first in order to access this page.");
@@ -92,6 +91,7 @@ namespace MALClient.ViewModels
                 RefreshButtonVisibility = Visibility.Collapsed;
                 ResetSearchFilter();
                 SearchToggleLock = false;
+                CurrentStatusSub = "";
             }
 
             if (index == PageIndex.PageSeasonal ||
@@ -376,6 +376,19 @@ namespace MALClient.ViewModels
                 _currentStatus = value;
                 View.CurrentStatusStoryboard.Begin();
                 RaisePropertyChanged(() => CurrentStatus);
+            }
+        }
+
+        private string _currentStatusSub;
+
+        public string CurrentStatusSub
+        {
+            get { return _currentStatusSub; }
+            set
+            {
+                _currentStatusSub = value;
+                View.CurrentOffSubStatusStoryboard.Begin();
+                RaisePropertyChanged(() => CurrentStatusSub);
             }
         }
 
