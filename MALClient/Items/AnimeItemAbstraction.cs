@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MALClient.Models;
 using MALClient.ViewModels;
 
@@ -24,8 +26,6 @@ namespace MALClient.Items
 
         public int Index;
         public bool LoadedAnime;
-        public bool LoadedCompact;
-        public bool LoadedGrid;
         public bool LoadedModel;
         public bool LoadedVolatile;
 
@@ -75,6 +75,28 @@ namespace MALClient.Items
         public int AllEpisodes => EntryData?.AllEpisodes ?? 0;
         public int AllVolumes => (EntryData as MangaLibraryItemData)?.AllVolumes ?? 0;
         public int Type => EntryData?.Type ?? 0;
+
+        public string Notes
+        {
+            get { return EntryData?.Notes ?? ""; }
+            set
+            {
+                if (EntryData != null)
+                {
+                    EntryData.Notes = value;
+                    _tags = null;
+                }
+            }
+        }
+
+        private List<string> _tags;
+
+        public List<string> Tags => _tags ?? (_tags = string.IsNullOrEmpty(Notes)
+            ? new List<string>()
+            : Notes.Contains(",")
+                ? Notes.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.ToLower()).ToList()
+                : new List<string> {Notes.ToLower()});
 
         public DateTime LastWatched
         {

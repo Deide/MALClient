@@ -119,7 +119,6 @@
     <Compile Include="Comm\Articles\MalArticleQuery.cs" />
     <Compile Include="Comm\CommUtils\HtmlClassDefinitionsQuery.cs" />
     <Compile Include="Comm\CommUtils\HtmlClassMgr.cs" />
-    <Compile Include="Comm\ListParameters.cs" />
     <Compile Include="Comm\LibraryListQuery.cs" />
     <Compile Include="Comm\Anime\AnimeRecomendationsQuery.cs" />
     <Compile Include="Comm\Anime\AnimeRemoveQuery.cs" />
@@ -129,7 +128,6 @@
     <Compile Include="Comm\Anime\AnimeUpdateQuery.cs" />
     <Compile Include="Comm\AuthQuery.cs" />
     <Compile Include="Comm\Anime\AnimeDirectRecommendationsQuery.cs" />
-    <Compile Include="Comm\CommUtils\IParameters.cs" />
     <Compile Include="Comm\Articles\MalArticlesIndexQuery.cs" />
     <Compile Include="Comm\ProfileQuery.cs" />
     <Compile Include="Comm\Manga\MangaRemoveQuery.cs" />

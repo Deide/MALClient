@@ -9,18 +9,12 @@ namespace MALClient.Items
 {
     public sealed partial class AnimeCompactItem : UserControl
     {
-        public AnimeCompactItem(AnimeItemViewModel vm)
-        {
-            InitializeComponent();
-            DataContext = vm;
-        }
-
         public AnimeCompactItem()
         {
             InitializeComponent();
         }
 
-        public AnimeItemViewModel ViewModel => DataContext as AnimeItemViewModel;
+        private AnimeItemViewModel ViewModel => DataContext as AnimeItemViewModel;
 
         private void SubmitWatchedEps(object sender, KeyRoutedEventArgs e)
         {

@@ -151,8 +151,8 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="SearchInput" HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                         KeyDown="SearchInput_OnKeyDown"
+                <AutoSuggestBox x:Name="SearchInput" ItemsSource="{Binding CurrentHintSet}" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                         KeyDown="SearchInput_OnKeyDown"                          
                          Text="{Binding CurrentSearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Visibility="{Binding SearchInputVisibility, Converter={StaticResource BoolToVisibilityConverter}}"
                          PlaceholderText="Search..." />

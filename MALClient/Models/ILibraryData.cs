@@ -13,6 +13,7 @@ namespace MALClient.Models
         int AllEpisodes { get; set; }
         string ImgUrl { get; set; }
         int Type { get; set; }
+        string Notes { get; set; }
         DateTime LastWatched { get; set; }
     }
 }

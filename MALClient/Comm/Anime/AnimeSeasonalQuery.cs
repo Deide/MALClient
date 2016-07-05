@@ -13,7 +13,7 @@ namespace MALClient.Comm
     {
         private readonly bool _overriden;
         private readonly AnimeSeason _season;
-        private static Dictionary<string,List<SeasonalAnimeData>> _prevQueries = new Dictionary<string, List<SeasonalAnimeData>>();
+        private static readonly Dictionary<string,List<SeasonalAnimeData>> _prevQueries = new Dictionary<string, List<SeasonalAnimeData>>();
 
         public AnimeSeasonalQuery(AnimeSeason season)
         {

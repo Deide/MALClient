@@ -198,7 +198,7 @@ namespace MALClient.ViewModels
                     _animeItemReference = possibleRef;
             } // else we already have it
 
-            if (_animeItemReference is AnimeItemViewModel && (_animeItemReference as AnimeItemViewModel).Auth)
+            if ((_animeItemReference as AnimeItemViewModel)?.Auth ?? false)
             {
                 //we have item on the list , so there's valid data here
                 MyDetailsVisibility = true;
@@ -222,6 +222,22 @@ namespace MALClient.ViewModels
                 {
                     _endDateTimeOffset = DateTimeOffset.Now;
                     EndDateValid = false;
+                }
+                //tags
+                if (Settings.SelectedApiType == ApiType.Mal)
+                {
+                    var tags = string.IsNullOrEmpty(_animeItemReference.Notes)
+                        ? new List<string>()
+                        : _animeItemReference.Notes.Contains(",")
+                            ? _animeItemReference.Notes.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries)
+                                .ToList()
+                            : new List<string> {_animeItemReference.Notes};
+                    var collection = new ObservableCollection<string>();
+                    tags.ForEach(s =>
+                    {
+                        collection.Add(s);
+                    });
+                    MyTags = collection;
                 }
 
             }
@@ -421,6 +437,18 @@ namespace MALClient.ViewModels
             {
                 _animeItemReference.MyVolumes = value;
                 RaisePropertyChanged(() => MyVolumesBind);
+            }
+        }
+
+        private ObservableCollection<string> _myTags;
+
+        public ObservableCollection<string> MyTags
+        {
+            get { return _myTags; }
+            set
+            {
+                _myTags = value;
+                RaisePropertyChanged(() => MyTags);
             }
         }
 
@@ -647,6 +675,18 @@ namespace MALClient.ViewModels
             }
         }
 
+        private string _newTagInput;
+
+        public string NewTagInput
+        {
+            get { return _newTagInput; }
+            set
+            {
+                _newTagInput = value;
+                RaisePropertyChanged(() => NewTagInput);
+            }
+        }
+
         private bool _watchedEpsInputNoticeVisibility;
 
         public bool WatchedEpsInputNoticeVisibility
@@ -706,10 +746,33 @@ namespace MALClient.ViewModels
 
         private ICommand _changeStatusCommand;
 
-        public ICommand ChangeStatusCommand
+        public ICommand ChangeStatusCommand => _changeStatusCommand ?? (_changeStatusCommand = new RelayCommand<object>(ChangeStatus));
+
+        private ICommand _removeTagCommand;
+
+        public ICommand RemoveTagCommand => _removeTagCommand ?? (_removeTagCommand = new RelayCommand<object>(o =>
         {
-            get { return _changeStatusCommand ?? (_changeStatusCommand = new RelayCommand<object>(ChangeStatus)); }
-        }
+            MyTags.Remove(o as string);
+            _animeItemReference.Notes = MyTags.Aggregate("", (s, s1) => s += s1 + ",");
+            ChangeNotes();
+        }));
+
+        private ICommand _addTagCommand;
+
+        public ICommand AddTagCommand => _addTagCommand ?? (_addTagCommand = new RelayCommand(() =>
+        {
+            if (!MyTags.Any(t => string.Equals(NewTagInput,t,StringComparison.CurrentCultureIgnoreCase)) && MyTags.Count < 10)
+            {
+                MyTags.Add(NewTagInput);
+                _animeItemReference.Notes += "," + NewTagInput;
+                ChangeNotes();
+                if (
+                    !ViewModelLocator.Main.SearchHints.Any(
+                        t => string.Equals(NewTagInput, t, StringComparison.CurrentCultureIgnoreCase)))
+                    ViewModelLocator.Main.SearchHints.Add(NewTagInput); // add to hints
+            }
+            NewTagInput = "";
+        }));
 
         private ICommand _resetStartDateCommand;
 
@@ -1114,7 +1177,14 @@ namespace MALClient.ViewModels
             LoadingUpdate = false;
         }
 
-        public async void ChangeWatchedEps()
+        private async void ChangeNotes()
+        {
+            LoadingUpdate = true;
+            await GetAppropriateUpdateQuery().GetRequestResponse();
+            LoadingUpdate = false;
+        }
+
+        private async void ChangeWatchedEps()
         {
             LoadingUpdate = true;
             int eps, prevEps;

@@ -35,9 +35,7 @@ namespace MALClient.ViewModels
         public string ImgUrl { get; set; }
 
         public static List<string> ScoreFlyoutChoices { get; set; }
-        //prop field pairs
-
-        //state fields
+      
         public int Id { get; }
 
         public async void NavigateDetails(PageIndex? sourceOverride = null, object argsOverride = null)
@@ -255,6 +253,17 @@ namespace MALClient.ViewModels
         public int AllVolumes => ParentAbstraction.AllVolumes;
         public int AllEpisodesFocused => _allEpisodes;
         public int AllVolumesFocused => _allVolumes;
+
+        public string Notes
+        {
+            get { return ParentAbstraction.Notes; }
+            set
+            {
+                ParentAbstraction.Notes = value.Trim(',');
+                RaisePropertyChanged(() => Notes);
+                RaisePropertyChanged(() => TagsControlVisibility);
+            }
+        }
 
         public string EndDate
         {
@@ -553,6 +562,9 @@ namespace MALClient.ViewModels
             }
         }
 
+        public Visibility TagsControlVisibility
+            => string.IsNullOrEmpty(Notes) ? Visibility.Collapsed : Visibility.Visible;
+            
         private Visibility _addToListVisibility;
 
         public Visibility AddToListVisibility

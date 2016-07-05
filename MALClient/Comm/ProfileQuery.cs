@@ -13,7 +13,7 @@ namespace MALClient.Comm
 {
     public class ProfileQuery : Query
     {
-        private string _userName;
+        private readonly string _userName;
 
         public ProfileQuery(bool feed = false,string userName = "")
         {

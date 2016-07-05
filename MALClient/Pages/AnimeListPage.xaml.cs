@@ -235,6 +235,14 @@ namespace MALClient.Pages
 
         private void OnSortingSettingChanged(SortOptions option, bool descending)
         {
+            SortTitle.IsChecked =
+                SortScore.IsChecked =
+                    Sort3.IsChecked =
+                        SortAiring.IsChecked =
+                            SortNone.IsChecked =
+                                SortLastWatched.IsChecked =
+                                    SortEndDate.IsChecked =
+                                        SortStartDate.IsChecked = false;
             switch (option)
             {
                 case SortOptions.SortTitle:

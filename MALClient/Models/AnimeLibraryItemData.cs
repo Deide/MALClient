@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MALClient.Models
 {
     public class AnimeLibraryItemData : ILibraryData
     {
         private int _id = -1;
+
         public string MyStartDate { get; set; }
         public string MyEndDate { get; set; }
 
@@ -22,6 +25,7 @@ namespace MALClient.Models
         public int AllEpisodes { get; set; }
         public string ImgUrl { get; set; }
         public int Type { get; set; }
+        public string Notes { get; set; }
         public DateTime LastWatched { get; set; } = DateTime.MinValue;
     }
 }

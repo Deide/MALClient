@@ -24,9 +24,9 @@ namespace MALClient.Comm
 
     internal class AnimeTopQuery : Query
     {
-        private static Dictionary<TopAnimeType, List<TopAnimeData>> _prevQueriesCache = new Dictionary<TopAnimeType, List<TopAnimeData>>();
-        private TopAnimeType _type;
-        private int _page;
+        private static readonly Dictionary<TopAnimeType, List<TopAnimeData>> _prevQueriesCache = new Dictionary<TopAnimeType, List<TopAnimeData>>();
+        private readonly TopAnimeType _type;
+        private readonly int _page;
         public AnimeTopQuery(TopAnimeType topType, int page = 0)
         {
             Request =

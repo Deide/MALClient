@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI;
@@ -414,7 +415,8 @@ namespace MALClient.ViewModels
             {
                 _currentSearchQuery = value;
                 RaisePropertyChanged(() => CurrentSearchQuery);
-
+                CurrentHintSet =
+                    SearchHints.Where(s => s.StartsWith(value, StringComparison.CurrentCultureIgnoreCase)).Take(4).ToList();
                 if (SearchToggleLock) return;
 
                 ViewModelLocator.AnimeList.RefreshList(true);
@@ -605,6 +607,20 @@ namespace MALClient.ViewModels
                     MainContentColumnSpan = 3;
                 }
                 View.GridRootContent.UpdateLayout();
+            }
+        }
+
+        public List<string> SearchHints { get; set; }
+
+        private List<string> _currentHintSet;
+
+        public List<string> CurrentHintSet
+        {
+            get { return _currentHintSet; }
+            set
+            {
+                _currentHintSet = value;
+                RaisePropertyChanged(() => CurrentHintSet);
             }
         }
 

@@ -12,9 +12,9 @@ namespace MALClient.Comm
 {
     class MalArticlesIndexQuery : Query
     {
-        private ArticlePageWorkMode _mode;
+        private readonly ArticlePageWorkMode _mode;
 
-        private static Dictionary<ArticlePageWorkMode, List<MalNewsUnitModel>> _cachedData =
+        private static readonly Dictionary<ArticlePageWorkMode, List<MalNewsUnitModel>> _cachedData =
             new Dictionary<ArticlePageWorkMode, List<MalNewsUnitModel>>();
         public MalArticlesIndexQuery(ArticlePageWorkMode mode)
         {

@@ -19,7 +19,7 @@ namespace MALClient.Comm
     {
         protected WebRequest Request;
 
-        public static ApiType CurrentApiType { get; set; } = Settings.SelectedApiType;
+        public static ApiType CurrentApiType { protected get; set; } = Settings.SelectedApiType;
 
         public async Task<string> GetRequestResponse(bool wantMsg = true, string statusBarMsg = null)
         {

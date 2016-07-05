@@ -62,7 +62,7 @@ namespace MALClient.Items
             _animeMode = anime;
         }
 
-        public string Type { get; set; }
+        public string Type { get; }
         private string Status { get; }
 
         public int Id { get; set; }
@@ -70,6 +70,7 @@ namespace MALClient.Items
         public int AllEpisodes { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
+        public string Notes { get; set; }
         public int MyVolumes { get; set; }
         public int AllVolumes { get; set; }
         public string Title { get; set; }

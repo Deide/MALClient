@@ -67,6 +67,71 @@
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         Background="Transparent" Margin="0,5,0,0">
+                <Button Margin="0,5,0,0" Height="40" HorizontalAlignment="Stretch"
+                        Background="Transparent">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Content="Tags" />
+                    </ToolTipService.ToolTip>
+                    <Button.Flyout>
+                        <Flyout Placement="Left">
+                            <Grid MinWidth="230">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" MaxHeight="200"/>
+                                    <RowDefinition Height="Auto" MaxHeight="200"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock FontWeight="Medium" Text="Tags" HorizontalAlignment="Center" Margin="2,0,2,5"/>
+                                <ListView Grid.Row="1" SelectionMode="None" ItemsSource="{Binding MyTags}">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="BorderBrush" Value="{StaticResource SystemControlBackgroundAccentBrush}"/>
+                                            <Setter Property="BorderThickness" Value="2,0,0,0"/>
+                                            <Setter Property="Margin" Value="0,2"/>
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="Black" Opacity=".25"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <SymbolIcon Symbol="Tag"/>
+                                                <TextBlock Grid.Column="1" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Medium"  Text="{Binding}"/>
+                                                <Button Grid.Column="2" Background="Transparent" Padding="0" Width="30" Height="30" CommandParameter="{Binding}" Command="{Binding Source={StaticResource Locator},Path=AnimeDetails.RemoveTagCommand}">
+                                                    <SymbolIcon Symbol="Delete"/>
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <MenuFlyoutSeparator Grid.Row="2"></MenuFlyoutSeparator>
+                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch">
+                                    <TextBlock  Text="Add tag" HorizontalAlignment="Center"/>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Margin="3,2" HorizontalAlignment="Stretch" Text="{x:Bind ViewModel.NewTagInput,Mode=TwoWay}"/>
+                                        <Button Grid.Column="1" Padding="0" Width="30" Height="30" Command="{x:Bind ViewModel.AddTagCommand}">
+                                            <SymbolIcon Symbol="Add"/>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                    <SymbolIcon Symbol="Tag" />
+                </Button>
                 <Button Height="40" HorizontalAlignment="Stretch"
                         Command="{Binding CopyToClipboardCommand}"
                         Background="Transparent">
@@ -95,6 +160,7 @@
                     </ToolTipService.ToolTip>
                     <SymbolIcon Symbol="Delete" />
                 </Button>
+
             </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top"
                         Visibility="{Binding MyDetailsVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
@@ -200,8 +266,7 @@
                         <Button Margin="2,1,1,1"
                                 BorderThickness="0,0,0,1.5" Background="Transparent"
                                 BorderBrush="{StaticResource SystemControlBackgroundAccentBrush}" Height="Auto"
-                                VerticalAlignment="Center"
-                                Content="{Binding MyStatusBind}">
+                                VerticalAlignment="Center">
                             <Button.Flyout>
                                 <MenuFlyout>
                                     <MenuFlyout.Items>
@@ -220,6 +285,7 @@
                                     </MenuFlyout.Items>
                                 </MenuFlyout>
                             </Button.Flyout>
+                            <TextBlock Text="{Binding MyStatusBind}" FontWeight="Medium"/>
                         </Button>
                     </StackPanel>
                     <StackPanel Margin="0,5,0,5" Orientation="Horizontal">

@@ -22,14 +22,14 @@
                 <GridView IsRightTapEnabled="True" RightTapped="AnimesGridIndefinite_OnRightTapped" ItemClick="ItemsViewBase_OnItemClick" ItemsSource="{Binding Items}"/>
             </DataTemplate>            
             <DataTemplate x:Key="SummaryPageTemplate">
-                <ListView SelectionMode="None" ItemsSource="{Binding Data}" Padding="0">
-                    <ListView.ItemContainerStyle>
+                <GridView SelectionMode="None" ItemsSource="{Binding Data}" Padding="0">
+                    <GridView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                             <Setter Property="UseSystemFocusVisuals" Value="False"/>
                         </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
+                    </GridView.ItemContainerStyle>
+                    <GridView.ItemTemplate>
                         <DataTemplate>
                             <Grid HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
@@ -42,8 +42,8 @@
                                 <GridView IsRightTapEnabled="True" RightTapped="AnimesGridIndefinite_OnRightTapped" ItemClick="ItemsViewBase_OnItemClick" Grid.Row="2" ItemsSource="{Binding Item2}"/>
                             </Grid>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </GridView.ItemTemplate>
+                </GridView>
             </DataTemplate>
         </ResourceDictionary>
     </Page.Resources>
